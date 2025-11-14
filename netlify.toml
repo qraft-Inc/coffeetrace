@@ -1,7 +1,6 @@
 # Netlify configuration for Coffee Trace
 [build]
   command = "npm run build"
-  publish = ".next"
 
 # Next.js plugin for Netlify
 [[plugins]]
@@ -14,14 +13,3 @@
 # CLOUDINARY_CLOUD_NAME
 # CLOUDINARY_API_KEY
 # CLOUDINARY_API_SECRET
-
-# Redirect rules
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
