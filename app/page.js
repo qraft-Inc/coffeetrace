@@ -1,6 +1,16 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Coffee, Leaf, TrendingUp, Shield, MapPin, Users } from 'lucide-react';
+import { Coffee, Leaf, TrendingUp, Shield, MapPin, Users, Award, CheckCircle, Star, Mail, Phone, MapPinIcon, Linkedin, Twitter, Instagram } from 'lucide-react';
+
+export const metadata = {
+  title: 'Coffee Trace - From Farm to Cup, Every Bean Traced',
+  description: 'Empowering farmers with data, connecting buyers with sustainable coffee, and building a transparent value chain for climate-smart agriculture.',
+  openGraph: {
+    title: 'Coffee Trace - Transparent Coffee Supply Chain',
+    description: 'Track every coffee bean from farm to cup with blockchain-powered traceability.',
+    images: ['https://res.cloudinary.com/ddew8kfxf/image/upload/v1763059666/Coffee_Trap_Mix_ky8mwv.png'],
+  },
+};
 
 export default function HomePage() {
   return (
@@ -12,7 +22,7 @@ export default function HomePage() {
             <div className="flex items-center gap-3">
               <Image 
                 src="https://res.cloudinary.com/ddew8kfxf/image/upload/v1763059666/Coffee_Trap_Mix_ky8mwv.png"
-                alt="Coffee Trap Logo"
+                alt="Coffee Trace Logo - Transparent Coffee Supply Chain"
                 width={40}
                 height={40}
                 className="object-contain"
@@ -20,26 +30,29 @@ export default function HomePage() {
               <span className="text-2xl font-bold text-coffee-800">Coffee Trace</span>
             </div>
             <nav className="hidden md:flex gap-6">
-              <Link href="#features" className="text-coffee-700 hover:text-coffee-900">
+              <Link href="#features" className="text-coffee-700 hover:text-coffee-900 transition-colors">
                 Features
               </Link>
-              <Link href="#how-it-works" className="text-coffee-700 hover:text-coffee-900">
+              <Link href="#how-it-works" className="text-coffee-700 hover:text-coffee-900 transition-colors">
                 How It Works
               </Link>
-              <Link href="/marketplace" className="text-coffee-700 hover:text-coffee-900">
+              <Link href="#testimonials" className="text-coffee-700 hover:text-coffee-900 transition-colors">
+                Testimonials
+              </Link>
+              <Link href="/marketplace" className="text-coffee-700 hover:text-coffee-900 transition-colors">
                 Marketplace
               </Link>
             </nav>
             <div className="flex gap-3">
               <Link
                 href="/auth/signin"
-                className="px-4 py-2 text-coffee-700 hover:text-coffee-900 font-medium"
+                className="px-4 py-2 text-coffee-700 hover:text-coffee-900 font-medium transition-colors"
               >
                 Sign In
               </Link>
               <Link
                 href="/auth/signup"
-                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
+                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium shadow-md hover:shadow-lg"
               >
                 Get Started
               </Link>
@@ -49,40 +62,130 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-20 pb-32 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-coffee-900 mb-6 text-balance">
-            From Farm to Cup,
-            <br />
-            <span className="text-primary-600">Every Bean Traced</span>
-          </h1>
-          <p className="text-xl text-coffee-600 max-w-3xl mx-auto mb-10 text-balance">
-            Empowering farmers with data, connecting buyers with sustainable coffee,
-            and building a transparent value chain for climate-smart agriculture.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/auth/signup?role=farmer"
-              className="px-8 py-4 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-lg font-semibold"
-            >
-              I'm a Farmer
-            </Link>
-            <Link
-              href="/auth/signup?role=buyer"
-              className="px-8 py-4 bg-white text-coffee-800 border-2 border-coffee-300 rounded-lg hover:border-coffee-400 transition-colors text-lg font-semibold"
-            >
-              I'm a Buyer
-            </Link>
+      <section className="relative pt-32 pb-40 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=1920&h=1080&fit=crop"
+            alt="Coffee farmer harvesting beans in sustainable farm"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-coffee-900/90 via-coffee-900/70 to-coffee-900/50"></div>
+        </div>
+
+        {/* Content */}
+        <div className="max-w-7xl mx-auto relative z-10 text-center">
+          <div className="max-w-4xl mx-auto">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
+              From Farm to Cup,
+              <br />
+              <span className="text-primary-400">Every Bean Traced</span>
+            </h1>
+            <p className="text-xl text-coffee-100 mb-8 max-w-2xl mx-auto">
+              Empowering farmers with data, connecting buyers with sustainable coffee,
+              and building a transparent value chain for climate-smart agriculture.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 mb-8 justify-center">
+              <Link
+                href="/auth/signup?role=farmer"
+                className="px-8 py-4 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-all text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              >
+                I'm a Farmer
+              </Link>
+              <Link
+                href="/auth/signup?role=buyer"
+                className="px-8 py-4 bg-white text-coffee-800 border-2 border-white rounded-lg hover:bg-coffee-50 transition-all text-lg font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+              >
+                I'm a Buyer
+              </Link>
+              <Link
+                href="/marketplace"
+                className="px-8 py-4 bg-transparent text-white border-2 border-white/50 rounded-lg hover:bg-white/10 hover:border-white transition-all text-lg font-semibold"
+              >
+                Browse Marketplace
+              </Link>
+            </div>
+            {/* Trust Indicators */}
+            <div className="flex flex-wrap items-center gap-6 text-sm text-white/90 justify-center">
+              <div className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-primary-400" />
+                <span><strong>500+</strong> Farmers</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-primary-400" />
+                <span><strong>10+</strong> Countries</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Award className="h-5 w-5 text-primary-400" />
+                <span><strong>Certified</strong> Organic</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Floating Badge */}
+          <div className="absolute bottom-8 right-8 bg-white p-4 rounded-lg shadow-xl hidden lg:block">
+            <div className="flex items-center gap-3">
+              <CheckCircle className="h-8 w-8 text-green-600" />
+              <div>
+                <p className="font-bold text-coffee-900">100% Traceable</p>
+                <p className="text-sm text-coffee-600">QR-Verified Origin</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Problem Statement Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-coffee-900 mb-6">
+            The Coffee Industry Needs Transparency
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8 text-left">
+            <div className="p-6 border border-coffee-200 rounded-lg">
+              <div className="text-red-600 mb-3">
+                <Shield className="h-8 w-8" />
+              </div>
+              <h3 className="font-bold text-coffee-900 mb-2">Lack of Traceability</h3>
+              <p className="text-coffee-600 text-sm">
+                Buyers struggle to verify origin, quality, and ethical practices in the supply chain.
+              </p>
+            </div>
+            <div className="p-6 border border-coffee-200 rounded-lg">
+              <div className="text-orange-600 mb-3">
+                <TrendingUp className="h-8 w-8" />
+              </div>
+              <h3 className="font-bold text-coffee-900 mb-2">Farmer Income Challenges</h3>
+              <p className="text-coffee-600 text-sm">
+                Smallholder farmers lack market access and data to negotiate fair prices.
+              </p>
+            </div>
+            <div className="p-6 border border-coffee-200 rounded-lg">
+              <div className="text-yellow-600 mb-3">
+                <MapPin className="h-8 w-8" />
+              </div>
+              <h3 className="font-bold text-coffee-900 mb-2">Origin Verification</h3>
+              <p className="text-coffee-600 text-sm">
+                Proving sustainability and certifications is complex and costly for cooperatives.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-white">
+      <section id="features" className="py-20 bg-coffee-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-center text-coffee-900 mb-16">
-            Why Choose Coffee Trace?
-          </h2>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-coffee-900 mb-4">
+              Why Choose Coffee Trace?
+            </h2>
+            <p className="text-xl text-coffee-600 max-w-3xl mx-auto">
+              Comprehensive tools for every stakeholder in the coffee value chain
+            </p>
+          </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <FeatureCard
               icon={<Shield className="h-8 w-8" />}
@@ -119,62 +222,146 @@ export default function HomePage() {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-20 bg-coffee-50">
+      <section id="how-it-works" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-center text-coffee-900 mb-16">
-            How It Works
-          </h2>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-coffee-900 mb-4">
+              How It Works
+            </h2>
+            <p className="text-xl text-coffee-600 max-w-2xl mx-auto">
+              Three simple steps to transform your coffee supply chain
+            </p>
+          </div>
           <div className="grid md:grid-cols-3 gap-12">
             <Step
               number="1"
               title="Register & Create Lots"
-              description="Farmers register their farms and create traceable coffee lots with harvest details."
+              description="Farmers register their farms and create traceable coffee lots with harvest details, GPS coordinates, and quality metrics."
+              icon={<Users className="h-12 w-12" />}
             />
             <Step
               number="2"
               title="Track Every Step"
-              description="Add events at each stage: processing, drying, grading, storage, and shipping."
+              description="Add events at each stage: processing, drying, grading, storage, and shipping with photos and timestamps."
+              icon={<MapPin className="h-12 w-12" />}
             />
             <Step
               number="3"
               title="List & Sell"
-              description="Post lots on the marketplace and receive offers from verified buyers."
+              description="Post lots on the marketplace and receive offers from verified buyers. Complete transactions securely."
+              icon={<TrendingUp className="h-12 w-12" />}
             />
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Product Screenshots Section */}
+      <section className="py-20 bg-gradient-to-br from-primary-50 to-coffee-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-coffee-900 mb-4">
+              Powerful Dashboard & Analytics
+            </h2>
+            <p className="text-xl text-coffee-600 max-w-2xl mx-auto">
+              Intuitive tools designed for farmers, cooperatives, and buyers
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="bg-white p-8 rounded-2xl shadow-xl">
+              <div className="relative w-full h-64 bg-gradient-to-br from-primary-100 to-coffee-100 rounded-lg mb-4 flex items-center justify-center">
+                <Coffee className="h-24 w-24 text-primary-600 opacity-20" />
+                <span className="absolute text-coffee-900 font-bold text-lg">Farmer Dashboard</span>
+              </div>
+              <h3 className="text-xl font-bold text-coffee-900 mb-2">Farm Management</h3>
+              <p className="text-coffee-600">Track lots, monitor yields, and manage certifications all in one place.</p>
+            </div>
+            <div className="bg-white p-8 rounded-2xl shadow-xl">
+              <div className="relative w-full h-64 bg-gradient-to-br from-green-100 to-primary-100 rounded-lg mb-4 flex items-center justify-center">
+                <MapPin className="h-24 w-24 text-green-600 opacity-20" />
+                <span className="absolute text-coffee-900 font-bold text-lg">Marketplace</span>
+              </div>
+              <h3 className="text-xl font-bold text-coffee-900 mb-2">Global Marketplace</h3>
+              <p className="text-coffee-600">Browse verified listings, filter by origin, quality, and certifications.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section id="testimonials" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-coffee-900 mb-4">
+              Trusted by Coffee Professionals
+            </h2>
+            <p className="text-xl text-coffee-600 max-w-2xl mx-auto">
+              See what farmers, cooperatives, and buyers are saying
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            <Testimonial
+              quote="Coffee Trace helped us increase our income by 30% through direct buyer connections. The traceability features give us credibility in international markets."
+              name="James Okello"
+              role="Smallholder Farmer, Kenya"
+              rating={5}
+            />
+            <Testimonial
+              quote="Managing our 200+ farmers was chaotic until Coffee Trace. Now we track every lot, maintain certifications digitally, and access premium buyers directly."
+              name="Sarah Nyambura"
+              role="Cooperative Manager, Uganda"
+              rating={5}
+            />
+            <Testimonial
+              quote="As a specialty coffee buyer, verifying origin was always a challenge. Coffee Trace gives us complete transparency from farm to shipment."
+              name="Michael Chen"
+              role="Coffee Buyer, Netherlands"
+              rating={5}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA Section */}
       <section className="py-20 bg-primary-600 text-white">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Ready to Transform Your Coffee Journey?
           </h2>
-          <p className="text-xl mb-8 text-primary-50">
-            Join thousands of farmers and buyers building a sustainable coffee future.
+          <p className="text-xl mb-8 text-primary-50 max-w-2xl mx-auto">
+            Join thousands of farmers and buyers building a sustainable, transparent coffee future. 
+            Get started today—it's free.
           </p>
-          <Link
-            href="/auth/signup"
-            className="inline-block px-8 py-4 bg-white text-primary-600 rounded-lg hover:bg-primary-50 transition-colors text-lg font-semibold"
-          >
-            Create Free Account
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/auth/signup"
+              className="inline-block px-8 py-4 bg-white text-primary-600 rounded-lg hover:bg-primary-50 transition-all text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            >
+              Create Free Account
+            </Link>
+            <Link
+              href="/marketplace"
+              className="inline-block px-8 py-4 border-2 border-white text-white rounded-lg hover:bg-white/10 transition-all text-lg font-semibold"
+            >
+              Explore Marketplace
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
       <footer className="bg-coffee-900 text-coffee-100 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
+          <div className="grid md:grid-cols-5 gap-8 mb-8">
+            {/* Brand */}
+            <div className="md:col-span-2">
               <div className="flex items-center gap-2 mb-4">
-                <Coffee className="h-6 w-6" />
+                <Coffee className="h-6 w-6 text-primary-400" />
                 <span className="text-xl font-bold">Coffee Trace</span>
               </div>
-              <p className="text-coffee-300 text-sm mb-3">
-                Building transparency and sustainability in the coffee value chain.
+              <p className="text-coffee-300 text-sm mb-4 max-w-xs">
+                Building transparency and sustainability in the coffee value chain through technology and data.
               </p>
-              <p className="text-coffee-400 text-xs">
+              <p className="text-coffee-400 text-xs mb-4">
                 A product of{' '}
                 <a 
                   href="http://coffeetrapagencies.com" 
@@ -185,44 +372,111 @@ export default function HomePage() {
                   Coffee Trap Agencies Ltd
                 </a>
               </p>
+              
+              {/* Certifications */}
+              <div className="flex flex-wrap gap-3 mt-4">
+                <div className="px-3 py-1 bg-coffee-800 rounded-full text-xs flex items-center gap-1">
+                  <Award className="h-3 w-3" />
+                  Fairtrade
+                </div>
+                <div className="px-3 py-1 bg-coffee-800 rounded-full text-xs flex items-center gap-1">
+                  <Leaf className="h-3 w-3" />
+                  Organic
+                </div>
+                <div className="px-3 py-1 bg-coffee-800 rounded-full text-xs flex items-center gap-1">
+                  <Shield className="h-3 w-3" />
+                  Rainforest Alliance
+                </div>
+              </div>
             </div>
+
+            {/* Platform Links */}
             <div>
-              <h3 className="font-semibold mb-3">Platform</h3>
+              <h3 className="font-semibold mb-3 text-white">Platform</h3>
               <ul className="space-y-2 text-sm text-coffee-300">
-                <li><Link href="/marketplace">Marketplace</Link></li>
-                <li><Link href="/dashboard">Dashboard</Link></li>
-                <li><Link href="/about">About Us</Link></li>
+                <li><Link href="/marketplace" className="hover:text-primary-400 transition-colors">Marketplace</Link></li>
+                <li><Link href="/dashboard" className="hover:text-primary-400 transition-colors">Dashboard</Link></li>
+                <li><Link href="/about" className="hover:text-primary-400 transition-colors">About Us</Link></li>
+                <li><Link href="/auth/signup" className="hover:text-primary-400 transition-colors">Sign Up</Link></li>
               </ul>
             </div>
+
+            {/* Resources */}
             <div>
-              <h3 className="font-semibold mb-3">Resources</h3>
+              <h3 className="font-semibold mb-3 text-white">Resources</h3>
               <ul className="space-y-2 text-sm text-coffee-300">
-                <li><Link href="/docs">Documentation</Link></li>
-                <li><Link href="/support">Support</Link></li>
-                <li><Link href="/api">API</Link></li>
+                <li><Link href="/docs" className="hover:text-primary-400 transition-colors">Documentation</Link></li>
+                <li><Link href="/support" className="hover:text-primary-400 transition-colors">Support</Link></li>
+                <li><Link href="/api" className="hover:text-primary-400 transition-colors">API</Link></li>
+                <li><Link href="/blog" className="hover:text-primary-400 transition-colors">Blog</Link></li>
               </ul>
             </div>
+
+            {/* Contact & Social */}
             <div>
-              <h3 className="font-semibold mb-3">Legal</h3>
-              <ul className="space-y-2 text-sm text-coffee-300">
-                <li><Link href="/privacy">Privacy Policy</Link></li>
-                <li><Link href="/terms">Terms of Service</Link></li>
+              <h3 className="font-semibold mb-3 text-white">Contact</h3>
+              <ul className="space-y-2 text-sm text-coffee-300 mb-4">
+                <li className="flex items-center gap-2">
+                  <Mail className="h-4 w-4" />
+                  <a href="mailto:coffeetrapagencies@gmail.com" className="hover:text-primary-400 transition-colors">
+                    coffeetrapagencies@gmail.com
+                  </a>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Phone className="h-4 w-4" />
+                  <a href="tel:+256755017384" className="hover:text-primary-400 transition-colors">
+                    +256 755 017 384
+                  </a>
+                </li>
+                <li className="flex items-center gap-2">
+                  <MapPinIcon className="h-4 w-4" />
+                  <span>Kampala, Uganda</span>
+                </li>
               </ul>
+              
+              {/* Social Links */}
+              <div className="flex gap-3">
+                <a 
+                  href="https://linkedin.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="p-2 bg-coffee-800 rounded-full hover:bg-primary-600 transition-colors"
+                  aria-label="LinkedIn"
+                >
+                  <Linkedin className="h-4 w-4" />
+                </a>
+                <a 
+                  href="https://twitter.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="p-2 bg-coffee-800 rounded-full hover:bg-primary-600 transition-colors"
+                  aria-label="Twitter"
+                >
+                  <Twitter className="h-4 w-4" />
+                </a>
+                <a 
+                  href="https://instagram.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="p-2 bg-coffee-800 rounded-full hover:bg-primary-600 transition-colors"
+                  aria-label="Instagram"
+                >
+                  <Instagram className="h-4 w-4" />
+                </a>
+              </div>
             </div>
           </div>
-          <div className="border-t border-coffee-800 mt-8 pt-8 text-center text-sm text-coffee-400">
-            <p>&copy; {new Date().getFullYear()} Coffee Trace. All rights reserved.</p>
-            <p className="mt-1">
-              Powered by{' '}
-              <a 
-                href="http://coffeetrapagencies.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-primary-400 hover:text-primary-300 underline"
-              >
-                Coffee Trap Agencies Ltd
-              </a>
-            </p>
+
+          {/* Legal Links */}
+          <div className="border-t border-coffee-800 pt-8">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-coffee-400">
+              <p>&copy; {new Date().getFullYear()} Coffee Trace. All rights reserved.</p>
+              <div className="flex gap-6">
+                <Link href="/privacy" className="hover:text-primary-400 transition-colors">Privacy Policy</Link>
+                <Link href="/terms" className="hover:text-primary-400 transition-colors">Terms of Service</Link>
+                <Link href="/cookies" className="hover:text-primary-400 transition-colors">Cookie Policy</Link>
+              </div>
+            </div>
           </div>
         </div>
       </footer>
@@ -232,22 +486,43 @@ export default function HomePage() {
 
 function FeatureCard({ icon, title, description }) {
   return (
-    <div className="p-6 bg-coffee-50 rounded-xl hover:shadow-lg transition-shadow">
-      <div className="text-primary-600 mb-4">{icon}</div>
+    <article className="p-6 bg-white rounded-xl hover:shadow-xl transition-all border border-coffee-100 hover:border-primary-200 group">
+      <div className="text-primary-600 mb-4 group-hover:scale-110 transition-transform">{icon}</div>
       <h3 className="text-xl font-semibold text-coffee-900 mb-2">{title}</h3>
       <p className="text-coffee-600">{description}</p>
-    </div>
+    </article>
   );
 }
 
-function Step({ number, title, description }) {
+function Step({ number, title, description, icon }) {
   return (
-    <div className="text-center">
-      <div className="inline-flex items-center justify-center w-12 h-12 bg-primary-600 text-white rounded-full text-xl font-bold mb-4">
-        {number}
+    <article className="text-center relative">
+      <div className="relative inline-block mb-6">
+        <div className="absolute inset-0 bg-primary-200 rounded-full blur-xl opacity-30"></div>
+        <div className="relative inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-600 to-primary-700 text-white rounded-full text-2xl font-bold shadow-lg">
+          {number}
+        </div>
       </div>
-      <h3 className="text-xl font-semibold text-coffee-900 mb-2">{title}</h3>
-      <p className="text-coffee-600">{description}</p>
-    </div>
+      <div className="text-primary-600 mb-4 flex justify-center">{icon}</div>
+      <h3 className="text-xl font-semibold text-coffee-900 mb-3">{title}</h3>
+      <p className="text-coffee-600 max-w-sm mx-auto">{description}</p>
+    </article>
+  );
+}
+
+function Testimonial({ quote, name, role, rating }) {
+  return (
+    <article className="bg-white p-8 rounded-xl shadow-lg border border-coffee-100 hover:shadow-xl transition-shadow">
+      <div className="flex gap-1 mb-4">
+        {[...Array(rating)].map((_, i) => (
+          <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+        ))}
+      </div>
+      <blockquote className="text-coffee-700 mb-6 italic">"{quote}"</blockquote>
+      <div className="border-t border-coffee-100 pt-4">
+        <p className="font-bold text-coffee-900">{name}</p>
+        <p className="text-sm text-coffee-600">{role}</p>
+      </div>
+    </article>
   );
 }
