@@ -116,7 +116,6 @@ const LotSchema = new mongoose.Schema({
 });
 
 // Indexes
-LotSchema.index({ traceId: 1 });
 LotSchema.index({ farmerId: 1 });
 LotSchema.index({ cooperativeId: 1 });
 LotSchema.index({ status: 1 });

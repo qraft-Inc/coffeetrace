@@ -6,12 +6,22 @@ import Lot from '../../../models/Lot';
 import AuditTrail from '../../../models/AuditTrail';
 import { authOptions } from '../../../lib/authOptions';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/listings
  * Get user's own listings
  */
 export async function GET(request) {
   try {
+    // Safety guard for build time
+    if (!process.env.MONGODB_URI) {
+      return NextResponse.json(
+        { error: 'Database not configured' },
+        { status: 503 }
+      );
+    }
+
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -47,6 +57,14 @@ export async function GET(request) {
  */
 export async function POST(request) {
   try {
+    // Safety guard for build time
+    if (!process.env.MONGODB_URI) {
+      return NextResponse.json(
+        { error: 'Database not configured' },
+        { status: 503 }
+      );
+    }
+
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

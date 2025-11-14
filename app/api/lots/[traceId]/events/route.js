@@ -5,12 +5,22 @@ import Lot from '../../../../../models/Lot';
 import AuditTrail from '../../../../../models/AuditTrail';
 import { authOptions } from '../../../../../lib/authOptions';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/lots/[traceId]/events
  * Add a new trace event to a lot's journey
  */
 export async function POST(request, { params }) {
   try {
+    // Safety guard for build time
+    if (!process.env.MONGODB_URI) {
+      return NextResponse.json(
+        { error: 'Database not configured' },
+        { status: 503 }
+      );
+    }
+
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -110,6 +120,14 @@ export async function POST(request, { params }) {
  */
 export async function GET(request, { params }) {
   try {
+    // Safety guard for build time
+    if (!process.env.MONGODB_URI) {
+      return NextResponse.json(
+        { error: 'Database not configured' },
+        { status: 503 }
+      );
+    }
+
     await dbConnect();
     const { traceId } = params;
 

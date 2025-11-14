@@ -6,12 +6,22 @@ import Farmer from '../../../../models/Farmer';
 import Buyer from '../../../../models/Buyer';
 import AuditTrail from '../../../../models/AuditTrail';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/auth/signup
  * Register a new user account
  */
 export async function POST(request) {
   try {
+    // Safety guard for build time
+    if (!process.env.MONGODB_URI) {
+      return NextResponse.json(
+        { error: 'Database not configured' },
+        { status: 503 }
+      );
+    }
+
     const body = await request.json();
     const { name, email, password, role, phone, ...profileData } = body;
 

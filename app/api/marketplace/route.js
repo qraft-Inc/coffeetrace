@@ -3,12 +3,23 @@ import dbConnect from '../../../lib/dbConnect';
 import Listing from '../../../models/Listing';
 import Lot from '../../../models/Lot';
 
+// Mark route as dynamic
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/marketplace
  * Public endpoint to browse all available coffee listings
  */
 export async function GET(request) {
   try {
+    // Safety guard for build time
+    if (!process.env.MONGODB_URI) {
+      return NextResponse.json(
+        { error: 'Database not configured' },
+        { status: 503 }
+      );
+    }
+
     await dbConnect();
 
     const { searchParams } = new URL(request.url);
