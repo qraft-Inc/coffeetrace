@@ -85,6 +85,15 @@ export default function NavBar() {
               <Link href="#testimonials" onClick={() => setOpen(false)} className="block text-coffee-700 dark:text-gray-300 hover:text-coffee-900 dark:hover:text-gray-100 px-2 py-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">Testimonials</Link>
               {/* Marketplace removed from home nav (for signed users only) */}
 
+              {/* Theme Toggle for Mobile */}
+              <button
+                onClick={toggleTheme}
+                className="flex items-center justify-center gap-2 w-full px-4 py-2 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-coffee-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              >
+                {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                <span className="text-sm">{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>
+              </button>
+
               <div className="mt-4 border-t dark:border-gray-800 pt-4 flex flex-col gap-3">
                 <Link href="/auth/signin" onClick={() => setOpen(false)} className="block text-center px-4 py-2 rounded-md text-coffee-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">Sign In</Link>
                 <Link href="/auth/signup" onClick={() => setOpen(false)} className="block text-center px-4 py-2 rounded-md bg-primary-600 text-white hover:bg-primary-700 transition-all shadow-sm hover:shadow-lg transform hover:-translate-y-0.5">Get Started</Link>
