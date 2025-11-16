@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import HeroBackground from '../components/HeroBackground';
 import { Coffee, Leaf, TrendingUp, Shield, MapPin, Users, Award, CheckCircle, Star, Mail, Phone, MapPinIcon, Linkedin, Twitter, Instagram } from 'lucide-react';
+import NavBar from '../components/NavBar';
 
 export const metadata = {
   title: 'Coffee Trace - From Farm to Cup, Every Bean Traced',
@@ -14,66 +16,14 @@ export const metadata = {
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-coffee-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-coffee-50 to-white dark:from-gray-900 dark:to-gray-950">
       {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-3">
-              <Image 
-                src="https://res.cloudinary.com/ddew8kfxf/image/upload/v1763059666/Coffee_Trap_Mix_ky8mwv.png"
-                alt="Coffee Trace Logo - Transparent Coffee Supply Chain"
-                width={40}
-                height={40}
-                className="object-contain"
-              />
-              <span className="text-2xl font-bold text-coffee-800">Coffee Trace</span>
-            </div>
-            <nav className="hidden md:flex gap-6">
-              <Link href="#features" className="text-coffee-700 hover:text-coffee-900 transition-colors">
-                Features
-              </Link>
-              <Link href="#how-it-works" className="text-coffee-700 hover:text-coffee-900 transition-colors">
-                How It Works
-              </Link>
-              <Link href="#testimonials" className="text-coffee-700 hover:text-coffee-900 transition-colors">
-                Testimonials
-              </Link>
-              <Link href="/marketplace" className="text-coffee-700 hover:text-coffee-900 transition-colors">
-                Marketplace
-              </Link>
-            </nav>
-            <div className="flex gap-3">
-              <Link
-                href="/auth/signin"
-                className="px-4 py-2 text-coffee-700 hover:text-coffee-900 font-medium transition-colors"
-              >
-                Sign In
-              </Link>
-              <Link
-                href="/auth/signup"
-                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium shadow-md hover:shadow-lg"
-              >
-                Get Started
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      <NavBar />
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-40 px-4 sm:px-6 lg:px-8 overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=1920&h=1080&fit=crop"
-            alt="Coffee farmer harvesting beans in sustainable farm"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-coffee-900/90 via-coffee-900/70 to-coffee-900/50"></div>
-        </div>
+        {/* Background (video with brown-gradient fallback while it loads) */}
+        <HeroBackground />
 
         {/* Content */}
         <div className="max-w-7xl mx-auto relative z-10 text-center">
@@ -138,36 +88,36 @@ export default function HomePage() {
       </section>
 
       {/* Problem Statement Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-coffee-900 mb-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-coffee-900 dark:text-gray-100 mb-6">
             The Coffee Industry Needs Transparency
           </h2>
           <div className="grid md:grid-cols-3 gap-8 text-left">
-            <div className="p-6 border border-coffee-200 rounded-lg">
-              <div className="text-red-600 mb-3">
+            <div className="p-6 border border-coffee-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800">
+              <div className="text-red-600 dark:text-red-400 mb-3">
                 <Shield className="h-8 w-8" />
               </div>
-              <h3 className="font-bold text-coffee-900 mb-2">Lack of Traceability</h3>
-              <p className="text-coffee-600 text-sm">
+              <h3 className="font-bold text-coffee-900 dark:text-gray-100 mb-2">Lack of Traceability</h3>
+              <p className="text-coffee-600 dark:text-gray-400 text-sm">
                 Buyers struggle to verify origin, quality, and ethical practices in the supply chain.
               </p>
             </div>
-            <div className="p-6 border border-coffee-200 rounded-lg">
-              <div className="text-orange-600 mb-3">
+            <div className="p-6 border border-coffee-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800">
+              <div className="text-orange-600 dark:text-orange-400 mb-3">
                 <TrendingUp className="h-8 w-8" />
               </div>
-              <h3 className="font-bold text-coffee-900 mb-2">Farmer Income Challenges</h3>
-              <p className="text-coffee-600 text-sm">
+              <h3 className="font-bold text-coffee-900 dark:text-gray-100 mb-2">Farmer Income Challenges</h3>
+              <p className="text-coffee-600 dark:text-gray-400 text-sm">
                 Smallholder farmers lack market access and data to negotiate fair prices.
               </p>
             </div>
-            <div className="p-6 border border-coffee-200 rounded-lg">
-              <div className="text-yellow-600 mb-3">
+            <div className="p-6 border border-coffee-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800">
+              <div className="text-yellow-600 dark:text-yellow-400 mb-3">
                 <MapPin className="h-8 w-8" />
               </div>
-              <h3 className="font-bold text-coffee-900 mb-2">Origin Verification</h3>
-              <p className="text-coffee-600 text-sm">
+              <h3 className="font-bold text-coffee-900 dark:text-gray-100 mb-2">Origin Verification</h3>
+              <p className="text-coffee-600 dark:text-gray-400 text-sm">
                 Proving sustainability and certifications is complex and costly for cooperatives.
               </p>
             </div>
@@ -176,13 +126,13 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-coffee-50">
+      <section id="features" className="py-20 bg-coffee-50 dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-coffee-900 mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-coffee-900 dark:text-gray-100 mb-4">
               Why Choose Coffee Trace?
             </h2>
-            <p className="text-xl text-coffee-600 max-w-3xl mx-auto">
+            <p className="text-xl text-coffee-600 dark:text-gray-400 max-w-3xl mx-auto">
               Comprehensive tools for every stakeholder in the coffee value chain
             </p>
           </div>
@@ -222,13 +172,13 @@ export default function HomePage() {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-20 bg-white">
+      <section id="how-it-works" className="py-20 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-coffee-900 mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-coffee-900 dark:text-gray-100 mb-4">
               How It Works
             </h2>
-            <p className="text-xl text-coffee-600 max-w-2xl mx-auto">
+            <p className="text-xl text-coffee-600 dark:text-gray-400 max-w-2xl mx-auto">
               Three simple steps to transform your coffee supply chain
             </p>
           </div>
@@ -256,45 +206,45 @@ export default function HomePage() {
       </section>
 
       {/* Product Screenshots Section */}
-      <section className="py-20 bg-gradient-to-br from-primary-50 to-coffee-50">
+      <section className="py-20 bg-gradient-to-br from-primary-50 to-coffee-50 dark:from-gray-800 dark:to-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-coffee-900 mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-coffee-900 dark:text-gray-100 mb-4">
               Powerful Dashboard & Analytics
             </h2>
-            <p className="text-xl text-coffee-600 max-w-2xl mx-auto">
+            <p className="text-xl text-coffee-600 dark:text-gray-400 max-w-2xl mx-auto">
               Intuitive tools designed for farmers, cooperatives, and buyers
             </p>
           </div>
           <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-white p-8 rounded-2xl shadow-xl">
-              <div className="relative w-full h-64 bg-gradient-to-br from-primary-100 to-coffee-100 rounded-lg mb-4 flex items-center justify-center">
-                <Coffee className="h-24 w-24 text-primary-600 opacity-20" />
-                <span className="absolute text-coffee-900 font-bold text-lg">Farmer Dashboard</span>
+            <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border dark:border-gray-700">
+              <div className="relative w-full h-64 bg-gradient-to-br from-primary-100 to-coffee-100 dark:from-primary-900/20 dark:to-coffee-900/20 rounded-lg mb-4 flex items-center justify-center">
+                <Coffee className="h-24 w-24 text-primary-600 dark:text-primary-400 opacity-20" />
+                <span className="absolute text-coffee-900 dark:text-gray-100 font-bold text-lg">Farmer Dashboard</span>
               </div>
-              <h3 className="text-xl font-bold text-coffee-900 mb-2">Farm Management</h3>
-              <p className="text-coffee-600">Track lots, monitor yields, and manage certifications all in one place.</p>
+              <h3 className="text-xl font-bold text-coffee-900 dark:text-gray-100 mb-2">Farm Management</h3>
+              <p className="text-coffee-600 dark:text-gray-400">Track lots, monitor yields, and manage certifications all in one place.</p>
             </div>
-            <div className="bg-white p-8 rounded-2xl shadow-xl">
-              <div className="relative w-full h-64 bg-gradient-to-br from-green-100 to-primary-100 rounded-lg mb-4 flex items-center justify-center">
-                <MapPin className="h-24 w-24 text-green-600 opacity-20" />
-                <span className="absolute text-coffee-900 font-bold text-lg">Marketplace</span>
+            <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border dark:border-gray-700">
+              <div className="relative w-full h-64 bg-gradient-to-br from-green-100 to-primary-100 dark:from-green-900/20 dark:to-primary-900/20 rounded-lg mb-4 flex items-center justify-center">
+                <MapPin className="h-24 w-24 text-green-600 dark:text-green-400 opacity-20" />
+                <span className="absolute text-coffee-900 dark:text-gray-100 font-bold text-lg">Marketplace</span>
               </div>
-              <h3 className="text-xl font-bold text-coffee-900 mb-2">Global Marketplace</h3>
-              <p className="text-coffee-600">Browse verified listings, filter by origin, quality, and certifications.</p>
+              <h3 className="text-xl font-bold text-coffee-900 dark:text-gray-100 mb-2">Global Marketplace</h3>
+              <p className="text-coffee-600 dark:text-gray-400">Browse verified listings, filter by origin, quality, and certifications.</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-20 bg-white">
+      <section id="testimonials" className="py-20 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-coffee-900 mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-coffee-900 dark:text-gray-100 mb-4">
               Trusted by Coffee Professionals
             </h2>
-            <p className="text-xl text-coffee-600 max-w-2xl mx-auto">
+            <p className="text-xl text-coffee-600 dark:text-gray-400 max-w-2xl mx-auto">
               See what farmers, cooperatives, and buyers are saying
             </p>
           </div>
@@ -486,10 +436,10 @@ export default function HomePage() {
 
 function FeatureCard({ icon, title, description }) {
   return (
-    <article className="p-6 bg-white rounded-xl hover:shadow-xl transition-all border border-coffee-100 hover:border-primary-200 group">
-      <div className="text-primary-600 mb-4 group-hover:scale-110 transition-transform">{icon}</div>
-      <h3 className="text-xl font-semibold text-coffee-900 mb-2">{title}</h3>
-      <p className="text-coffee-600">{description}</p>
+    <article className="p-6 bg-white dark:bg-gray-800 rounded-xl hover:shadow-xl transition-all border border-coffee-100 dark:border-gray-700 hover:border-primary-200 dark:hover:border-primary-600 group">
+      <div className="text-primary-600 dark:text-primary-400 mb-4 group-hover:scale-110 transition-transform">{icon}</div>
+      <h3 className="text-xl font-semibold text-coffee-900 dark:text-gray-100 mb-2">{title}</h3>
+      <p className="text-coffee-600 dark:text-gray-400">{description}</p>
     </article>
   );
 }
@@ -498,30 +448,30 @@ function Step({ number, title, description, icon }) {
   return (
     <article className="text-center relative">
       <div className="relative inline-block mb-6">
-        <div className="absolute inset-0 bg-primary-200 rounded-full blur-xl opacity-30"></div>
-        <div className="relative inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-600 to-primary-700 text-white rounded-full text-2xl font-bold shadow-lg">
+        <div className="absolute inset-0 bg-primary-200 dark:bg-primary-900/30 rounded-full blur-xl opacity-30"></div>
+        <div className="relative inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-600 to-primary-700 dark:from-primary-500 dark:to-primary-600 text-white rounded-full text-2xl font-bold shadow-lg">
           {number}
         </div>
       </div>
-      <div className="text-primary-600 mb-4 flex justify-center">{icon}</div>
-      <h3 className="text-xl font-semibold text-coffee-900 mb-3">{title}</h3>
-      <p className="text-coffee-600 max-w-sm mx-auto">{description}</p>
+      <div className="text-primary-600 dark:text-primary-400 mb-4 flex justify-center">{icon}</div>
+      <h3 className="text-xl font-semibold text-coffee-900 dark:text-gray-100 mb-3">{title}</h3>
+      <p className="text-coffee-600 dark:text-gray-400 max-w-sm mx-auto">{description}</p>
     </article>
   );
 }
 
 function Testimonial({ quote, name, role, rating }) {
   return (
-    <article className="bg-white p-8 rounded-xl shadow-lg border border-coffee-100 hover:shadow-xl transition-shadow">
+    <article className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg border border-coffee-100 dark:border-gray-700 hover:shadow-xl transition-shadow">
       <div className="flex gap-1 mb-4">
         {[...Array(rating)].map((_, i) => (
           <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
         ))}
       </div>
-      <blockquote className="text-coffee-700 mb-6 italic">"{quote}"</blockquote>
-      <div className="border-t border-coffee-100 pt-4">
-        <p className="font-bold text-coffee-900">{name}</p>
-        <p className="text-sm text-coffee-600">{role}</p>
+      <blockquote className="text-coffee-700 dark:text-gray-300 mb-6 italic">"{quote}"</blockquote>
+      <div className="border-t border-coffee-100 dark:border-gray-700 pt-4">
+        <p className="font-bold text-coffee-900 dark:text-gray-100">{name}</p>
+        <p className="text-sm text-coffee-600 dark:text-gray-400">{role}</p>
       </div>
     </article>
   );

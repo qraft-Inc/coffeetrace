@@ -6,8 +6,8 @@ import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Users, Package, TrendingUp, MapPin, DollarSign } from 'lucide-react';
-import DashboardHeader from '../../../components/dashboard/DashboardHeader';
 import StatCard from '../../../components/dashboard/StatCard';
+import DashboardLayout from '../../../components/dashboard/DashboardLayout';
 import { formatWeight, formatCurrency } from '../../../lib/formatters';
 
 export default function CoopDashboard() {
@@ -40,16 +40,14 @@ export default function CoopDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <DashboardHeader session={session} />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <DashboardLayout>
+      <div className="p-6">
         {/* Welcome */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-coffee-900 mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
             Welcome back, {session?.user?.name}
           </h1>
-          <p className="text-coffee-600">Cooperative Admin Dashboard</p>
+          <p className="text-gray-600 dark:text-gray-400">Cooperative Admin Dashboard</p>
         </div>
 
         {/* Stats Grid */}
@@ -83,43 +81,43 @@ export default function CoopDashboard() {
         )}
 
         {/* Quick Actions */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <h2 className="text-xl font-bold text-coffee-900 mb-4">Quick Actions</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Quick Actions</h2>
           <div className="grid md:grid-cols-3 gap-4">
             <Link
               href="/dashboard/coop/farmers"
-              className="flex items-center gap-3 p-4 border-2 border-coffee-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors"
+              className="flex items-center gap-3 p-4 border-2 border-gray-300 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
             >
-              <Users className="h-6 w-6 text-primary-600" />
-              <span className="font-semibold text-coffee-900">Manage Farmers</span>
+              <Users className="h-6 w-6 text-primary-600 dark:text-primary-400" />
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Manage Farmers</span>
             </Link>
             <Link
               href="/dashboard/coop/lots"
-              className="flex items-center gap-3 p-4 border-2 border-coffee-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors"
+              className="flex items-center gap-3 p-4 border-2 border-gray-300 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
             >
-              <Package className="h-6 w-6 text-primary-600" />
-              <span className="font-semibold text-coffee-900">View All Lots</span>
+              <Package className="h-6 w-6 text-primary-600 dark:text-primary-400" />
+              <span className="font-semibold text-gray-900 dark:text-gray-100">View All Lots</span>
             </Link>
             <Link
               href="/dashboard/coop/reports"
-              className="flex items-center gap-3 p-4 border-2 border-coffee-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors"
+              className="flex items-center gap-3 p-4 border-2 border-gray-300 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
             >
-              <TrendingUp className="h-6 w-6 text-primary-600" />
-              <span className="font-semibold text-coffee-900">Generate Reports</span>
+              <TrendingUp className="h-6 w-6 text-primary-600 dark:text-primary-400" />
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Generate Reports</span>
             </Link>
           </div>
         </div>
 
         {/* Member Farmers */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-bold text-coffee-900 mb-4">Member Farmers</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Member Farmers</h2>
           
           {loading ? (
-            <p className="text-coffee-600">Loading farmers...</p>
+            <p className="text-gray-600 dark:text-gray-400">Loading farmers...</p>
           ) : farmers.length === 0 ? (
             <div className="text-center py-8">
-              <Users className="h-12 w-12 text-coffee-300 mx-auto mb-3" />
-              <p className="text-coffee-600 mb-4">No registered farmers yet.</p>
+              <Users className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+              <p className="text-gray-600 dark:text-gray-400 mb-4">No registered farmers yet.</p>
               <Link
                 href="/dashboard/coop/farmers/invite"
                 className="inline-block px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
@@ -130,12 +128,12 @@ export default function CoopDashboard() {
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               {farmers.map((farmer) => (
-                <div key={farmer._id} className="border border-coffee-200 rounded-lg p-4">
-                  <h3 className="font-semibold text-coffee-900">{farmer.farmerName}</h3>
-                  <p className="text-sm text-coffee-600">{farmer.location?.district}</p>
+                <div key={farmer._id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100">{farmer.farmerName}</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{farmer.location?.district}</p>
                   <div className="mt-2 flex justify-between text-sm">
-                    <span className="text-coffee-600">Lots: {farmer.totalLots || 0}</span>
-                    <span className="text-coffee-600">
+                    <span className="text-gray-600 dark:text-gray-400">Lots: {farmer.totalLots || 0}</span>
+                    <span className="text-gray-600 dark:text-gray-400">
                       {formatWeight(farmer.totalYield || 0)}
                     </span>
                   </div>
@@ -145,6 +143,6 @@ export default function CoopDashboard() {
           )}
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 }

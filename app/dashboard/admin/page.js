@@ -6,8 +6,8 @@ import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Users, Package, ShieldCheck, TrendingUp, AlertCircle } from 'lucide-react';
-import DashboardHeader from '../../../components/dashboard/DashboardHeader';
 import StatCard from '../../../components/dashboard/StatCard';
+import DashboardLayout from '../../../components/dashboard/DashboardLayout';
 
 export default function AdminDashboard() {
   const { data: session } = useSession();
@@ -41,16 +41,14 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <DashboardHeader session={session} />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <DashboardLayout>
+      <div className="p-6">
         {/* Welcome */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-coffee-900 mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
             System Admin Console
           </h1>
-          <p className="text-coffee-600">Platform Management Dashboard</p>
+          <p className="text-gray-600 dark:text-gray-400">Platform Management Dashboard</p>
         </div>
 
         {/* Stats Grid */}
@@ -96,60 +94,60 @@ export default function AdminDashboard() {
         )}
 
         {/* Quick Actions */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <h2 className="text-xl font-bold text-coffee-900 mb-4">Admin Tools</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Admin Tools</h2>
           <div className="grid md:grid-cols-4 gap-4">
             <Link
               href="/dashboard/admin/users"
-              className="flex items-center gap-3 p-4 border-2 border-coffee-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors"
+              className="flex items-center gap-3 p-4 border-2 border-gray-300 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
             >
-              <Users className="h-6 w-6 text-primary-600" />
-              <span className="font-semibold text-coffee-900">User Management</span>
+              <Users className="h-6 w-6 text-primary-600 dark:text-primary-400" />
+              <span className="font-semibold text-gray-900 dark:text-gray-100">User Management</span>
             </Link>
             <Link
               href="/dashboard/admin/verification"
-              className="flex items-center gap-3 p-4 border-2 border-coffee-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors"
+              className="flex items-center gap-3 p-4 border-2 border-gray-300 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
             >
-              <ShieldCheck className="h-6 w-6 text-primary-600" />
-              <span className="font-semibold text-coffee-900">Verify Farmers</span>
+              <ShieldCheck className="h-6 w-6 text-primary-600 dark:text-primary-400" />
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Verify Farmers</span>
             </Link>
             <Link
               href="/dashboard/admin/lots"
-              className="flex items-center gap-3 p-4 border-2 border-coffee-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors"
+              className="flex items-center gap-3 p-4 border-2 border-gray-300 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
             >
-              <Package className="h-6 w-6 text-primary-600" />
-              <span className="font-semibold text-coffee-900">Manage Lots</span>
+              <Package className="h-6 w-6 text-primary-600 dark:text-primary-400" />
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Manage Lots</span>
             </Link>
             <Link
               href="/dashboard/admin/reports"
-              className="flex items-center gap-3 p-4 border-2 border-coffee-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors"
+              className="flex items-center gap-3 p-4 border-2 border-gray-300 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
             >
-              <TrendingUp className="h-6 w-6 text-primary-600" />
-              <span className="font-semibold text-coffee-900">Platform Analytics</span>
+              <TrendingUp className="h-6 w-6 text-primary-600 dark:text-primary-400" />
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Platform Analytics</span>
             </Link>
           </div>
         </div>
 
         {/* Recent Activity */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <h2 className="text-xl font-bold text-coffee-900 mb-4">Recent Platform Activity</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Recent Platform Activity</h2>
           
           {loading ? (
-            <p className="text-coffee-600">Loading activity...</p>
+            <p className="text-gray-600 dark:text-gray-400">Loading activity...</p>
           ) : recentActivity.length === 0 ? (
             <div className="text-center py-8">
-              <AlertCircle className="h-12 w-12 text-coffee-300 mx-auto mb-3" />
-              <p className="text-coffee-600">No recent activity to display.</p>
+              <AlertCircle className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+              <p className="text-gray-600 dark:text-gray-400">No recent activity to display.</p>
             </div>
           ) : (
             <div className="space-y-3">
               {recentActivity.map((activity, index) => (
-                <div key={index} className="flex items-center justify-between border-b border-coffee-100 pb-3">
+                <div key={index} className="flex items-center justify-between border-b border-gray-100 dark:border-gray-700 pb-3">
                   <div>
-                    <p className="text-coffee-900">{activity.description}</p>
-                    <p className="text-sm text-coffee-600">{activity.timestamp}</p>
+                    <p className="text-gray-900 dark:text-gray-100">{activity.description}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{activity.timestamp}</p>
                   </div>
-                  <span className="px-3 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
+                  <span className="px-3 py-1 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded-full">
                     {activity.type}
                   </span>
                 </div>
@@ -159,22 +157,22 @@ export default function AdminDashboard() {
         </div>
 
         {/* Pending Verifications */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-bold text-coffee-900 mb-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
             Pending Verifications
             {stats?.pendingVerifications > 0 && (
-              <span className="ml-2 px-2 py-1 text-sm bg-red-100 text-red-800 rounded-full">
+              <span className="ml-2 px-2 py-1 text-sm bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 rounded-full">
                 {stats.pendingVerifications}
               </span>
             )}
           </h2>
           
           <div className="text-center py-8">
-            <ShieldCheck className="h-12 w-12 text-coffee-300 mx-auto mb-3" />
-            <p className="text-coffee-600 mb-4">No pending verifications.</p>
+            <ShieldCheck className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+            <p className="text-gray-600 dark:text-gray-400 mb-4">No pending verifications.</p>
           </div>
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 }

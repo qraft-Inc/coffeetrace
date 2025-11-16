@@ -8,6 +8,11 @@ export const metadata = {
   title: 'Coffee Trace - Farm to Cup Traceability',
   description: 'Climate-smart, data-driven coffee value chain platform enabling full traceability from farm to cup',
   keywords: 'coffee, traceability, sustainability, carbon footprint, fair trade, marketplace',
+  icons: {
+    icon: '/backgrounds/logo.png',
+    shortcut: '/backgrounds/logo.png',
+    apple: '/backgrounds/logo.png',
+  },
 };
 
 export default function RootLayout({ children }) {
