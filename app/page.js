@@ -36,8 +36,8 @@ export default function HomePage() {
               <Link href="#how-it-works" className="text-coffee-700 hover:text-coffee-900 transition-colors">
                 How It Works
               </Link>
-              <Link href="#testimonials" className="text-coffee-700 hover:text-coffee-900 transition-colors">
-                Testimonials
+              <Link href="/verified" className="text-coffee-700 hover:text-coffee-900 transition-colors">
+                Verified Members
               </Link>
               <Link href="/marketplace" className="text-coffee-700 hover:text-coffee-900 transition-colors">
                 Marketplace

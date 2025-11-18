@@ -64,6 +64,9 @@ const FarmerSchema = new mongoose.Schema({
     coordinates: {
       type: [Number], // [longitude, latitude]
     },
+    country: String,
+    region: String,
+    district: String,
   },
   // Optional: Farm boundary as GeoJSON Polygon
   farmBoundary: {
@@ -83,15 +86,27 @@ const FarmerSchema = new mongoose.Schema({
     type: Number, // in meters above sea level
     min: 0,
   },
+  primaryVariety: {
+    type: String, // e.g., "Arabica", "Robusta"
+    trim: true,
+  },
   certifications: [{
-    name: {
-      type: String, // e.g., "Organic", "Fair Trade", "Rainforest Alliance"
-    },
-    issuedBy: String,
-    issuedDate: Date,
-    expiryDate: Date,
-    certificateUrl: String,
+    type: String, // Simple string array for certification names
   }],
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  totalLots: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
+  totalYieldKg: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
   yields: [YieldRecordSchema],
   carbonProfile: {
     score: {
