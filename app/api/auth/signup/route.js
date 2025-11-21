@@ -73,39 +73,77 @@ export async function POST(request) {
     await user.save();
 
     // Create role-specific profile
-    if (role === 'farmer') {
-      const farmer = new Farmer({
-        userId: user._id,
-        name,
-        phone,
-        email: email.toLowerCase(),
-        ...profileData,
-      });
-      await farmer.save();
-      user.farmerProfile = farmer._id;
-      await user.save();
-    } else if (role === 'buyer') {
-      const buyer = new Buyer({
-        userId: user._id,
-        companyName: profileData.companyName || name,
-        businessType: profileData.businessType || 'other',
-        phone,
-        email: email.toLowerCase(),
-        ...profileData,
-      });
-      await buyer.save();
-      user.buyerProfile = buyer._id;
-      await user.save();
+    try {
+      if (role === 'farmer') {
+        const farmer = new Farmer({
+          userId: user._id,
+          name,
+          phone,
+          email: email.toLowerCase(),
+          ...profileData,
+        });
+        await farmer.save();
+        user.farmerProfile = farmer._id;
+        await user.save();
+      } else if (role === 'buyer') {
+        // Validate buyer-specific required fields
+        const companyName = profileData.companyName || name;
+        const businessType = profileData.businessType || 'other';
+        
+        console.log('Creating buyer with:', { companyName, businessType, email: email.toLowerCase() });
+        
+        if (!companyName) {
+          // Clean up the user we just created
+          await User.findByIdAndDelete(user._id);
+          return NextResponse.json(
+            { error: 'Company name is required for buyers' },
+            { status: 400 }
+          );
+        }
+
+        const buyerData = {
+          userId: user._id,
+          companyName,
+          businessType,
+          email: email.toLowerCase(),
+        };
+        
+        // Only add phone if it exists
+        if (phone) {
+          buyerData.phone = phone;
+        }
+        
+        const buyer = new Buyer(buyerData);
+        
+        console.log('Saving buyer profile...');
+        await buyer.save();
+        console.log('Buyer profile saved:', buyer._id);
+        
+        user.buyerProfile = buyer._id;
+        await user.save();
+        console.log('User updated with buyer profile');
+      }
+    } catch (profileError) {
+      // If profile creation fails, delete the user
+      console.error('Profile creation error:', profileError);
+      console.error('Error details:', profileError.message);
+      console.error('Stack:', profileError.stack);
+      await User.findByIdAndDelete(user._id);
+      throw profileError;
     }
 
     // Log signup event
-    await AuditTrail.log({
-      entityType: 'User',
-      entityId: user._id,
-      action: 'created',
-      actorId: user._id,
-      description: `New ${role} account created`,
-    });
+    try {
+      await AuditTrail.log({
+        entityType: 'User',
+        entityId: user._id,
+        action: 'created',
+        actorId: user._id,
+        description: `New ${role} account created`,
+      });
+    } catch (auditError) {
+      console.error('Audit log error (non-blocking):', auditError);
+    }
 
     // Return success (without password hash)
     const userResponse = {

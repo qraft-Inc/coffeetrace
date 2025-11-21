@@ -120,7 +120,7 @@ function SignUpForm() {
               <label className="block text-sm font-medium text-coffee-700 mb-2">
                 I am a...
               </label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-2 mb-2">
                 <button
                   type="button"
                   onClick={() => setFormData({ ...formData, role: 'farmer' })}
@@ -142,6 +142,28 @@ function SignUpForm() {
                   }`}
                 >
                   Buyer
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, role: 'coopAdmin' })}
+                  className={`px-4 py-2 rounded-lg border-2 transition-colors ${
+                    formData.role === 'coopAdmin'
+                      ? 'border-primary-600 bg-primary-50 text-primary-700'
+                      : 'border-coffee-200 text-coffee-700'
+                  }`}
+                >
+                  Cooperative
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, role: 'investor' })}
+                  className={`px-4 py-2 rounded-lg border-2 transition-colors ${
+                    formData.role === 'investor'
+                      ? 'border-primary-600 bg-primary-50 text-primary-700'
+                      : 'border-coffee-200 text-coffee-700'
+                  }`}
+                >
+                  Investor
                 </button>
               </div>
             </div>

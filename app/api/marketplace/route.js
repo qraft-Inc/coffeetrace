@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import dbConnect from '../../../lib/dbConnect';
 import Listing from '../../../models/Listing';
 import Lot from '../../../models/Lot';
+import Farmer from '../../../models/Farmer';
+import User from '../../../models/User';
 
 // Mark route as dynamic
 export const dynamic = 'force-dynamic';

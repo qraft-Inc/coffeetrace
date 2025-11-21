@@ -46,6 +46,7 @@ const FarmerSchema = new mongoose.Schema({
     type: String,
     enum: ['male', 'female', 'other', 'prefer-not-to-say'],
   },
+  dateOfBirth: Date,
   phone: {
     type: String,
     trim: true,
@@ -54,6 +55,38 @@ const FarmerSchema = new mongoose.Schema({
     type: String,
     lowercase: true,
     trim: true,
+  },
+  // KYC & Identity Verification
+  nationalId: {
+    type: String,
+    trim: true,
+  },
+  photoIdUrl: String, // Scanned ID document
+  profilePhotoUrl: String,
+  kycDocuments: [{
+    type: {
+      type: String,
+      enum: ['national_id', 'passport', 'drivers_license', 'land_title', 'tax_id', 'cooperative_membership', 'other'],
+    },
+    documentNumber: String,
+    url: String,
+    verifiedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    verificationDate: Date,
+    expiryDate: Date,
+    notes: String,
+  }],
+  kycStatus: {
+    type: String,
+    enum: ['pending', 'verified', 'rejected', 'expired'],
+    default: 'pending',
+  },
+  kycVerifiedAt: Date,
+  kycVerifiedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
   },
   // GeoJSON Point for farm location (optional)
   location: {
@@ -82,14 +115,45 @@ const FarmerSchema = new mongoose.Schema({
     type: Number, // in hectares
     min: 0,
   },
+  farmSizeUnit: {
+    type: String,
+    enum: ['hectares', 'acres'],
+    default: 'hectares',
+  },
   altitude: {
     type: Number, // in meters above sea level
     min: 0,
+  },
+  soilType: {
+    type: String,
+    enum: ['volcanic', 'clay', 'loam', 'sandy', 'laterite', 'mixed', 'other'],
+  },
+  climateZone: {
+    type: String,
+    enum: ['tropical', 'subtropical', 'temperate', 'highland', 'lowland'],
+  },
+  rainfall: {
+    annual: Number, // mm per year
+    pattern: {
+      type: String,
+      enum: ['bimodal', 'unimodal', 'year-round'],
+    },
+  },
+  shade: {
+    type: String,
+    enum: ['full_sun', 'partial_shade', 'full_shade', 'mixed'],
   },
   primaryVariety: {
     type: String, // e.g., "Arabica", "Robusta"
     trim: true,
   },
+  varieties: [{
+    name: String,
+    percentage: Number, // % of farm
+    plantingYear: Number,
+  }],
+  numberOfTrees: Number,
+  plantingDensity: Number, // trees per hectare
   certifications: [{
     type: String, // Simple string array for certification names
   }],

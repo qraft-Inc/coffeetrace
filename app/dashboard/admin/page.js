@@ -8,6 +8,8 @@ import Link from 'next/link';
 import { Users, Package, ShieldCheck, TrendingUp, AlertCircle } from 'lucide-react';
 import DashboardHeader from '../../../components/dashboard/DashboardHeader';
 import StatCard from '../../../components/dashboard/StatCard';
+import RequireAuth from '../../../components/dashboard/RequireAuth';
+import VerificationQueue from '../../../components/dashboard/VerificationQueue';
 
 export default function AdminDashboard() {
   const { data: session } = useSession();
@@ -41,10 +43,11 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <DashboardHeader session={session} />
+    <RequireAuth requiredRole="admin">
+      <div className="min-h-screen bg-gray-50">
+        <DashboardHeader session={session} />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-coffee-900 mb-2">
@@ -158,23 +161,10 @@ export default function AdminDashboard() {
           )}
         </div>
 
-        {/* Pending Verifications */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-bold text-coffee-900 mb-4">
-            Pending Verifications
-            {stats?.pendingVerifications > 0 && (
-              <span className="ml-2 px-2 py-1 text-sm bg-red-100 text-red-800 rounded-full">
-                {stats.pendingVerifications}
-              </span>
-            )}
-          </h2>
-          
-          <div className="text-center py-8">
-            <ShieldCheck className="h-12 w-12 text-coffee-300 mx-auto mb-3" />
-            <p className="text-coffee-600 mb-4">No pending verifications.</p>
-          </div>
-        </div>
+        {/* Document Verification Queue */}
+        <VerificationQueue />
       </div>
-    </div>
+      </div>
+    </RequireAuth>
   );
 }

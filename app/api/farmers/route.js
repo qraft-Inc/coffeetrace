@@ -17,6 +17,11 @@ export async function GET(request) {
     await dbConnect();
 
     const { searchParams } = new URL(request.url);
+    
+    // Cache farmers list for 5 minutes
+    const headers = {
+      'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+    };
     const cooperativeId = searchParams.get('cooperativeId');
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '20');
@@ -48,7 +53,7 @@ export async function GET(request) {
         total,
         pages: Math.ceil(total / limit),
       },
-    });
+    }, { headers });
   } catch (error) {
     console.error('GET /api/farmers error:', error);
     return NextResponse.json(

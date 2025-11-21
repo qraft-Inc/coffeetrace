@@ -1,5 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Performance optimizations
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  swcMinify: true, // Use faster SWC compiler
+  reactStrictMode: true,
   images: {
     remotePatterns: [
       {

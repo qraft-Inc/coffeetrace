@@ -89,9 +89,16 @@ const LotSchema = new mongoose.Schema({
   },
   // Traceability events
   events: [TraceEventSchema],
-  // QR code data URL
+  // QR code data URL (legacy)
   qrCodeUrl: {
     type: String,
+  },
+  // Enhanced QR code fields
+  qrCode: {
+    type: String, // Traceability URL
+  },
+  qrCodeImage: {
+    type: String, // Base64 data URL of QR code image
   },
   // Processing details
   processingMethod: {
