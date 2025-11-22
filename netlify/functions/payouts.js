@@ -254,7 +254,5 @@ const handler = async (event, context) => {
 };
 
 // Schedule to run daily at 20:00 EAT (17:00 UTC)
-export { handler };
-export const config = {
-  schedule: '0 17 * * *', // Cron expression: every day at 17:00 UTC (20:00 EAT)
-};
+// Cron expression: every day at 17:00 UTC (20:00 EAT)
+export default schedule('0 17 * * *', handler);
