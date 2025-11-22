@@ -34,7 +34,7 @@ const handler = async (event, context) => {
     // Process each wallet
     for (const wallet of eligibleWallets) {
       processed++;
-      const farmer = wallet.farmerId as any;
+      const farmer = wallet.farmerId;
 
       if (!farmer) {
         console.error(`Farmer not found for wallet ${wallet._id}`);
