@@ -8,10 +8,7 @@ export const dynamic = 'force-dynamic';
  * GET /api/lots/[lotId]
  * Get lot details with farmer information for traceability
  */
-export async function GET(
-  request: Request,
-  { params }: { params: { lotId: string } }
-) {
+export async function GET(request, { params }) {
   try {
     const { lotId } = params;
 

@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
  * POST /api/payments/webhook
  * Handle Onafriq payment webhooks
  */
-export async function POST(request: Request) {
+export async function POST(request) {
   try {
     // Get webhook signature headers
     const signature = request.headers.get('x-onafriq-signature') || '';
@@ -99,7 +99,7 @@ export async function POST(request: Request) {
 /**
  * Handle successful payment
  */
-async function handlePaymentSuccess(tip: any, webhookData: any) {
+async function handlePaymentSuccess(tip, webhookData) {
   try {
     // Prevent duplicate processing
     if (tip.status === 'confirmed') {
@@ -177,7 +177,7 @@ async function handlePaymentSuccess(tip: any, webhookData: any) {
 /**
  * Handle failed payment
  */
-async function handlePaymentFailed(tip: any, webhookData: any) {
+async function handlePaymentFailed(tip, webhookData) {
   try {
     tip.status = 'failed';
     tip.metadata = tip.metadata || new Map();

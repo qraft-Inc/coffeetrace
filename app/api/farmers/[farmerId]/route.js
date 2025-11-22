@@ -8,10 +8,7 @@ export const dynamic = 'force-dynamic';
  * GET /api/farmers/[farmerId]
  * Get farmer details by ID
  */
-export async function GET(
-  request: Request,
-  { params }: { params: { farmerId: string } }
-) {
+export async function GET(request, { params }) {
   try {
     const { farmerId } = params;
 

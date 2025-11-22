@@ -1,4 +1,4 @@
-import { Handler, schedule } from '@netlify/functions';
+import { schedule } from '@netlify/functions';
 import dbConnect from '../../lib/dbConnect';
 import Wallet from '../../models/Wallet';
 import Farmer from '../../models/Farmer';
@@ -8,22 +8,13 @@ import { sendMobileMoneyPayout } from '../../lib/onafriq/payouts';
 
 const MIN_PAYOUT_THRESHOLD = parseFloat(process.env.MIN_PAYOUT_THRESHOLD || '50000');
 
-interface PayoutResult {
-  farmerId: string;
-  farmerName: string;
-  amount: number;
-  status: 'success' | 'failed';
-  payoutId?: string;
-  error?: string;
-}
-
 /**
  * Process automated payouts for farmers
  * Runs daily at 20:00 EAT (17:00 UTC)
  */
-const handler: Handler = async (event, context) => {
+const handler = async (event, context) => {
   console.log('Starting scheduled payout processing...');
-  const results: PayoutResult[] = [];
+  const results = [];
   let processed = 0;
   let successful = 0;
   let failed = 0;

@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
  * GET /api/payouts
  * Get payout history for current user
  */
-export async function GET(request: Request) {
+export async function GET(request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -37,7 +37,7 @@ export async function GET(request: Request) {
     }
 
     // Build query
-    const query: any = { farmerId: farmer._id };
+    const query = { farmerId: farmer._id };
     if (status) {
       query.status = status;
     }
@@ -90,7 +90,7 @@ export async function GET(request: Request) {
  * POST /api/payouts
  * Request a manual payout (if enabled)
  */
-export async function POST(request: Request) {
+export async function POST(request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {

@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
  * POST /api/payments/checkout
  * Create a payment checkout session for tipping a farmer
  */
-export async function POST(request: Request) {
+export async function POST(request) {
   try {
     await dbConnect();
 
@@ -148,7 +148,7 @@ export async function POST(request: Request) {
  * GET /api/payments/checkout
  * Get checkout status
  */
-export async function GET(request: Request) {
+export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const tipId = searchParams.get('tipId');

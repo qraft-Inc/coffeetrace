@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
  * GET /api/wallet
  * Get current user's wallet information
  */
-export async function GET(request: Request) {
+export async function GET(request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -74,7 +74,7 @@ export async function GET(request: Request) {
  * PATCH /api/wallet
  * Update wallet information (admin only)
  */
-export async function PATCH(request: Request) {
+export async function PATCH(request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session || session.user.role !== 'admin') {

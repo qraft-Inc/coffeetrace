@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const path = require('path')
+
 const nextConfig = {
   // Performance optimizations
   compiler: {
@@ -21,6 +23,11 @@ const nextConfig = {
         hostname: 'images.unsplash.com',
       },
     ],
+  },
+  webpack: (config, { isServer }) => {
+    // Explicit path alias configuration
+    config.resolve.alias['@'] = path.resolve(__dirname)
+    return config
   },
 }
 

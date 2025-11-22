@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
  * GET /api/wallet/transactions
  * Get wallet transaction history for current user
  */
-export async function GET(request: Request) {
+export async function GET(request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -37,7 +37,7 @@ export async function GET(request: Request) {
     }
 
     // Build query
-    const query: any = { userId: session.user.id };
+    const query = { userId: session.user.id };
     if (type === 'credit' || type === 'debit') {
       query.type = type;
     }
