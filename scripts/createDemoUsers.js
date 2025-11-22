@@ -11,11 +11,13 @@ require('dotenv').config({ path: '.env.local' });
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  password: String,
+  passwordHash: String,
+  isActive: { type: Boolean, default: true },
   role: { type: String, enum: ['farmer', 'coopAdmin', 'buyer', 'investor', 'admin'], default: 'farmer' },
   farmerProfile: { type: mongoose.Schema.Types.ObjectId, ref: 'Farmer' },
   cooperativeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Cooperative' },
   emailVerified: Date,
+  lastLogin: Date,
 }, { timestamps: true });
 
 const FarmerSchema = new mongoose.Schema({
@@ -188,7 +190,8 @@ async function createDemoUsers() {
       const userData = {
         name: demoUser.name,
         email: demoUser.email,
-        password: hashedPassword,
+        passwordHash: hashedPassword,
+        isActive: true,
         role: demoUser.role,
         emailVerified: new Date(),
       };

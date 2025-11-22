@@ -25,8 +25,30 @@ export default function AdminDashboard() {
 
   const fetchData = async () => {
     try {
-      // Fetch platform-wide stats
-      // In production, you'd have /api/admin/stats endpoint
+      // Fetch platform-wide stats from analytics API
+      const response = await fetch('/api/admin/analytics');
+      if (!response.ok) {
+        throw new Error('Failed to fetch analytics');
+      }
+      
+      const data = await response.json();
+      const { analytics } = data;
+      
+      // Count total users
+      const usersResponse = await fetch('/api/admin/users?limit=1');
+      const usersData = await usersResponse.json();
+      
+      setStats({
+        totalUsers: usersData.total || 0,
+        totalFarmers: analytics.farmers.activeFarmers || 0,
+        totalBuyers: analytics.buyers.activeBuyers || 0,
+        totalLots: analytics.supplyChain.totalLots || 0,
+        totalTransactions: analytics.finance.totalTransactions || 0,
+        pendingVerifications: analytics.supplyChain.pendingLots || 0,
+      });
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+      // Set fallback data
       setStats({
         totalUsers: 0,
         totalFarmers: 0,
@@ -35,8 +57,6 @@ export default function AdminDashboard() {
         totalTransactions: 0,
         pendingVerifications: 0,
       });
-    } catch (error) {
-      console.error('Failed to fetch data:', error);
     } finally {
       setLoading(false);
     }
