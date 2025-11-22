@@ -192,6 +192,19 @@ const FarmerSchema = new mongoose.Schema({
       default: Date.now,
     },
   }],
+  // Tipping & Wallet Integration
+  qrCodeUrl: {
+    type: String,
+    // QR code linking to tip page: /tip/{farmerId}
+  },
+  walletId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Wallet',
+  },
+  phoneNumber: {
+    type: String,
+    // Mobile number for mobile money payouts
+  },
   createdAt: {
     type: Date,
     default: Date.now,

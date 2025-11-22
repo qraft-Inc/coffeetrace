@@ -114,6 +114,11 @@ const LotSchema = new mongoose.Schema({
   // Additional metadata
   notes: String,
   tags: [String],
+  // Tipping Integration
+  qrCodeUrl: {
+    type: String,
+    // QR code linking to lot traceability & tip page: /lot/{lotId}
+  },
   createdAt: {
     type: Date,
     default: Date.now,

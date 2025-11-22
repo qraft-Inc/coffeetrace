@@ -347,7 +347,7 @@ function FarmerCard({ farmer }) {
                 className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium flex items-center gap-1"
               >
                 <Award className="h-3 w-3" />
-                {cert}
+                {typeof cert === 'string' ? cert : cert?.name || 'Certified'}
               </span>
             ))}
           </div>
@@ -394,7 +394,7 @@ function CooperativeCard({ cooperative }) {
                 className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium flex items-center gap-1"
               >
                 <Award className="h-3 w-3" />
-                {cert}
+                {typeof cert === 'string' ? cert : cert?.name || 'Certified'}
               </span>
             ))}
           </div>
@@ -439,7 +439,7 @@ function BuyerCard({ buyer }) {
                 className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium flex items-center gap-1"
               >
                 <Award className="h-3 w-3" />
-                {cert}
+                {typeof cert === 'string' ? cert : cert?.name || 'Certified'}
               </span>
             ))}
           </div>
