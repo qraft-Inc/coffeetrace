@@ -1,6 +1,11 @@
 # Netlify configuration for Coffee Trace
 [build]
   command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "18.17.0"
+  NETLIFY_BUILD_DEBUG = "true"
 
 # Next.js plugin for Netlify
 [[plugins]]
