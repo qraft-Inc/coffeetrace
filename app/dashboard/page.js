@@ -14,40 +14,30 @@ export default function DashboardPage() {
     if (status === 'loading') return;
     
     if (!session) {
-      router.push('/auth/signin?callbackUrl=/dashboard');
+      router.replace('/auth/signin?callbackUrl=/dashboard');
       return;
     }
 
-    // Redirect to role-specific dashboard
+    // Redirect to role-specific dashboard immediately
     const role = session.user.role;
     switch (role) {
       case 'farmer':
-        router.push('/dashboard/farmer');
+        router.replace('/dashboard/farmer');
         break;
       case 'buyer':
-        router.push('/dashboard/buyer');
+        router.replace('/dashboard/buyer');
         break;
       case 'coopAdmin':
-        router.push('/dashboard/coop');
+        router.replace('/dashboard/coop');
         break;
       case 'admin':
-        router.push('/dashboard/admin');
+        router.replace('/dashboard/admin');
         break;
       default:
-        router.push('/');
+        router.replace('/');
     }
   }, [session, status, router]);
 
-  if (status === 'loading') {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <Coffee className="h-12 w-12 text-coffee-600 mx-auto mb-4 animate-pulse" />
-          <p className="text-coffee-600">Loading dashboard...</p>
-        </div>
-      </div>
-    );
-  }
-
+  // No loading spinner - instant redirect
   return null;
 }

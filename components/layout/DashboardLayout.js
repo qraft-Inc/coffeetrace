@@ -25,6 +25,9 @@ import {
   Award,
   BarChart3,
   Home,
+  Coffee,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from 'lucide-react';
 
 const roleNavigation = {
@@ -74,6 +77,7 @@ export default function DashboardLayout({ children, title }) {
   const { data: session } = useSession();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
@@ -95,16 +99,24 @@ export default function DashboardLayout({ children, title }) {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform ${
+        className={`fixed top-0 left-0 z-40 h-screen transition-all duration-300 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:translate-x-0 bg-white border-r border-gray-200`}
+        } lg:translate-x-0 bg-white border-r border-gray-200 ${
+          collapsed ? 'lg:w-20' : 'lg:w-64'
+        } w-64`}
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
-            <Link href="/" className="flex items-center space-x-2">
-              <Package className="h-8 w-8 text-green-600" />
-              <span className="text-xl font-bold text-gray-900">CoffeeTrace</span>
+          <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
+            <Link href="/" className={`flex items-center gap-2 ${
+              collapsed ? 'justify-center w-full' : ''
+            }`}>
+              <div className="h-10 w-10 rounded-lg bg-green-600 flex items-center justify-center flex-shrink-0">
+                <Coffee className="h-6 w-6 text-white" />
+              </div>
+              {!collapsed && (
+                <span className="text-lg font-bold text-gray-900">Coffee Trace</span>
+              )}
             </Link>
             <button
               onClick={() => setSidebarOpen(false)}
@@ -115,7 +127,7 @@ export default function DashboardLayout({ children, title }) {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+          <nav className="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
             {navigation.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
@@ -123,15 +135,25 @@ export default function DashboardLayout({ children, title }) {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+                  title={collapsed ? item.name : ''}
+                  className={`flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors relative group ${
                     isActive
                       ? 'bg-green-50 text-green-700'
                       : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                  } ${
+                    collapsed ? 'justify-center' : ''
                   }`}
                   onClick={() => setSidebarOpen(false)}
                 >
-                  <Icon className="h-5 w-5 mr-3" />
-                  {item.name}
+                  <Icon className={`h-5 w-5 flex-shrink-0 ${
+                    collapsed ? '' : 'mr-3'
+                  }`} />
+                  {!collapsed && <span>{item.name}</span>}
+                  {collapsed && (
+                    <span className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                      {item.name}
+                    </span>
+                  )}
                 </Link>
               );
             })}
@@ -139,67 +161,88 @@ export default function DashboardLayout({ children, title }) {
 
           {/* User info */}
           <div className="p-4 border-t border-gray-200">
-            <div className="flex items-center space-x-3">
+            <div className={`flex items-center ${
+              collapsed ? 'justify-center' : 'space-x-3'
+            }`}>
               <div className="flex-shrink-0">
                 <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
-                  <User className="h-6 w-6 text-green-600" />
+                  <User className="h-5 w-5 text-green-600" />
                 </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
-                  {session?.user?.name || 'User'}
-                </p>
-                <p className="text-xs text-gray-500 truncate capitalize">
-                  {session?.user?.role || 'Role'}
-                </p>
-              </div>
+              {!collapsed && (
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900 truncate">
+                    {session?.user?.name || 'User'}
+                  </p>
+                  <p className="text-xs text-gray-500 truncate capitalize">
+                    {session?.user?.role || 'Role'}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </aside>
 
       {/* Main content */}
-      <div className="lg:pl-64">
+      <div className={`transition-all duration-300 ${
+        collapsed ? 'lg:pl-20' : 'lg:pl-64'
+      }`}>
         {/* Top bar */}
         <header className="sticky top-0 z-30 bg-white border-b border-gray-200">
-          <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
-            {/* Mobile menu button */}
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="lg:hidden text-gray-500 hover:text-gray-700"
-            >
-              <Menu className="h-6 w-6" />
-            </button>
+          <div className="flex items-center justify-between h-14 sm:h-16 px-3 sm:px-6 lg:px-8">
+            <div className="flex items-center gap-2 sm:gap-4">
+              {/* Mobile menu button */}
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="lg:hidden text-gray-500 hover:text-gray-700 p-1"
+              >
+                <Menu className="h-5 w-5 sm:h-6 sm:w-6" />
+              </button>
 
-            {/* Page title - hidden on mobile if needed */}
-            {title && (
-              <h1 className="text-xl font-semibold text-gray-900 hidden sm:block">
-                {title}
-              </h1>
-            )}
+              {/* Desktop collapse button */}
+              <button
+                onClick={() => setCollapsed(!collapsed)}
+                className="hidden lg:block text-gray-500 hover:text-gray-700 p-1.5 rounded-lg hover:bg-gray-100"
+                title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              >
+                {collapsed ? (
+                  <PanelLeftOpen className="h-5 w-5" />
+                ) : (
+                  <PanelLeftClose className="h-5 w-5" />
+                )}
+              </button>
+
+              {/* Page title */}
+              {title && (
+                <h1 className="text-base sm:text-xl font-semibold text-gray-900 truncate">
+                  {title}
+                </h1>
+              )}
+            </div>
 
             {/* Search bar */}
-            <div className="flex-1 max-w-lg mx-4">
+            <div className="flex-1 max-w-lg mx-2 sm:mx-4 hidden md:block">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input
                   type="text"
                   placeholder="Search..."
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="w-full pl-9 pr-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 />
               </div>
             </div>
 
             {/* Right section */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-1 sm:space-x-3">
               {/* Notifications */}
               <div className="relative">
                 <button
                   onClick={() => setNotificationsOpen(!notificationsOpen)}
-                  className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
+                  className="relative p-1.5 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
                 >
-                  <Bell className="h-6 w-6" />
-                  <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
+                  <Bell className="h-5 w-5 sm:h-6 sm:w-6" />
+                  <span className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 h-2 w-2 bg-red-500 rounded-full"></span>
                 </button>
 
                 {/* Notifications dropdown */}
@@ -231,12 +274,12 @@ export default function DashboardLayout({ children, title }) {
               <div className="relative">
                 <button
                   onClick={() => setProfileOpen(!profileOpen)}
-                  className="flex items-center space-x-2 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
+                  className="flex items-center space-x-1 sm:space-x-2 p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
                 >
-                  <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
-                    <User className="h-5 w-5 text-green-600" />
+                  <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-green-100 flex items-center justify-center">
+                    <User className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
                   </div>
-                  <ChevronDown className="h-4 w-4" />
+                  <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4 hidden sm:block" />
                 </button>
 
                 {/* Profile dropdown menu */}
@@ -279,7 +322,7 @@ export default function DashboardLayout({ children, title }) {
         </header>
 
         {/* Page content */}
-        <main className="p-4 sm:p-6 lg:p-8">{children}</main>
+        <main className="p-3 sm:p-4 md:p-6 lg:p-8">{children}</main>
       </div>
     </div>
   );
