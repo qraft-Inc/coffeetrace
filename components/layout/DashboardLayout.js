@@ -1,0 +1,286 @@
+'use client';
+
+import { useState } from 'react';
+import { useSession, signOut } from 'next-auth/react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import {
+  LayoutDashboard,
+  Users,
+  Package,
+  ShoppingCart,
+  TrendingUp,
+  FileText,
+  Settings,
+  Bell,
+  Search,
+  Menu,
+  X,
+  LogOut,
+  User,
+  ChevronDown,
+  Wallet,
+  DollarSign,
+  MapPin,
+  Award,
+  BarChart3,
+  Home,
+} from 'lucide-react';
+
+const roleNavigation = {
+  admin: [
+    { name: 'Overview', href: '/dashboard/admin', icon: LayoutDashboard },
+    { name: 'Users', href: '/dashboard/admin/users', icon: Users },
+    { name: 'Farmers', href: '/dashboard/admin/farmers', icon: Users },
+    { name: 'Verification', href: '/dashboard/admin/verification', icon: Award },
+    { name: 'Analytics', href: '/dashboard/admin/analytics', icon: BarChart3 },
+    { name: 'Settings', href: '/dashboard/admin/settings', icon: Settings },
+  ],
+  farmer: [
+    { name: 'Dashboard', href: '/dashboard/farmer', icon: Home },
+    { name: 'My Lots', href: '/dashboard/farmer/lots', icon: Package },
+    { name: 'Marketplace', href: '/marketplace', icon: ShoppingCart },
+    { name: 'Wallet', href: '/dashboard/wallet', icon: Wallet },
+    { name: 'Payouts', href: '/dashboard/payouts', icon: DollarSign },
+    { name: 'Profile', href: '/dashboard/farmer/profile', icon: User },
+  ],
+  coopAdmin: [
+    { name: 'Dashboard', href: '/dashboard/coop', icon: Home },
+    { name: 'Farmers', href: '/dashboard/coop/farmers', icon: Users },
+    { name: 'Lots', href: '/dashboard/coop/lots', icon: Package },
+    { name: 'Quality', href: '/dashboard/coop/quality', icon: Award },
+    { name: 'Reports', href: '/dashboard/coop/reports', icon: FileText },
+    { name: 'Settings', href: '/dashboard/coop/settings', icon: Settings },
+  ],
+  buyer: [
+    { name: 'Dashboard', href: '/dashboard/buyer', icon: Home },
+    { name: 'Marketplace', href: '/marketplace', icon: ShoppingCart },
+    { name: 'My Orders', href: '/dashboard/buyer/orders', icon: Package },
+    { name: 'Traceability', href: '/dashboard/buyer/trace', icon: MapPin },
+    { name: 'Analytics', href: '/dashboard/buyer/analytics', icon: TrendingUp },
+    { name: 'Settings', href: '/dashboard/buyer/settings', icon: Settings },
+  ],
+  investor: [
+    { name: 'Dashboard', href: '/dashboard/investor', icon: Home },
+    { name: 'Portfolio', href: '/dashboard/investor/portfolio', icon: TrendingUp },
+    { name: 'Impact Metrics', href: '/dashboard/investor/impact', icon: BarChart3 },
+    { name: 'Farmers', href: '/dashboard/investor/farmers', icon: Users },
+    { name: 'Reports', href: '/dashboard/investor/reports', icon: FileText },
+    { name: 'Settings', href: '/dashboard/investor/settings', icon: Settings },
+  ],
+};
+
+export default function DashboardLayout({ children, title }) {
+  const { data: session } = useSession();
+  const pathname = usePathname();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+
+  const navigation = roleNavigation[session?.user?.role] || roleNavigation.farmer;
+
+  const handleSignOut = async () => {
+    await signOut({ callbackUrl: '/auth/signin' });
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Mobile sidebar backdrop */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-gray-900 bg-opacity-50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } lg:translate-x-0 bg-white border-r border-gray-200`}
+      >
+        <div className="flex flex-col h-full">
+          {/* Logo */}
+          <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+            <Link href="/" className="flex items-center space-x-2">
+              <Package className="h-8 w-8 text-green-600" />
+              <span className="text-xl font-bold text-gray-900">CoffeeTrace</span>
+            </Link>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="lg:hidden text-gray-500 hover:text-gray-700"
+            >
+              <X className="h-6 w-6" />
+            </button>
+          </div>
+
+          {/* Navigation */}
+          <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+            {navigation.map((item) => {
+              const Icon = item.icon;
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+                    isActive
+                      ? 'bg-green-50 text-green-700'
+                      : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                  }`}
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  <Icon className="h-5 w-5 mr-3" />
+                  {item.name}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* User info */}
+          <div className="p-4 border-t border-gray-200">
+            <div className="flex items-center space-x-3">
+              <div className="flex-shrink-0">
+                <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                  <User className="h-6 w-6 text-green-600" />
+                </div>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-900 truncate">
+                  {session?.user?.name || 'User'}
+                </p>
+                <p className="text-xs text-gray-500 truncate capitalize">
+                  {session?.user?.role || 'Role'}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      {/* Main content */}
+      <div className="lg:pl-64">
+        {/* Top bar */}
+        <header className="sticky top-0 z-30 bg-white border-b border-gray-200">
+          <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="lg:hidden text-gray-500 hover:text-gray-700"
+            >
+              <Menu className="h-6 w-6" />
+            </button>
+
+            {/* Page title - hidden on mobile if needed */}
+            {title && (
+              <h1 className="text-xl font-semibold text-gray-900 hidden sm:block">
+                {title}
+              </h1>
+            )}
+
+            {/* Search bar */}
+            <div className="flex-1 max-w-lg mx-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            {/* Right section */}
+            <div className="flex items-center space-x-4">
+              {/* Notifications */}
+              <div className="relative">
+                <button
+                  onClick={() => setNotificationsOpen(!notificationsOpen)}
+                  className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
+                >
+                  <Bell className="h-6 w-6" />
+                  <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
+                </button>
+
+                {/* Notifications dropdown */}
+                {notificationsOpen && (
+                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 py-2">
+                    <div className="px-4 py-2 border-b border-gray-200">
+                      <h3 className="text-sm font-semibold text-gray-900">Notifications</h3>
+                    </div>
+                    <div className="max-h-96 overflow-y-auto">
+                      <div className="px-4 py-3 hover:bg-gray-50 cursor-pointer">
+                        <p className="text-sm text-gray-900">New tip received</p>
+                        <p className="text-xs text-gray-500 mt-1">2 minutes ago</p>
+                      </div>
+                      <div className="px-4 py-3 hover:bg-gray-50 cursor-pointer">
+                        <p className="text-sm text-gray-900">Lot verified successfully</p>
+                        <p className="text-xs text-gray-500 mt-1">1 hour ago</p>
+                      </div>
+                    </div>
+                    <div className="px-4 py-2 border-t border-gray-200">
+                      <button className="text-sm text-green-600 hover:text-green-700 font-medium">
+                        View all notifications
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Profile dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setProfileOpen(!profileOpen)}
+                  className="flex items-center space-x-2 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
+                >
+                  <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
+                    <User className="h-5 w-5 text-green-600" />
+                  </div>
+                  <ChevronDown className="h-4 w-4" />
+                </button>
+
+                {/* Profile dropdown menu */}
+                {profileOpen && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2">
+                    <div className="px-4 py-3 border-b border-gray-200">
+                      <p className="text-sm font-medium text-gray-900">
+                        {session?.user?.name}
+                      </p>
+                      <p className="text-xs text-gray-500 truncate">
+                        {session?.user?.email}
+                      </p>
+                    </div>
+                    <Link
+                      href="/dashboard/profile"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    >
+                      <User className="h-4 w-4 mr-3" />
+                      Your Profile
+                    </Link>
+                    <Link
+                      href="/dashboard/settings"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    >
+                      <Settings className="h-4 w-4 mr-3" />
+                      Settings
+                    </Link>
+                    <button
+                      onClick={handleSignOut}
+                      className="flex items-center w-full px-4 py-2 text-sm text-red-700 hover:bg-red-50"
+                    >
+                      <LogOut className="h-4 w-4 mr-3" />
+                      Sign out
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Page content */}
+        <main className="p-4 sm:p-6 lg:p-8">{children}</main>
+      </div>
+    </div>
+  );
+}

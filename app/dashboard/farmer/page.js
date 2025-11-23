@@ -2,10 +2,11 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useSession, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Coffee, Plus, Package, TrendingUp, MapPin, LogOut } from 'lucide-react';
+import { Coffee, Plus, Package, TrendingUp, MapPin } from 'lucide-react';
+import DashboardLayout from '../../../components/layout/DashboardLayout';
 import { formatWeight, formatDate, formatCurrency } from '../../../lib/formatters';
 
 export default function FarmerDashboard() {

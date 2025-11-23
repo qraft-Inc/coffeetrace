@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Users, Package, ShieldCheck, TrendingUp, AlertCircle } from 'lucide-react';
-import DashboardHeader from '../../../components/dashboard/DashboardHeader';
+import DashboardLayout from '../../../components/layout/DashboardLayout';
 import StatCard from '../../../components/dashboard/StatCard';
 import RequireAuth from '../../../components/dashboard/RequireAuth';
 import VerificationQueue from '../../../components/dashboard/VerificationQueue';
@@ -64,16 +64,13 @@ export default function AdminDashboard() {
 
   return (
     <RequireAuth requiredRole="admin">
-      <div className="min-h-screen bg-gray-50">
-        <DashboardHeader session={session} />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <DashboardLayout title="System Admin Console">
         {/* Welcome */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-coffee-900 mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             System Admin Console
           </h1>
-          <p className="text-coffee-600">Platform Management Dashboard</p>
+          <p className="text-gray-600">Platform Management Dashboard</p>
         </div>
 
         {/* Stats Grid */}
@@ -183,8 +180,7 @@ export default function AdminDashboard() {
 
         {/* Document Verification Queue */}
         <VerificationQueue />
-      </div>
-      </div>
+      </DashboardLayout>
     </RequireAuth>
   );
 }

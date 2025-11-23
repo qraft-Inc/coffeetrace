@@ -2,10 +2,11 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useSession, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Coffee, ShoppingCart, Package, DollarSign, Leaf, LogOut } from 'lucide-react';
+import { Coffee, ShoppingCart, Package, DollarSign, Leaf } from 'lucide-react';
+import DashboardLayout from '../../../components/layout/DashboardLayout';
 import { formatWeight, formatDate, formatCurrency, formatCarbon } from '../../../lib/formatters';
 
 export default function BuyerDashboard() {

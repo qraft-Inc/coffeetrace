@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Users, Package, TrendingUp, MapPin, DollarSign } from 'lucide-react';
-import DashboardHeader from '../../../components/dashboard/DashboardHeader';
+import DashboardLayout from '../../../components/layout/DashboardLayout';
 import StatCard from '../../../components/dashboard/StatCard';
 import RequireAuth from '../../../components/dashboard/RequireAuth';
 import { formatWeight, formatCurrency } from '../../../lib/formatters';
