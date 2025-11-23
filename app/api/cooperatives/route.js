@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]/route';
-import dbConnect from '../../../lib/mongodb';
+import dbConnect from '../../../lib/dbConnect';
 import Cooperative from '../../../models/Cooperative';
 import Farmer from '../../../models/Farmer';
 
