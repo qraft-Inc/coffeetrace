@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Coffee, Search, MapPin, Leaf, Award, Filter } from 'lucide-react';
-import DashboardLayout from '../../../../../components/layout/DashboardLayout';
+import DashboardLayout from '../../../../components/layout/DashboardLayout';
 
 export default function FarmersListPage() {
   const { data: session } = useSession();

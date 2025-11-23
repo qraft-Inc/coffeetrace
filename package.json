@@ -18,6 +18,8 @@
     "date-fns": "^3.0.0",
     "dotenv": "^17.2.3",
     "jspdf": "^3.0.4",
+    "leaflet": "^1.9.4",
+    "leaflet-geometryutil": "^0.10.3",
     "lucide-react": "^0.300.0",
     "mapbox-gl": "^3.0.0",
     "mongoose": "^8.0.0",

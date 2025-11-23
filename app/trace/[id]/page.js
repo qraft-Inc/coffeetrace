@@ -2,6 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { Award, MapPin, Calendar, TrendingUp, Leaf, CheckCircle } from 'lucide-react';
+import dynamic from 'next/dynamic';
+
+const FarmMapPolygon = dynamic(() => import('../../../components/map/FarmMapPolygon'), {
+  ssr: false,
+  loading: () => <div className="h-96 bg-gray-100 rounded-lg animate-pulse"></div>
+});
 
 export default function TraceabilityPage({ params }) {
   const [data, setData] = useState(null);
@@ -161,6 +167,25 @@ export default function TraceabilityPage({ params }) {
             </div>
           </div>
         </div>
+
+        {/* Farm Location & Traceability Map */}
+        {(data.farmer.location || data.farmer.farmBoundary) && (
+          <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
+            <div className="flex items-center mb-6">
+              <MapPin className="w-6 h-6 text-green-600 mr-2" />
+              <h2 className="text-2xl font-bold text-gray-900">Farm Location & Traceability</h2>
+            </div>
+            <FarmMapPolygon
+              location={data.farmer.location}
+              farmBoundary={data.farmer.farmBoundary}
+              farmName={data.farmer.name}
+              height="450px"
+            />
+            <div className="mt-4 text-sm text-gray-600">
+              <p>This map shows the exact location and boundaries of the farm where this coffee was grown, ensuring complete traceability from farm to cup.</p>
+            </div>
+          </div>
+        )}
 
         {/* Processing Journey */}
         <div className="bg-white rounded-lg shadow-lg p-8 mb-6">

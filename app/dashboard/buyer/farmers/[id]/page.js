@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import DashboardLayout from '../../../../../components/layout/DashboardLayout';
 import Link from 'next/link';
+import FarmMapPolygon from '../../../../../components/map/FarmMapPolygon';
 
 export default function FarmerStoryPage({ params }) {
   const { data: session } = useSession();
@@ -199,6 +200,22 @@ export default function FarmerStoryPage({ params }) {
             </div>
           </div>
         </div>
+
+        {/* Farm Location Map */}
+        {(farmer.location || farmer.farmBoundary) && (
+          <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
+            <h2 className="text-xl font-bold text-coffee-900 mb-6 flex items-center gap-2">
+              <MapPin className="h-6 w-6 text-primary-600" />
+              Farm Location & Traceability
+            </h2>
+            <FarmMapPolygon 
+              location={farmer.location}
+              farmBoundary={farmer.farmBoundary}
+              farmName={farmer.name}
+              height="500px"
+            />
+          </div>
+        )}
 
         {/* Farm Characteristics */}
         <div className="grid md:grid-cols-2 gap-8 mb-8">

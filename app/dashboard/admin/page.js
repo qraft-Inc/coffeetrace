@@ -5,17 +5,24 @@ export const dynamic = 'force-dynamic';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Users, Package, ShieldCheck, TrendingUp, AlertCircle, DollarSign, Gift, Activity } from 'lucide-react';
+import { Users, Package, ShieldCheck, TrendingUp, AlertCircle, DollarSign, Gift, Activity, MapPin } from 'lucide-react';
 import DashboardLayout from '../../../components/layout/DashboardLayout';
 import StatCard from '../../../components/dashboard/StatCard';
 import RequireAuth from '../../../components/dashboard/RequireAuth';
 import VerificationQueue from '../../../components/dashboard/VerificationQueue';
+import dynamic from 'next/dynamic';
+
+const AllFarmsMap = dynamic(() => import('../../../components/map/AllFarmsMap'), {
+  ssr: false,
+  loading: () => <div className="h-[500px] bg-gray-100 rounded-lg animate-pulse"></div>
+});
 
 export default function AdminDashboard() {
   const { data: session } = useSession();
   const [stats, setStats] = useState(null);
   const [financials, setFinancials] = useState(null);
   const [recentActivity, setRecentActivity] = useState([]);
+  const [allFarmers, setAllFarmers] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -47,6 +54,13 @@ export default function AdminDashboard() {
         totalTransactions: analytics.finance.totalTransactions || 0,
         pendingVerifications: analytics.supplyChain.pendingLots || 0,
       });
+
+      // Fetch all farmers for map
+      const farmersResponse = await fetch('/api/farmers?limit=100');
+      if (farmersResponse.ok) {
+        const farmersData = await farmersResponse.json();
+        setAllFarmers(farmersData.farmers || []);
+      }
 
       // Fetch financial overview
       const financialResponse = await fetch('/api/admin/financial-overview');
@@ -236,6 +250,18 @@ export default function AdminDashboard() {
               ))}
             </div>
           )}
+        </div>
+
+        {/* Farm Traceability Map */}
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
+          <h2 className="text-xl font-bold text-coffee-900 mb-4 flex items-center gap-2">
+            <MapPin className="h-6 w-6 text-primary-600" />
+            Farm Traceability Map
+          </h2>
+          <p className="text-sm text-coffee-600 mb-4">
+            Geographic visualization of all registered farms with boundary polygons for complete traceability
+          </p>
+          <AllFarmsMap farmers={allFarmers} height="500px" />
         </div>
 
         {/* Document Verification Queue */}
