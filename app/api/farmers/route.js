@@ -36,8 +36,9 @@ export async function GET(request) {
     // Execute query with pagination
     const [farmers, total] = await Promise.all([
       Farmer.find(query)
-        .populate('userId', 'name email')
-        .populate('cooperativeId', 'name')
+        .populate('userId', 'name email phone')
+        .populate('cooperativeId', 'name location')
+        .select('-kycDocuments -nationalId -photoIdUrl') // Exclude sensitive data
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)

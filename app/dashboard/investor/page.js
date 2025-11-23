@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { TrendingUp, DollarSign, Package, Leaf, Users } from 'lucide-react';
-import DashboardHeader from '../../../components/dashboard/DashboardHeader';
+import DashboardLayout from '../../../components/layout/DashboardLayout';
 import StatCard from '../../../components/dashboard/StatCard';
 import RequireAuth from '../../../components/dashboard/RequireAuth';
 import { formatCurrency, formatCarbon, formatWeight } from '../../../lib/formatters';
@@ -43,9 +43,7 @@ export default function InvestorDashboard() {
 
   return (
     <RequireAuth requiredRole="investor">
-      <div className="min-h-screen bg-gray-50">
-        <DashboardHeader session={session} />
-
+      <DashboardLayout title="Investor Dashboard">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome */}
         <div className="mb-8">
@@ -192,7 +190,7 @@ export default function InvestorDashboard() {
           </div>
         </div>
       </div>
-      </div>
+      </DashboardLayout>
     </RequireAuth>
   );
 }

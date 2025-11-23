@@ -154,9 +154,9 @@ const FarmerSchema = new mongoose.Schema({
   }],
   numberOfTrees: Number,
   plantingDensity: Number, // trees per hectare
-  certifications: [{
-    type: String, // Simple string array for certification names
-  }],
+  certifications: [
+    mongoose.Schema.Types.Mixed // Can be string or object with {name, issuedBy, issuedDate, expiryDate}
+  ],
   isVerified: {
     type: Boolean,
     default: false,

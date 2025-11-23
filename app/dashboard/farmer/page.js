@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Coffee, Plus, Package, TrendingUp, MapPin } from 'lucide-react';
+import { Coffee, Plus, Package, TrendingUp, MapPin, DollarSign, Gift } from 'lucide-react';
 import DashboardLayout from '../../../components/layout/DashboardLayout';
 import { formatWeight, formatDate, formatCurrency } from '../../../lib/formatters';
 
@@ -13,6 +13,7 @@ export default function FarmerDashboard() {
   const { data: session } = useSession();
   const [lots, setLots] = useState([]);
   const [stats, setStats] = useState(null);
+  const [earnings, setEarnings] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -39,6 +40,15 @@ export default function FarmerDashboard() {
         totalQuantity,
         avgQuality: avgQuality.toFixed(1),
       });
+
+      // Fetch earnings data
+      if (session.user.farmerProfile) {
+        const earningsRes = await fetch(`/api/farmers/${session.user.farmerProfile}/earnings`);
+        if (earningsRes.ok) {
+          const earningsData = await earningsRes.json();
+          setEarnings(earningsData);
+        }
+      }
     } catch (error) {
       console.error('Failed to fetch data:', error);
     } finally {
@@ -47,31 +57,7 @@ export default function FarmerDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <Link href="/" className="flex items-center gap-2">
-              <Coffee className="h-8 w-8 text-coffee-600" />
-              <span className="text-2xl font-bold text-coffee-800">Coffee Trace</span>
-            </Link>
-            <nav className="flex items-center gap-4">
-              <Link href="/marketplace" className="text-coffee-700 hover:text-coffee-900">
-                Marketplace
-              </Link>
-              <button
-                onClick={() => signOut({ callbackUrl: '/' })}
-                className="flex items-center gap-2 text-coffee-700 hover:text-coffee-900"
-              >
-                <LogOut className="h-4 w-4" />
-                Sign Out
-              </button>
-            </nav>
-          </div>
-        </div>
-      </header>
-
+    <DashboardLayout title="Farmer Dashboard">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome */}
         <div className="mb-8">
@@ -83,7 +69,7 @@ export default function FarmerDashboard() {
 
         {/* Stats Grid */}
         {stats && (
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <div className="grid md:grid-cols-5 gap-6 mb-8">
             <StatCard
               icon={<Package />}
               label="Total Lots"
@@ -101,6 +87,18 @@ export default function FarmerDashboard() {
               label="Avg Quality"
               value={`${stats.avgQuality}/100`}
               color="yellow"
+            />
+            <StatCard
+              icon={<DollarSign />}
+              label="Sales Revenue"
+              value={earnings ? formatCurrency(earnings.sales.totalNet) : formatCurrency(0)}
+              color="green"
+            />
+            <StatCard
+              icon={<Gift />}
+              label="Tips Earned"
+              value={earnings ? formatCurrency(earnings.tips.totalNet) : formatCurrency(0)}
+              color="purple"
             />
           </div>
         )}
@@ -132,6 +130,94 @@ export default function FarmerDashboard() {
             </Link>
           </div>
         </div>
+
+        {/* Earnings Breakdown */}
+        {earnings && (
+          <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
+            <h2 className="text-xl font-bold text-coffee-900 mb-6">Earnings Overview</h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Sales Revenue */}
+              <div className="border border-coffee-200 rounded-lg p-4">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 bg-green-50 rounded-lg">
+                    <DollarSign className="h-6 w-6 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-coffee-900">Sales Revenue</h3>
+                    <p className="text-sm text-coffee-600">From coffee lot sales</p>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-coffee-600">Total Transactions:</span>
+                    <span className="font-semibold text-coffee-900">{earnings.sales.transactionCount}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-coffee-600">Gross Amount:</span>
+                    <span className="font-semibold text-coffee-900">{formatCurrency(earnings.sales.totalGross)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-coffee-600">Deductions:</span>
+                    <span className="font-semibold text-red-600">
+                      -{formatCurrency(earnings.sales.totalGross - earnings.sales.totalNet)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between pt-2 border-t border-coffee-200">
+                    <span className="font-semibold text-coffee-900">Net Earnings:</span>
+                    <span className="font-bold text-green-600 text-lg">{formatCurrency(earnings.sales.totalNet)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tips Revenue */}
+              <div className="border border-purple-200 rounded-lg p-4">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 bg-purple-50 rounded-lg">
+                    <Gift className="h-6 w-6 text-purple-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-coffee-900">Tips Earned</h3>
+                    <p className="text-sm text-coffee-600">From buyer appreciation</p>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-coffee-600">Total Tips:</span>
+                    <span className="font-semibold text-coffee-900">{earnings.tips.tipCount}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-coffee-600">Gross Amount:</span>
+                    <span className="font-semibold text-coffee-900">{formatCurrency(earnings.tips.totalGross)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-coffee-600">Platform Fee (3%):</span>
+                    <span className="font-semibold text-red-600">-{formatCurrency(earnings.tips.totalFees)}</span>
+                  </div>
+                  <div className="flex justify-between pt-2 border-t border-purple-200">
+                    <span className="font-semibold text-coffee-900">Net Earnings:</span>
+                    <span className="font-bold text-purple-600 text-lg">{formatCurrency(earnings.tips.totalNet)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Total Summary */}
+            <div className="mt-6 p-4 bg-coffee-50 rounded-lg">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="font-bold text-coffee-900 text-lg">Total Net Earnings</h3>
+                  <p className="text-sm text-coffee-600">Combined sales + tips</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-3xl font-bold text-coffee-900">{formatCurrency(earnings.totals.totalEarnings)}</p>
+                  <p className="text-sm text-coffee-600 mt-1">
+                    {earnings.sales.transactionCount + earnings.tips.tipCount} total transactions
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Recent Lots */}
         <div className="bg-white rounded-lg shadow-sm p-6">
@@ -193,7 +279,7 @@ export default function FarmerDashboard() {
           )}
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 }
 
@@ -202,6 +288,7 @@ function StatCard({ icon, label, value, color }) {
     blue: 'bg-blue-50 text-blue-600',
     green: 'bg-green-50 text-green-600',
     yellow: 'bg-yellow-50 text-yellow-600',
+    purple: 'bg-purple-50 text-purple-600',
   };
 
   return (

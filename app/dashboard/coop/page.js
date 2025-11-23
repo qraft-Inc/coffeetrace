@@ -42,9 +42,7 @@ export default function CoopDashboard() {
 
   return (
     <RequireAuth requiredRole="coopAdmin">
-      <div className="min-h-screen bg-gray-50">
-        <DashboardHeader session={session} />
-
+      <DashboardLayout title="Cooperative Admin Dashboard">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome */}
         <div className="mb-8">
@@ -147,7 +145,7 @@ export default function CoopDashboard() {
           )}
         </div>
       </div>
-      </div>
+      </DashboardLayout>
     </RequireAuth>
   );
 }
