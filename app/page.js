@@ -1,22 +1,14 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Coffee, Leaf, TrendingUp, Shield, MapPin, Users, Award, CheckCircle, Star, Mail, Phone, MapPinIcon, Linkedin, Twitter, Instagram, Wallet, DollarSign, ShoppingBag, CloudRain, FileCheck, QrCode } from 'lucide-react';
-
-export const metadata = {
-  title: 'Coffee Trace - From Farm to Cup, Every Bean Traced',
-  description: 'Empowering farmers with data, connecting buyers with sustainable coffee, and building a transparent value chain for climate-smart agriculture.',
-  openGraph: {
-    title: 'Coffee Trace - Transparent Coffee Supply Chain',
-    description: 'Track every coffee bean from farm to cup with blockchain-powered traceability.',
-    images: ['https://res.cloudinary.com/ddew8kfxf/image/upload/v1763059666/Coffee_Trap_Mix_ky8mwv.png'],
-  },
-};
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-coffee-50 to-white">
       {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white bg-opacity-95 backdrop-blur-sm shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-3">
@@ -27,29 +19,29 @@ export default function HomePage() {
                 height={40}
                 className="object-contain"
               />
-              <span className="text-2xl font-bold text-coffee-800">Coffee Trace</span>
+              <span className="text-2xl font-bold text-coffee-900">Coffee Trace</span>
             </div>
             <nav className="hidden md:flex gap-6 items-center">
-              <Link href="#features" className="text-coffee-700 hover:text-coffee-900 transition-colors">
+              <Link href="#features" className="text-coffee-900 hover:text-primary-600 transition-colors">
                 Features
               </Link>
-              <Link href="#how-it-works" className="text-coffee-700 hover:text-coffee-900 transition-colors">
+              <Link href="#how-it-works" className="text-coffee-900 hover:text-primary-600 transition-colors">
                 How It Works
               </Link>
-              <Link href="/verified" className="text-coffee-700 hover:text-coffee-900 transition-colors">
+              <Link href="/verified" className="text-coffee-900 hover:text-primary-600 transition-colors">
                 Verified Members
               </Link>
-              <Link href="/marketplace" className="text-coffee-700 hover:text-coffee-900 transition-colors">
+              <Link href="/marketplace" className="text-coffee-900 hover:text-primary-600 transition-colors">
                 Marketplace
               </Link>
-              <Link href="/auth/signin?callbackUrl=/dashboard/farmer" className="text-coffee-700 hover:text-coffee-900 transition-colors">
+              <Link href="/auth/signin?callbackUrl=/dashboard/farmer" className="text-coffee-900 hover:text-primary-600 transition-colors">
                 Dashboard
               </Link>
             </nav>
-            <div className="flex gap-3">
+            <div className="flex gap-3 items-center">
               <Link
                 href="/auth/signin"
-                className="px-4 py-2 text-coffee-700 hover:text-coffee-900 font-medium transition-colors"
+                className="px-4 py-2 text-coffee-900 hover:text-primary-600 font-medium transition-colors"
               >
                 Sign In
               </Link>
@@ -59,27 +51,31 @@ export default function HomePage() {
               >
                 Get Started
               </Link>
+              {/* navbar is now white and sticky */}
             </div>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-40 px-4 sm:px-6 lg:px-8 overflow-hidden">
-        {/* Background Image */}
+      <section className="relative min-h-screen flex items-center px-4 sm:px-6 lg:px-8 overflow-hidden">
+        {/* Background Video */}
         <div className="absolute inset-0 z-0">
-          <Image
-            src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=1920&h=1080&fit=crop"
-            alt="Coffee farmer harvesting beans in sustainable farm"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-coffee-900/90 via-coffee-900/70 to-coffee-900/50"></div>
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            <source src="/backgrounds/bkg1.mp4" type="video/mp4" />
+          </video>
+          {/* Gradient fallback shown before video loads (brownish/coffee palette) */}
+          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-coffee-900 via-coffee-800 to-coffee-700" />
         </div>
 
         {/* Content */}
-        <div className="max-w-7xl mx-auto relative z-10 text-center">
+        <div className="w-full max-w-7xl mx-auto relative z-10 text-center">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
               From Farm to Cup,
@@ -134,15 +130,15 @@ export default function HomePage() {
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Floating Badge */}
-          <div className="absolute bottom-8 right-8 bg-white p-4 rounded-lg shadow-xl hidden lg:block">
-            <div className="flex items-center gap-3">
-              <CheckCircle className="h-8 w-8 text-green-600" />
-              <div>
-                <p className="font-bold text-coffee-900">100% Traceable</p>
-                <p className="text-sm text-coffee-600">QR-Verified Origin</p>
-              </div>
+        {/* Floating Badge - Positioned at bottom right of hero section */}
+        <div className="absolute bottom-8 right-8 bg-white p-4 rounded-lg shadow-xl hidden lg:block z-20">
+          <div className="flex items-center gap-3">
+            <CheckCircle className="h-8 w-8 text-green-600" />
+            <div>
+              <p className="font-bold text-coffee-900">100% Traceable</p>
+              <p className="text-sm text-coffee-600">QR-Verified Origin</p>
             </div>
           </div>
         </div>
@@ -155,7 +151,7 @@ export default function HomePage() {
             The Coffee Industry Needs Transparency
           </h2>
           <div className="grid md:grid-cols-3 gap-8 text-left">
-            <div className="p-6 border border-coffee-200 rounded-lg">
+            <div className="p-6 border border-coffee-200 rounded-lg bg-white">
               <div className="text-red-600 mb-3">
                 <Shield className="h-8 w-8" />
               </div>
@@ -164,7 +160,7 @@ export default function HomePage() {
                 Buyers struggle to verify origin, quality, and ethical practices in the supply chain.
               </p>
             </div>
-            <div className="p-6 border border-coffee-200 rounded-lg">
+            <div className="p-6 border border-coffee-200 rounded-lg bg-white">
               <div className="text-orange-600 mb-3">
                 <TrendingUp className="h-8 w-8" />
               </div>
@@ -173,7 +169,7 @@ export default function HomePage() {
                 Smallholder farmers lack market access and data to negotiate fair prices.
               </p>
             </div>
-            <div className="p-6 border border-coffee-200 rounded-lg">
+            <div className="p-6 border border-coffee-200 rounded-lg bg-white">
               <div className="text-yellow-600 mb-3">
                 <MapPin className="h-8 w-8" />
               </div>
