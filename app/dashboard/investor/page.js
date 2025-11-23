@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { TrendingUp, DollarSign, Package, Leaf, Users } from 'lucide-react';
+import { TrendingUp, DollarSign, Package, Leaf, Users, Building2, MapPin, ChevronRight } from 'lucide-react';
 import DashboardLayout from '../../../components/layout/DashboardLayout';
 import StatCard from '../../../components/dashboard/StatCard';
 import RequireAuth from '../../../components/dashboard/RequireAuth';
@@ -14,8 +14,10 @@ import { formatCurrency, formatCarbon, formatWeight } from '../../../lib/formatt
 export default function InvestorDashboard() {
   const { data: session } = useSession();
   const [investments, setInvestments] = useState([]);
+  const [cooperatives, setCooperatives] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedCooperative, setSelectedCooperative] = useState(null);
 
   useEffect(() => {
     if (session?.user) {
@@ -25,15 +27,25 @@ export default function InvestorDashboard() {
 
   const fetchData = async () => {
     try {
-      // Fetch investor portfolio
-      // In production, you'd have /api/investments endpoint
-      setStats({
-        totalInvested: 0,
-        activeInvestments: 0,
-        totalReturns: 0,
-        carbonOffset: 0,
-        farmersSupported: 0,
-      });
+      // Fetch cooperatives with farmers
+      const coopResponse = await fetch('/api/cooperatives?includeFarmers=true&limit=50');
+      const coopData = await coopResponse.json();
+      
+      if (coopData.success) {
+        setCooperatives(coopData.cooperatives);
+        
+        // Calculate stats from cooperatives
+        const totalFarmers = coopData.cooperatives.reduce((sum, coop) => sum + (coop.farmerCount || 0), 0);
+        
+        setStats({
+          totalInvested: 0,
+          activeInvestments: 0,
+          totalReturns: 0,
+          carbonOffset: 0,
+          farmersSupported: totalFarmers,
+          cooperatives: coopData.cooperatives.length,
+        });
+      }
     } catch (error) {
       console.error('Failed to fetch data:', error);
     } finally {
@@ -55,7 +67,19 @@ export default function InvestorDashboard() {
 
         {/* Stats Grid */}
         {stats && (
-          <div className="grid md:grid-cols-5 gap-6 mb-8">
+          <div className="grid md:grid-cols-6 gap-6 mb-8">
+            <StatCard
+              icon={<Building2 className="h-6 w-6" />}
+              label="Cooperatives"
+              value={stats.cooperatives}
+              color="purple"
+            />
+            <StatCard
+              icon={<Users className="h-6 w-6" />}
+              label="Total Farmers"
+              value={stats.farmersSupported}
+              color="green"
+            />
             <StatCard
               icon={<DollarSign className="h-6 w-6" />}
               label="Total Invested"
@@ -79,12 +103,6 @@ export default function InvestorDashboard() {
               label="Carbon Offset"
               value={formatCarbon(stats.carbonOffset)}
               color="green"
-            />
-            <StatCard
-              icon={<Users className="h-6 w-6" />}
-              label="Farmers Supported"
-              value={stats.farmersSupported}
-              color="purple"
             />
           </div>
         )}
@@ -117,45 +135,100 @@ export default function InvestorDashboard() {
           </div>
         </div>
 
-        {/* Active Investments */}
+        {/* Cooperatives and Farmers */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <h2 className="text-xl font-bold text-coffee-900 mb-4">Active Investments</h2>
+          <h2 className="text-xl font-bold text-coffee-900 mb-4">Cooperatives & Farmers</h2>
           
           {loading ? (
-            <p className="text-coffee-600">Loading investments...</p>
-          ) : investments.length === 0 ? (
+            <p className="text-coffee-600">Loading cooperatives...</p>
+          ) : cooperatives.length === 0 ? (
             <div className="text-center py-8">
-              <Package className="h-12 w-12 text-coffee-300 mx-auto mb-3" />
-              <p className="text-coffee-600 mb-4">You haven't made any investments yet.</p>
-              <Link
-                href="/dashboard/investor/opportunities"
-                className="inline-block px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
-              >
-                Explore Opportunities
-              </Link>
+              <Building2 className="h-12 w-12 text-coffee-300 mx-auto mb-3" />
+              <p className="text-coffee-600">No cooperatives found.</p>
             </div>
           ) : (
-            <div className="space-y-3">
-              {investments.map((investment) => (
-                <div key={investment._id} className="border border-coffee-200 rounded-lg p-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="font-semibold text-coffee-900">
-                        {investment.lot?.farmer?.farmerName}
-                      </h3>
-                      <p className="text-sm text-coffee-600">
-                        {formatWeight(investment.amountKg)} - {investment.lot?.variety}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold text-coffee-900">
-                        {formatCurrency(investment.amount)}
-                      </p>
-                      <span className="text-sm text-green-600">
-                        +{investment.roi || 0}% ROI
-                      </span>
+            <div className="space-y-4">
+              {cooperatives.map((coop) => (
+                <div key={coop._id} className="border border-coffee-200 rounded-lg overflow-hidden">
+                  {/* Cooperative Header */}
+                  <div 
+                    className="bg-gradient-to-r from-purple-50 to-blue-50 p-4 cursor-pointer hover:from-purple-100 hover:to-blue-100 transition-colors"
+                    onClick={() => setSelectedCooperative(selectedCooperative === coop._id ? null : coop._id)}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="p-3 bg-white rounded-lg shadow-sm">
+                          <Building2 className="h-8 w-8 text-purple-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-lg text-coffee-900">{coop.name}</h3>
+                          <div className="flex items-center gap-4 text-sm text-coffee-600 mt-1">
+                            {coop.address?.region && (
+                              <span className="flex items-center gap-1">
+                                <MapPin className="h-4 w-4" />
+                                {coop.address.region}
+                              </span>
+                            )}
+                            <span className="flex items-center gap-1">
+                              <Users className="h-4 w-4" />
+                              {coop.farmerCount || 0} Farmers
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <ChevronRight 
+                        className={`h-6 w-6 text-coffee-600 transition-transform ${
+                          selectedCooperative === coop._id ? 'rotate-90' : ''
+                        }`} 
+                      />
                     </div>
                   </div>
+
+                  {/* Farmers List (Expandable) */}
+                  {selectedCooperative === coop._id && coop.farmers && coop.farmers.length > 0 && (
+                    <div className="p-4 bg-gray-50">
+                      <h4 className="font-semibold text-coffee-900 mb-3">Farmers in {coop.name}</h4>
+                      <div className="grid md:grid-cols-2 gap-3">
+                        {coop.farmers.map((farmer) => (
+                          <Link
+                            key={farmer._id}
+                            href={`/dashboard/buyer/farmers/${farmer._id}`}
+                            className="bg-white border border-coffee-200 rounded-lg p-4 hover:border-green-400 hover:shadow-md transition-all"
+                          >
+                            <div className="flex items-center gap-3">
+                              {farmer.profileImage ? (
+                                <img
+                                  src={farmer.profileImage}
+                                  alt={farmer.farmerName}
+                                  className="h-12 w-12 rounded-full object-cover"
+                                />
+                              ) : (
+                                <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
+                                  <Users className="h-6 w-6 text-green-600" />
+                                </div>
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <h5 className="font-semibold text-coffee-900 truncate">
+                                  {farmer.farmerName}
+                                </h5>
+                                <div className="flex items-center gap-2 text-sm text-coffee-600">
+                                  {farmer.farmSize && (
+                                    <span>{farmer.farmSize} hectares</span>
+                                  )}
+                                  {farmer.location?.coordinates && (
+                                    <span className="flex items-center gap-1">
+                                      <MapPin className="h-3 w-3" />
+                                      Location
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
