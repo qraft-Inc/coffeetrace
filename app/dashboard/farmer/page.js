@@ -64,7 +64,7 @@ export default function FarmerDashboard() {
           <h1 className="text-3xl font-bold text-coffee-900 mb-2">
             Welcome back, {session?.user?.name}
           </h1>
-          <p className="text-coffee-600">Farmer Dashboard</p>
+          <p className="text-coffee-600">Manage your coffee lots and track your earnings</p>
         </div>
 
         {/* Stats Grid */}

@@ -55,7 +55,7 @@ export default function BuyerDashboard() {
           <h1 className="text-3xl font-bold text-coffee-900 mb-2">
             Welcome back, {session?.user?.name}
           </h1>
-          <p className="text-coffee-600">Buyer Dashboard</p>
+          <p className="text-coffee-600">Discover quality coffee from verified farmers</p>
         </div>
 
         {/* Stats Grid */}

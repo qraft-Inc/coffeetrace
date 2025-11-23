@@ -10,9 +10,9 @@ import DashboardLayout from '../../../components/layout/DashboardLayout';
 import StatCard from '../../../components/dashboard/StatCard';
 import RequireAuth from '../../../components/dashboard/RequireAuth';
 import VerificationQueue from '../../../components/dashboard/VerificationQueue';
-import dynamic from 'next/dynamic';
+import dynamicImport from 'next/dynamic';
 
-const AllFarmsMap = dynamic(() => import('../../../components/map/AllFarmsMap'), {
+const AllFarmsMap = dynamicImport(() => import('../../../components/map/AllFarmsMap'), {
   ssr: false,
   loading: () => <div className="h-[500px] bg-gray-100 rounded-lg animate-pulse"></div>
 });
@@ -86,11 +86,11 @@ export default function AdminDashboard() {
 
   return (
     <RequireAuth requiredRole="admin">
-      <DashboardLayout title="System Admin Console">
+      <DashboardLayout title="Admin Dashboard">
         {/* Welcome */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            System Admin Console
+            Welcome, Admin
           </h1>
           <p className="text-gray-600">Platform Management Dashboard</p>
         </div>

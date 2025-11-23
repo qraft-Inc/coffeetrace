@@ -42,14 +42,14 @@ export default function CoopDashboard() {
 
   return (
     <RequireAuth requiredRole="coopAdmin">
-      <DashboardLayout title="Cooperative Admin Dashboard">
+      <DashboardLayout title="Cooperative Dashboard">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-coffee-900 mb-2">
             Welcome back, {session?.user?.name}
           </h1>
-          <p className="text-coffee-600">Cooperative Admin Dashboard</p>
+          <p className="text-coffee-600">Manage your cooperative and support your farmers</p>
         </div>
 
         {/* Stats Grid */}

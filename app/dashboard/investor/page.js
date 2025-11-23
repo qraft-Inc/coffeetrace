@@ -62,7 +62,7 @@ export default function InvestorDashboard() {
           <h1 className="text-3xl font-bold text-coffee-900 mb-2">
             Welcome back, {session?.user?.name}
           </h1>
-          <p className="text-coffee-600">Investor Dashboard</p>
+          <p className="text-coffee-600">Track your investments and impact metrics</p>
         </div>
 
         {/* Stats Grid */}
