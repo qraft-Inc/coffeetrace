@@ -1,603 +1,236 @@
 'use client';
 
-export const dynamic = 'force-dynamic';
-
-import { useSession } from 'next-auth/react';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Save, Upload, MapPin, Leaf, Award, User, Phone, Mail, Mountain, Droplet, Sun, Trees } from 'lucide-react';
-import DashboardLayout from '../../../../components/layout/DashboardLayout';
+import { useState } from 'react';
+import { MapPin, Phone, Mail, Save, Image as ImageIcon, Calendar, Leaf } from 'lucide-react';
+import FarmMap from '@/components/FarmMap';
+import DashboardLayout from '@/components/dashboard/DashboardLayout';
 
 export default function FarmerProfilePage() {
-  const { data: session } = useSession();
-  const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [farmerId, setFarmerId] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    // Personal Information
-    name: '',
-    phone: '',
-    email: '',
-    gender: '',
-    dateOfBirth: '',
-    profilePhotoUrl: '',
-    
-    // Farm Location
-    location: {
-      country: '',
-      region: '',
-      district: '',
-      coordinates: [],
-    },
-    
-    // Farm Details
-    farmSize: '',
-    farmSizeUnit: 'hectares',
-    altitude: '',
-    soilType: '',
-    climateZone: '',
-    shade: '',
-    
-    // Coffee Details
-    primaryVariety: '',
-    varieties: [],
-    numberOfTrees: '',
-    plantingDensity: '',
-    
-    // Rainfall
-    rainfall: {
-      annual: '',
-      pattern: '',
-    },
-    
-    // Certifications
-    certifications: [],
-    
-    // Photos & Story
-    photos: [],
+    farmName: 'Green Valley Coffee Farm',
+    ownerName: 'John Doe',
+    email: 'john@greenvalley.com',
+    phone: '+1 234 567 8900',
+    location: 'Kericho County, Kenya',
+    farmSize: '5.2',
+    altitude: '1800',
+    varieties: 'Arabica, SL28, Ruiru 11',
+    certifications: 'Organic, Fair Trade',
+    about: 'Family-owned coffee farm established in 1985. We practice sustainable farming methods and prioritize quality over quantity.',
   });
 
-  useEffect(() => {
-    if (session?.user?.farmerProfile) {
-      setFarmerId(session.user.farmerProfile);
-      fetchFarmerProfile(session.user.farmerProfile);
-    }
-  }, [session]);
-
-  const fetchFarmerProfile = async (id) => {
-    try {
-      const response = await fetch(`/api/farmers/${id}`);
-      if (response.ok) {
-        const data = await response.json();
-        // Populate form with existing data
-        setFormData(prev => ({
-          ...prev,
-          ...data.farmer,
-          location: data.farmer.location || prev.location,
-          rainfall: data.farmer.rainfall || prev.rainfall,
-          varieties: data.farmer.varieties || [],
-          certifications: data.farmer.certifications || [],
-          photos: data.farmer.photos || [],
-        }));
-      }
-    } catch (error) {
-      console.error('Failed to fetch farmer profile:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    
-    // Handle nested fields
-    if (name.includes('.')) {
-      const [parent, child] = name.split('.');
-      setFormData(prev => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent],
-          [child]: value,
-        },
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
-  };
-
-  const handleCertificationChange = (index, value) => {
-    const newCertifications = [...formData.certifications];
-    newCertifications[index] = value;
-    setFormData(prev => ({
-      ...prev,
-      certifications: newCertifications,
-    }));
-  };
-
-  const addCertification = () => {
-    setFormData(prev => ({
-      ...prev,
-      certifications: [...prev.certifications, ''],
-    }));
-  };
-
-  const removeCertification = (index) => {
-    setFormData(prev => ({
-      ...prev,
-      certifications: prev.certifications.filter((_, i) => i !== index),
-    }));
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (!farmerId) return;
-
-    setSaving(true);
-    try {
-      const response = await fetch(`/api/farmers/${farmerId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        alert('Profile updated successfully!');
-        router.push('/dashboard/farmer');
-      } else {
-        const data = await response.json();
-        alert(`Failed to update profile: ${data.error}`);
-      }
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      alert('Error updating profile');
-    } finally {
-      setSaving(false);
-    }
+    // Handle form submission
+    setIsEditing(false);
   };
-
-  if (loading) {
-    return (
-      <DashboardLayout title="Update Farm Profile">
-        <div className="max-w-4xl mx-auto px-4 py-8">
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
-            <p className="mt-4 text-coffee-600">Loading your profile...</p>
-          </div>
-        </div>
-      </DashboardLayout>
-    );
-  }
 
   return (
-    <DashboardLayout title="Update Farm Profile">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-coffee-900 mb-2">Tell Your Farm's Story</h1>
-          <p className="text-coffee-600">
-            Share your journey, farming practices, and what makes your coffee special
+    <DashboardLayout>
+      <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Farm Profile</h1>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            Manage your farm information and credentials
           </p>
         </div>
+        <button
+          onClick={() => setIsEditing(!isEditing)}
+          className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+        >
+          {isEditing ? (
+            <>
+              <Save className="h-5 w-5" />
+              Save Changes
+            </>
+          ) : (
+            'Edit Profile'
+          )}
+        </button>
+      </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Personal Information */}
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <User className="h-6 w-6 text-blue-600" />
-              </div>
-              <h2 className="text-xl font-bold text-coffee-900">Personal Information</h2>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-coffee-700 mb-2">
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-coffee-700 mb-2">
-                  Gender
-                </label>
-                <select
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-                  <option value="">Select gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
-                  <option value="prefer-not-to-say">Prefer not to say</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-coffee-700 mb-2">
-                  <Phone className="inline h-4 w-4 mr-1" />
-                  Phone Number
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-coffee-700 mb-2">
-                  <Mail className="inline h-4 w-4 mr-1" />
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-coffee-700 mb-2">
-                  Date of Birth
-                </label>
-                <input
-                  type="date"
-                  name="dateOfBirth"
-                  value={formData.dateOfBirth ? new Date(formData.dateOfBirth).toISOString().split('T')[0] : ''}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Farm Location */}
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <MapPin className="h-6 w-6 text-green-600" />
-              </div>
-              <h2 className="text-xl font-bold text-coffee-900">Farm Location</h2>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-coffee-700 mb-2">
-                  Country
-                </label>
-                <input
-                  type="text"
-                  name="location.country"
-                  value={formData.location.country}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="e.g., Rwanda"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-coffee-700 mb-2">
-                  Region/Province
-                </label>
-                <input
-                  type="text"
-                  name="location.region"
-                  value={formData.location.region}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="e.g., Southern Province"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-coffee-700 mb-2">
-                  District
-                </label>
-                <input
-                  type="text"
-                  name="location.district"
-                  value={formData.location.district}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="e.g., Huye"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Farm Characteristics */}
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-yellow-100 rounded-lg">
-                <Mountain className="h-6 w-6 text-yellow-600" />
-              </div>
-              <h2 className="text-xl font-bold text-coffee-900">Farm Characteristics</h2>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-coffee-700 mb-2">
-                  Farm Size
-                </label>
-                <div className="flex gap-2">
-                  <input
-                    type="number"
-                    name="farmSize"
-                    value={formData.farmSize}
-                    onChange={handleInputChange}
-                    step="0.01"
-                    min="0"
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="e.g., 2.5"
-                  />
-                  <select
-                    name="farmSizeUnit"
-                    value={formData.farmSizeUnit}
-                    onChange={handleInputChange}
-                    className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  >
-                    <option value="hectares">Hectares</option>
-                    <option value="acres">Acres</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-coffee-700 mb-2">
-                  <Mountain className="inline h-4 w-4 mr-1" />
-                  Altitude (meters above sea level)
-                </label>
-                <input
-                  type="number"
-                  name="altitude"
-                  value={formData.altitude}
-                  onChange={handleInputChange}
-                  min="0"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="e.g., 1800"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-coffee-700 mb-2">
-                  Soil Type
-                </label>
-                <select
-                  name="soilType"
-                  value={formData.soilType}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-                  <option value="">Select soil type</option>
-                  <option value="volcanic">Volcanic</option>
-                  <option value="clay">Clay</option>
-                  <option value="loam">Loam</option>
-                  <option value="sandy">Sandy</option>
-                  <option value="laterite">Laterite</option>
-                  <option value="mixed">Mixed</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-coffee-700 mb-2">
-                  Climate Zone
-                </label>
-                <select
-                  name="climateZone"
-                  value={formData.climateZone}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-                  <option value="">Select climate zone</option>
-                  <option value="tropical">Tropical</option>
-                  <option value="subtropical">Subtropical</option>
-                  <option value="temperate">Temperate</option>
-                  <option value="highland">Highland</option>
-                  <option value="lowland">Lowland</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-coffee-700 mb-2">
-                  <Droplet className="inline h-4 w-4 mr-1" />
-                  Annual Rainfall (mm)
-                </label>
-                <input
-                  type="number"
-                  name="rainfall.annual"
-                  value={formData.rainfall.annual}
-                  onChange={handleInputChange}
-                  min="0"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="e.g., 1200"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-coffee-700 mb-2">
-                  Rainfall Pattern
-                </label>
-                <select
-                  name="rainfall.pattern"
-                  value={formData.rainfall.pattern}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-                  <option value="">Select pattern</option>
-                  <option value="bimodal">Bimodal (2 rainy seasons)</option>
-                  <option value="unimodal">Unimodal (1 rainy season)</option>
-                  <option value="year-round">Year-round</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-coffee-700 mb-2">
-                  <Sun className="inline h-4 w-4 mr-1" />
-                  Shade Management
-                </label>
-                <select
-                  name="shade"
-                  value={formData.shade}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-                  <option value="">Select shade level</option>
-                  <option value="full_sun">Full Sun</option>
-                  <option value="partial_shade">Partial Shade</option>
-                  <option value="full_shade">Full Shade</option>
-                  <option value="mixed">Mixed</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          {/* Coffee Cultivation */}
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-red-100 rounded-lg">
-                <Leaf className="h-6 w-6 text-red-600" />
-              </div>
-              <h2 className="text-xl font-bold text-coffee-900">Coffee Cultivation</h2>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-coffee-700 mb-2">
-                  Primary Coffee Variety
-                </label>
-                <input
-                  type="text"
-                  name="primaryVariety"
-                  value={formData.primaryVariety}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="e.g., Bourbon, Catuai"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-coffee-700 mb-2">
-                  <Trees className="inline h-4 w-4 mr-1" />
-                  Number of Coffee Trees
-                </label>
-                <input
-                  type="number"
-                  name="numberOfTrees"
-                  value={formData.numberOfTrees}
-                  onChange={handleInputChange}
-                  min="0"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="e.g., 5000"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-coffee-700 mb-2">
-                  Planting Density (trees/hectare)
-                </label>
-                <input
-                  type="number"
-                  name="plantingDensity"
-                  value={formData.plantingDensity}
-                  onChange={handleInputChange}
-                  min="0"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="e.g., 2000"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Certifications */}
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <Award className="h-6 w-6 text-purple-600" />
-              </div>
-              <h2 className="text-xl font-bold text-coffee-900">Certifications</h2>
-            </div>
-
-            <div className="space-y-3">
-              {formData.certifications.map((cert, index) => (
-                <div key={index} className="flex gap-2">
+      {/* Profile Form */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main Info */}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Basic Information</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Farm Name
+                  </label>
                   <input
                     type="text"
-                    value={cert}
-                    onChange={(e) => handleCertificationChange(index, e.target.value)}
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="e.g., Organic, Fair Trade, Rainforest Alliance"
+                    value={formData.farmName}
+                    onChange={(e) => setFormData({ ...formData, farmName: e.target.value })}
+                    disabled={!isEditing}
+                    className="w-full px-3 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-50 dark:disabled:bg-gray-800 disabled:text-gray-600 dark:disabled:text-gray-400 text-gray-900 dark:text-gray-100"
                   />
-                  <button
-                    type="button"
-                    onClick={() => removeCertification(index)}
-                    className="px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  >
-                    Remove
-                  </button>
                 </div>
-              ))}
-              
-              <button
-                type="button"
-                onClick={addCertification}
-                className="text-primary-600 hover:text-primary-700 font-medium"
-              >
-                + Add Certification
-              </button>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Owner Name
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.ownerName}
+                    onChange={(e) => setFormData({ ...formData, ownerName: e.target.value })}
+                    disabled={!isEditing}
+                    className="w-full px-3 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-50 dark:disabled:bg-gray-800 disabled:text-gray-600 dark:disabled:text-gray-400 text-gray-900 dark:text-gray-100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    disabled={!isEditing}
+                    className="w-full px-3 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-50 dark:disabled:bg-gray-800 disabled:text-gray-600 dark:disabled:text-gray-400 text-gray-900 dark:text-gray-100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Phone
+                  </label>
+                  <input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    disabled={!isEditing}
+                    className="w-full px-3 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-50 dark:disabled:bg-gray-800 disabled:text-gray-600 dark:disabled:text-gray-400 text-gray-900 dark:text-gray-100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Location
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.location}
+                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                    disabled={!isEditing}
+                    className="w-full px-3 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-50 dark:disabled:bg-gray-800 disabled:text-gray-600 dark:disabled:text-gray-400 text-gray-900 dark:text-gray-100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Farm Size (hectares)
+                    </label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      value={formData.farmSize}
+                      onChange={(e) => setFormData({ ...formData, farmSize: e.target.value })}
+                      disabled={!isEditing}
+                      className="w-full px-3 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-50 dark:disabled:bg-gray-800 disabled:text-gray-600 dark:disabled:text-gray-400 text-gray-900 dark:text-gray-100"
+                    />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Altitude (meters)
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.altitude}
+                    onChange={(e) => setFormData({ ...formData, altitude: e.target.value })}
+                    disabled={!isEditing}
+                    className="w-full px-3 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-50 dark:disabled:bg-gray-800 disabled:text-gray-600 dark:disabled:text-gray-400 text-gray-900 dark:text-gray-100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Coffee Varieties
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.varieties}
+                    onChange={(e) => setFormData({ ...formData, varieties: e.target.value })}
+                    disabled={!isEditing}
+                    className="w-full px-3 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-50 dark:disabled:bg-gray-800 disabled:text-gray-600 dark:disabled:text-gray-400 text-gray-900 dark:text-gray-100"
+                  />
+                </div>
+              </div>
+              <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Certifications
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.certifications}
+                    onChange={(e) => setFormData({ ...formData, certifications: e.target.value })}
+                    disabled={!isEditing}
+                    className="w-full px-3 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-50 dark:disabled:bg-gray-800 disabled:text-gray-600 dark:disabled:text-gray-400 text-gray-900 dark:text-gray-100"
+                />
+              </div>
+              <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    About Your Farm
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={formData.about}
+                    onChange={(e) => setFormData({ ...formData, about: e.target.value })}
+                    disabled={!isEditing}
+                    className="w-full px-3 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-50 dark:disabled:bg-gray-800 disabled:text-gray-600 dark:disabled:text-gray-400 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400"
+                />
+              </div>
+            </form>
+          </div>
+
+          {/* Farm Location Map */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Farm Location</h2>
+            <div className="h-64 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
+              <FarmMap />
             </div>
-
-            <p className="mt-4 text-sm text-coffee-600">
-              Add any certifications your farm has earned (Organic, Fair Trade, Rainforest Alliance, UTZ, 4C, etc.)
-            </p>
           </div>
+        </div>
 
-          {/* Action Buttons */}
-          <div className="flex gap-4 justify-end">
-            <button
-              type="button"
-              onClick={() => router.push('/dashboard/farmer')}
-              className="px-6 py-3 border border-gray-300 text-coffee-700 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
-            >
-              {saving ? (
-                <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <Save className="h-5 w-5" />
-                  Save Profile
-                </>
-              )}
+        {/* Sidebar */}
+        <div className="space-y-6">
+          {/* Profile Image */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-4">Farm Photo</h3>
+            <div className="aspect-square bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center mb-4">
+              <ImageIcon className="h-12 w-12 text-gray-400 dark:text-gray-500" />
+            </div>
+            <button className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm font-medium text-gray-900 dark:text-gray-100">
+              Upload Photo
             </button>
           </div>
-        </form>
+
+          {/* Quick Stats */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-4">Quick Stats</h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                <span className="text-sm text-gray-600 dark:text-gray-400">Member Since</span>
+                <span className="text-sm font-medium text-gray-900 dark:text-gray-100">Jan 2020</span>
+              </div>
+              <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                <span className="text-sm text-gray-600">Total Lots</span>
+                <span className="text-sm font-medium text-gray-900">45</span>
+              </div>
+              <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                <span className="text-sm text-gray-600">Successful Sales</span>
+                <span className="text-sm font-medium text-gray-900">38</span>
+              </div>
+              <div className="flex items-center justify-between py-2">
+                <span className="text-sm text-gray-600">Rating</span>
+                <span className="text-sm font-medium text-gray-900">4.8/5.0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       </div>
     </DashboardLayout>
   );
