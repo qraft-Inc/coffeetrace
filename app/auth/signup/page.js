@@ -112,6 +112,13 @@ function SignUpForm() {
           )}
 
           <div className="mb-8">
+            <div className="mb-6">
+              <img 
+                src="https://res.cloudinary.com/ddew8kfxf/image/upload/v1763059666/Coffee_Trap_Mix_ky8mwv.png" 
+                alt="Coffee Trace Logo" 
+                className="h-16 w-auto"
+              />
+            </div>
             <h1 className="text-3xl font-bold text-coffee-900 mb-2">
               {step === 0 ? 'Select your role' : `Join as ${formData.role === 'farmer' ? 'Farmer' : formData.role === 'buyer' ? 'Buyer' : formData.role === 'coopAdmin' ? 'Cooperative' : 'Investor'}`}
             </h1>

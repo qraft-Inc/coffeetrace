@@ -72,7 +72,7 @@ const agroInputsData = [
     name: 'Premium Arabica Coffee Seeds',
     description: 'High-quality Arabica coffee seeds suitable for high-altitude planting. Disease-resistant variety with excellent yield potential.',
     category: 'seeds',
-    price: { amount: 50000, currency: 'RWF', unit: 'per kg' },
+    price: { amount: 38.50, currency: 'USD', unit: 'per kg' },
     stock: 500,
     lowStockThreshold: 50,
     specifications: {
@@ -94,7 +94,7 @@ const agroInputsData = [
     name: 'Hybrid Robusta Coffee Seeds',
     description: 'Robust and high-yielding Robusta coffee seeds. Perfect for lower altitude farms with excellent disease resistance.',
     category: 'seeds',
-    price: { amount: 35000, currency: 'RWF', unit: 'per kg' },
+    price: { amount: 27.00, currency: 'USD', unit: 'per kg' },
     stock: 750,
     lowStockThreshold: 75,
     specifications: {
@@ -117,7 +117,7 @@ const agroInputsData = [
     name: 'Organic Coffee Fertilizer NPK 10-20-10',
     description: 'Complete organic fertilizer specially formulated for coffee plants. Rich in nitrogen, phosphorus, and potassium.',
     category: 'fertilizers',
-    price: { amount: 25000, currency: 'RWF', unit: 'per 50kg bag' },
+    price: { amount: 19.25, currency: 'USD', unit: 'per 50kg bag' },
     stock: 1200,
     lowStockThreshold: 100,
     specifications: {
@@ -140,7 +140,7 @@ const agroInputsData = [
     name: 'Compost Manure Premium Grade',
     description: 'Well-decomposed organic compost manure. Improves soil structure and provides essential nutrients.',
     category: 'fertilizers',
-    price: { amount: 15000, currency: 'RWF', unit: 'per 50kg bag' },
+    price: { amount: 11.50, currency: 'USD', unit: 'per 50kg bag' },
     stock: 2000,
     lowStockThreshold: 200,
     specifications: {
@@ -157,7 +157,7 @@ const agroInputsData = [
     name: 'Foliar Spray Nutrient Booster',
     description: 'Quick-action foliar spray for rapid nutrient absorption. Contains micronutrients essential for coffee plant health.',
     category: 'fertilizers',
-    price: { amount: 12000, currency: 'RWF', unit: 'per 5L' },
+    price: { amount: 9.25, currency: 'USD', unit: 'per 5L' },
     stock: 600,
     lowStockThreshold: 50,
     specifications: {
@@ -175,7 +175,7 @@ const agroInputsData = [
     name: 'Coffee Berry Borer Control',
     description: 'Effective biological control for coffee berry borer. Safe for organic farming and environmentally friendly.',
     category: 'pesticides',
-    price: { amount: 18000, currency: 'RWF', unit: 'per liter' },
+    price: { amount: 13.85, currency: 'USD', unit: 'per liter' },
     stock: 400,
     lowStockThreshold: 40,
     specifications: {
@@ -198,7 +198,7 @@ const agroInputsData = [
     name: 'Fungicide for Coffee Leaf Rust',
     description: 'Systemic fungicide for prevention and control of coffee leaf rust. Long-lasting protection.',
     category: 'pesticides',
-    price: { amount: 22000, currency: 'RWF', unit: 'per liter' },
+    price: { amount: 16.90, currency: 'USD', unit: 'per liter' },
     stock: 300,
     lowStockThreshold: 30,
     specifications: {
@@ -222,7 +222,7 @@ const agroInputsData = [
     name: 'Professional Pruning Shears',
     description: 'Heavy-duty pruning shears for coffee tree maintenance. Ergonomic design with sharp, durable blades.',
     category: 'tools',
-    price: { amount: 8500, currency: 'RWF', unit: 'per piece' },
+    price: { amount: 6.50, currency: 'USD', unit: 'per piece' },
     stock: 250,
     lowStockThreshold: 25,
     specifications: {
@@ -238,7 +238,7 @@ const agroInputsData = [
     name: 'Coffee Harvesting Basket',
     description: 'Traditional woven basket designed for coffee cherry harvesting. Durable and comfortable to carry.',
     category: 'tools',
-    price: { amount: 3500, currency: 'RWF', unit: 'per piece' },
+    price: { amount: 2.70, currency: 'USD', unit: 'per piece' },
     stock: 500,
     lowStockThreshold: 50,
     specifications: {
@@ -254,7 +254,7 @@ const agroInputsData = [
     name: 'Soil pH Testing Kit',
     description: 'Complete soil testing kit for pH and nutrient analysis. Essential for optimal coffee growing conditions.',
     category: 'tools',
-    price: { amount: 15000, currency: 'RWF', unit: 'per kit' },
+    price: { amount: 11.50, currency: 'USD', unit: 'per kit' },
     stock: 150,
     lowStockThreshold: 15,
     specifications: {
@@ -272,7 +272,7 @@ const agroInputsData = [
     name: 'Coffee Pulping Machine - Manual',
     description: 'Manual coffee pulping machine for small to medium farms. Easy to operate and maintain.',
     category: 'equipment',
-    price: { amount: 450000, currency: 'RWF', unit: 'per unit' },
+    price: { amount: 346.00, currency: 'USD', unit: 'per unit' },
     stock: 20,
     lowStockThreshold: 5,
     specifications: {
@@ -295,7 +295,7 @@ const agroInputsData = [
     name: 'Coffee Drying Rack System',
     description: 'Complete raised drying bed system. UV-resistant mesh for optimal coffee drying.',
     category: 'equipment',
-    price: { amount: 850000, currency: 'RWF', unit: 'per 10m²' },
+    price: { amount: 654.00, currency: 'USD', unit: 'per 10m²' },
     stock: 15,
     lowStockThreshold: 3,
     specifications: {
@@ -317,7 +317,7 @@ const agroInputsData = [
     name: 'Motorized Coffee Sprayer',
     description: 'Gasoline-powered sprayer for efficient pesticide and fertilizer application. Adjustable nozzle.',
     category: 'equipment',
-    price: { amount: 320000, currency: 'RWF', unit: 'per unit' },
+    price: { amount: 246.00, currency: 'USD', unit: 'per unit' },
     stock: 30,
     lowStockThreshold: 5,
     specifications: {
@@ -341,7 +341,7 @@ const agroInputsData = [
     name: 'Drip Irrigation Kit - 1 Hectare',
     description: 'Complete drip irrigation system for 1 hectare. Water-efficient and easy to install.',
     category: 'irrigation',
-    price: { amount: 1200000, currency: 'RWF', unit: 'per kit' },
+    price: { amount: 923.00, currency: 'USD', unit: 'per kit' },
     stock: 12,
     lowStockThreshold: 3,
     specifications: {
@@ -364,7 +364,7 @@ const agroInputsData = [
     name: 'Water Storage Tank - 5000L',
     description: 'Food-grade plastic water storage tank. UV-stabilized for outdoor use.',
     category: 'irrigation',
-    price: { amount: 650000, currency: 'RWF', unit: 'per tank' },
+    price: { amount: 500.00, currency: 'USD', unit: 'per tank' },
     stock: 25,
     lowStockThreshold: 5,
     specifications: {
@@ -386,7 +386,7 @@ const agroInputsData = [
     name: 'Solar Water Pump System',
     description: 'Solar-powered water pump for irrigation. Eco-friendly and cost-effective.',
     category: 'irrigation',
-    price: { amount: 2500000, currency: 'RWF', unit: 'per system' },
+    price: { amount: 1923.00, currency: 'USD', unit: 'per system' },
     stock: 8,
     lowStockThreshold: 2,
     specifications: {

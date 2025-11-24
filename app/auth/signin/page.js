@@ -56,6 +56,13 @@ function SignInForm() {
           </div>
 
           <div className="mb-10">
+            <div className="mb-6">
+              <img 
+                src="https://res.cloudinary.com/ddew8kfxf/image/upload/v1763059666/Coffee_Trap_Mix_ky8mwv.png" 
+                alt="Coffee Trace Logo" 
+                className="h-16 w-auto"
+              />
+            </div>
             <h1 className="text-3xl font-bold text-coffee-900 mb-2">Sign In</h1>
             <p className="text-coffee-600 text-sm">Enter your email and password to sign in!</p>
           </div>

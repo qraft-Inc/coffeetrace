@@ -19,7 +19,7 @@ export default function TraceabilityQRCode({
   const traceUrl = lotId 
     ? `${window.location.origin}/trace/${lotId}`
     : farmerId 
-    ? `${window.location.origin}/dashboard/buyer/farmers/${farmerId}`
+    ? `${window.location.origin}/farmers/${farmerId}`
     : window.location.href;
 
   const downloadQRCode = () => {

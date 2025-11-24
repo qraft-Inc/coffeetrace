@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import dbConnect from '../../../lib/dbConnect';
 import AgroInput from '../../../models/AgroInput';
+import Cooperative from '../../../models/Cooperative';
 import { authOptions } from '../../../lib/authOptions';
 
 export const dynamic = 'force-dynamic';
