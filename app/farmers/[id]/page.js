@@ -25,14 +25,25 @@ export default function PublicFarmerProfile({ params }) {
   const [lots, setLots] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [farmerId, setFarmerId] = useState(null);
 
   useEffect(() => {
-    fetchFarmerData();
-  }, [params.id]);
+    const loadParams = async () => {
+      const resolvedParams = await params;
+      setFarmerId(resolvedParams.id);
+    };
+    loadParams();
+  }, [params]);
+
+  useEffect(() => {
+    if (farmerId) {
+      fetchFarmerData();
+    }
+  }, [farmerId]);
 
   const fetchFarmerData = async () => {
     try {
-      const res = await fetch(`/api/farmers/${params.id}`);
+      const res = await fetch(`/api/farmers/${farmerId}`);
       const data = await res.json();
 
       if (!res.ok) {
@@ -205,7 +216,7 @@ export default function PublicFarmerProfile({ params }) {
               {/* Right Column - QR Code */}
               <div>
                 <TraceabilityQRCode 
-                  farmerId={params.id}
+                  farmerId={farmerId}
                   title="Farmer Traceability QR"
                   description="Scan to verify this farmer's profile and coffee origin"
                 />
