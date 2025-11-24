@@ -52,6 +52,7 @@ const placeholderStories = [
       { url: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e', caption: 'Our processing facility' },
       { url: 'https://images.unsplash.com/photo-1442512595331-e89e73853f31', caption: 'Drying coffee beans in the sun' }
     ],
+    story: "I inherited this coffee farm from my father 15 years ago in the beautiful hills of Fort Portal, Uganda. What started as 2.5 acres of Bourbon and Typica varieties has grown into a thriving organic operation. Every morning, I walk through my 1,200 coffee trees, checking each plant with care. The volcanic soil here is perfect for coffee, and our bimodal rainfall pattern ensures two harvest seasons each year. I'm proud to be certified organic and Fair Trade, showing my commitment to sustainable farming practices. My family has been growing coffee for three generations, and I hope to pass this knowledge and passion to my children. Each cup of coffee from my farm tells the story of our land, our dedication, and the rich heritage of Ugandan coffee.",
     totalYieldKg: 3500
   },
   {
@@ -97,6 +98,7 @@ const placeholderStories = [
       { url: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93', caption: 'Morning on the farm' },
       { url: 'https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb', caption: 'Hand-picking ripe cherries' }
     ],
+    story: "Growing coffee in Fort Portal has been my life's work for over 20 years. My 3-acre farm is home to 1,500 Catuai and Bourbon trees, all grown under full shade to preserve the natural forest ecosystem. I believe in working with nature, not against it. The clay soil retains moisture well, which is essential during our dry seasons. Being Rainforest Alliance certified means I follow strict environmental and social standards - something I'm deeply proud of. I hand-pick only the ripest cherries, ensuring the highest quality in every batch. My farm produces about 4,200 kg annually, and each bean represents hours of careful attention and love for the craft. Coffee farming isn't just a job for me; it's a way of life that connects me to the land and to coffee lovers around the world.",
     totalYieldKg: 4200
   },
   {
@@ -144,6 +146,7 @@ const placeholderStories = [
       { url: 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf', caption: 'Sorting and selecting the best beans' },
       { url: 'https://images.unsplash.com/photo-1442512595331-e89e73853f31', caption: 'Sun-drying process' }
     ],
+    story: "My journey in coffee began 12 years ago when I decided to focus on specialty varieties. My 1.8-acre farm specializes in Gesha - a premium cultivar known for its exceptional cup quality and unique floral notes. Though my farm is smaller, I focus on quality over quantity. At 2,000 meters altitude, the cooler temperatures allow the coffee cherries to develop slowly, creating the complex flavors that specialty roasters seek. I practice integrated pest management and use only organic fertilizers. Each of my 900 trees receives individual attention. I've invested in modern processing equipment to ensure consistent quality, and my dedication has earned me certifications in both organic and Specialty Coffee Association standards. My coffee has won regional cupping competitions, and I'm constantly experimenting with processing methods to bring out the best in my beans. Growing Gesha is a labor of love that requires patience and precision.",
     totalYieldKg: 2800
   },
   {
@@ -190,6 +193,7 @@ const placeholderStories = [
       { url: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e', caption: 'Fresh coffee cherries' },
       { url: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085', caption: 'Our family farm' }
     ],
+    story: "Coffee has been in my family for four generations here in Fort Portal. My great-grandfather planted the first trees on this land, and today I manage 4.2 acres with 2,100 Caturra and Catuai trees. I believe in honoring traditional methods while embracing sustainable innovations. Our farm uses a combination of shade-grown techniques and modern drip irrigation to ensure optimal growing conditions year-round. The 1,700-meter altitude gives our coffee a balanced profile that's beloved by roasters worldwide. We're certified UTZ, a commitment that requires constant vigilance but results in healthier soil and better coffee. My wife and I work the farm together, and we've trained our three children in every aspect of coffee cultivation. We produce about 5,800 kg annually, and every kilogram represents our family's dedication to excellence and sustainability. When you drink our coffee, you're tasting generations of knowledge and passion for Ugandan coffee heritage.",
     totalYieldKg: 5800
   }
 ];
@@ -214,18 +218,12 @@ async function seedFarmerStories() {
       const farmer = farmers[i];
       const storyData = placeholderStories[i % placeholderStories.length];
 
-      // Only update if farmer doesn't already have location/polygon data
-      const needsUpdate = !farmer.location || !farmer.farmBoundary;
-
-      if (needsUpdate) {
-        await Farmer.findByIdAndUpdate(farmer._id, {
-          $set: storyData
-        });
-        console.log(`✓ Updated farmer: ${farmer.name || farmer._id}`);
-        updated++;
-      } else {
-        console.log(`- Skipped farmer: ${farmer.name || farmer._id} (already has data)`);
-      }
+      // Update story field for all farmers
+      await Farmer.findByIdAndUpdate(farmer._id, {
+        $set: { story: storyData.story }
+      });
+      console.log(`✓ Updated farmer: ${farmer.name || farmer._id}`);
+      updated++;
     }
 
     console.log(`\n✓ Successfully updated ${updated} farmers with story data`);
