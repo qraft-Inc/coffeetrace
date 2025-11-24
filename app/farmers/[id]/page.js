@@ -94,10 +94,11 @@ export default function PublicFarmerProfile({ params }) {
               <ArrowLeft className="h-5 w-5" />
               <span className="font-medium">Back to Home</span>
             </Link>
-            <div className="flex items-center gap-2">
-              <Coffee className="h-6 w-6 text-green-600" />
-              <span className="font-bold text-xl text-gray-900">Coffee Trace</span>
-            </div>
+            <img 
+              src="https://res.cloudinary.com/ddew8kfxf/image/upload/v1763059666/Coffee_Trap_Mix_ky8mwv.png" 
+              alt="Coffee Trace" 
+              className="h-12 w-auto"
+            />
           </div>
         </div>
       </div>
@@ -122,8 +123,19 @@ export default function PublicFarmerProfile({ params }) {
           </div>
 
           <div className="p-8">
+            {/* Farmer's Story */}
+            {farmer.story && (
+              <div className="mb-6 bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border-2 border-amber-200">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <Coffee className="h-6 w-6 text-amber-600" />
+                  My Coffee Journey
+                </h3>
+                <p className="text-gray-700 leading-relaxed whitespace-pre-line">{farmer.story}</p>
+              </div>
+            )}
+
             {/* Tip Button */}
-            <div className="mb-6 flex justify-center">
+            <div className="mb-8 flex justify-center">
               <Link 
                 href={`/tip/${farmerId}`}
                 className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-xl hover:from-green-700 hover:to-green-600 transition-all shadow-lg hover:shadow-xl font-semibold text-lg"
@@ -132,17 +144,6 @@ export default function PublicFarmerProfile({ params }) {
                 Support This Farmer
               </Link>
             </div>
-
-            {/* Farmer's Story */}
-            {farmer.story && (
-              <div className="mb-8 bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border-2 border-amber-200">
-                <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Coffee className="h-6 w-6 text-amber-600" />
-                  My Coffee Journey
-                </h3>
-                <p className="text-gray-700 leading-relaxed whitespace-pre-line">{farmer.story}</p>
-              </div>
-            )}
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 text-center">
@@ -268,8 +269,8 @@ export default function PublicFarmerProfile({ params }) {
               <div className="rounded-xl overflow-hidden">
                 <FarmMapPolygon 
                   location={farmer.location}
-                  boundary={farmer.farmBoundary}
-                  name={farmer.userId?.name || 'Coffee Farm'}
+                  farmBoundary={farmer.farmBoundary}
+                  farmName={farmer.userId?.name || 'Coffee Farm'}
                 />
               </div>
             </div>
