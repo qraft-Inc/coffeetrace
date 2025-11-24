@@ -12,9 +12,9 @@ import {
 import DashboardLayout from '../../../../../components/layout/DashboardLayout';
 import Link from 'next/link';
 import FarmMapPolygon from '../../../../../components/map/FarmMapPolygon';
-import dynamic from 'next/dynamic';
+import dynamicImport from 'next/dynamic';
 
-const TraceabilityQRCode = dynamic(() => import('../../../../../components/TraceabilityQRCode'), {
+const TraceabilityQRCode = dynamicImport(() => import('../../../../../components/TraceabilityQRCode'), {
   ssr: false,
   loading: () => <div className="h-64 bg-gray-100 rounded-lg animate-pulse"></div>
 });
