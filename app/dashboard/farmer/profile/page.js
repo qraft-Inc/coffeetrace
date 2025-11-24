@@ -33,7 +33,7 @@ export default function FarmerProfilePage() {
     
     // Farm Details
     farmSize: '',
-    farmSizeUnit: 'hectares',
+    farmSizeUnit: 'acres',
     altitude: '',
     soilType: '',
     climateZone: '',
@@ -354,7 +354,7 @@ export default function FarmerProfilePage() {
                     onChange={handleInputChange}
                     className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   >
-                    <option value="hectares">Hectares</option>
+                    <option value="acres">Acres</option>
                     <option value="acres">Acres</option>
                   </select>
                 </div>
@@ -512,7 +512,7 @@ export default function FarmerProfilePage() {
 
               <div>
                 <label className="block text-sm font-medium text-coffee-700 mb-2">
-                  Planting Density (trees/hectare)
+                  Planting Density (trees/acre)
                 </label>
                 <input
                   type="number"

@@ -152,7 +152,7 @@ export default function FarmersListPage() {
                       {farmer.farmSize && (
                         <div className="flex items-center gap-2 text-sm text-coffee-600">
                           <Leaf className="h-4 w-4 text-green-600" />
-                          <span>{farmer.farmSize} {farmer.farmSizeUnit || 'hectares'}</span>
+                          <span>{farmer.farmSizeUnit === 'hectares' ? (farmer.farmSize * 2.47105).toFixed(1) : farmer.farmSize} acres</span>
                         </div>
                       )}
                       {farmer.primaryVariety && (

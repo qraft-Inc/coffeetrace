@@ -166,7 +166,7 @@ export default function BuyerTraceabilityDashboard({ lotId, traceId }) {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
                     <p className="text-sm text-gray-600">Farm Size</p>
-                    <p className="font-semibold">{data.farm.size} hectares</p>
+                    <p className="font-semibold">{(data.farm.size * 2.47105).toFixed(1)} acres</p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Altitude</p>
@@ -429,7 +429,7 @@ export default function BuyerTraceabilityDashboard({ lotId, traceId }) {
                 {data.farm.altitude} meters above sea level.
               </p>
               <p>
-                The farm spans {data.farm.size} hectares of {data.farm.soilType} soil in a{' '}
+                The farm spans {(data.farm.size * 2.47105).toFixed(1)} acres of {data.farm.soilType} soil in a{' '}
                 {data.farm.climateZone} climate zone, providing ideal conditions for growing{' '}
                 {data.lot.variety} coffee.
               </p>

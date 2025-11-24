@@ -122,11 +122,33 @@ export default function PublicFarmerProfile({ params }) {
           </div>
 
           <div className="p-8">
+            {/* Tip Button */}
+            <div className="mb-6 flex justify-center">
+              <Link 
+                href={`/tip/${farmerId}`}
+                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-xl hover:from-green-700 hover:to-green-600 transition-all shadow-lg hover:shadow-xl font-semibold text-lg"
+              >
+                <Coffee className="h-6 w-6" />
+                Support This Farmer
+              </Link>
+            </div>
+
+            {/* Farmer's Story */}
+            {farmer.story && (
+              <div className="mb-8 bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border-2 border-amber-200">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <Coffee className="h-6 w-6 text-amber-600" />
+                  My Coffee Journey
+                </h3>
+                <p className="text-gray-700 leading-relaxed whitespace-pre-line">{farmer.story}</p>
+              </div>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 text-center">
                 <Mountain className="h-8 w-8 text-green-600 mx-auto mb-2" />
-                <div className="text-3xl font-bold text-gray-900">{farmer.farmSize || 0}</div>
-                <div className="text-sm text-gray-600">Hectares</div>
+                <div className="text-3xl font-bold text-gray-900">{(farmer.farmSize * 2.47105).toFixed(1) || 0}</div>
+                <div className="text-sm text-gray-600">Acres</div>
               </div>
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 text-center">
                 <Coffee className="h-8 w-8 text-blue-600 mx-auto mb-2" />

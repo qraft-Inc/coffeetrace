@@ -98,7 +98,7 @@ export default function FarmMapPolygon({
           polygon.bindPopup(`
             <div class="p-2">
               <p class="font-bold text-coffee-900">${farmName} Boundary</p>
-              ${area ? `<p class="text-sm text-coffee-600">Area: ${area} hectares</p>` : ''}
+              ${area ? `<p class="text-sm text-coffee-600">Area: ${(area * 2.47105).toFixed(1)} acres</p>` : ''}
             </div>
           `);
 

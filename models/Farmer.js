@@ -118,7 +118,7 @@ const FarmerSchema = new mongoose.Schema({
   farmSizeUnit: {
     type: String,
     enum: ['hectares', 'acres'],
-    default: 'hectares',
+    default: 'acres',
   },
   altitude: {
     type: Number, // in meters above sea level

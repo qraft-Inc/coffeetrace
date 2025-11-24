@@ -157,7 +157,7 @@ export default function TraceabilityPage({ params }) {
                 <TrendingUp className="w-5 h-5 text-gray-400 mr-2 mt-0.5" />
                 <div>
                   <p className="text-sm text-gray-600">Farm Size</p>
-                  <p className="text-gray-900">{data.farmer.farmSize} hectares</p>
+                  <p className="text-gray-900">{data.farmer.farmSizeUnit === 'hectares' ? (data.farmer.farmSize * 2.47105).toFixed(1) : data.farmer.farmSize} acres</p>
                 </div>
               </div>
             </div>

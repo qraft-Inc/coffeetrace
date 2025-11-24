@@ -55,7 +55,7 @@ export default function FarmMap({ locations = [], center, zoom = 10, height = '4
                 new mapboxgl.default.Popup({ offset: 25 }).setHTML(
                   `<div class="p-2">
                     <h3 class="font-semibold">${location.name || 'Farm'}</h3>
-                    ${location.farmSize ? `<p class="text-sm">Size: ${location.farmSize} hectares</p>` : ''}
+                    ${location.farmSize ? `<p class="text-sm">Size: ${location.farmSizeUnit === 'hectares' ? (location.farmSize * 2.47105).toFixed(1) : location.farmSize} acres</p>` : ''}
                   </div>`
                 )
               )

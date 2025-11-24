@@ -329,7 +329,7 @@ function FarmerCard({ farmer }) {
         <div className="space-y-2 text-sm text-coffee-700">
           {farmer.farmSize && (
             <div>
-              <span className="font-medium">Farm Size:</span> {farmer.farmSize} hectares
+              <span className="font-medium">Farm Size:</span> {farmer.farmSizeUnit === 'hectares' ? (farmer.farmSize * 2.47105).toFixed(1) : farmer.farmSize} acres
             </div>
           )}
           {farmer.altitude && (

@@ -155,7 +155,7 @@ export default function TipFarmerPage({ params }: { params: { farmerId: string }
             {farmer?.farmSize && (
               <div className="bg-coffee-50 rounded-lg p-4 mb-4">
                 <p className="text-sm text-coffee-600">Farm Size</p>
-                <p className="text-2xl font-bold text-coffee-900">{farmer.farmSize} hectares</p>
+                <p className="text-2xl font-bold text-coffee-900">{farmer.farmSizeUnit === 'hectares' ? (farmer.farmSize * 2.47105).toFixed(1) : farmer.farmSize} acres</p>
               </div>
             )}
 

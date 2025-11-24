@@ -158,7 +158,7 @@ export default function LoanRequestForm({ farmerId }) {
             rows={3}
             required
             className="w-full px-4 py-2 border border-coffee-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-            placeholder="e.g., Expected harvest from 2.5 hectares of Arabica coffee"
+            placeholder="e.g., Expected harvest from 6 acres of Arabica coffee"
           />
         </div>
 

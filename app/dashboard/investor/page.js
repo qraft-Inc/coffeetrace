@@ -213,7 +213,7 @@ export default function InvestorDashboard() {
                                 </h5>
                                 <div className="flex items-center gap-2 text-sm text-coffee-600">
                                   {farmer.farmSize && (
-                                    <span>{farmer.farmSize} hectares</span>
+                                    <span>{farmer.farmSizeUnit === 'hectares' ? (farmer.farmSize * 2.47105).toFixed(1) : farmer.farmSize} acres</span>
                                   )}
                                   {farmer.location?.coordinates && (
                                     <span className="flex items-center gap-1">

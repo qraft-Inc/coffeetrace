@@ -27,7 +27,7 @@ const placeholderStories = [
       ]]
     },
     farmSize: 2.5,
-    farmSizeUnit: 'hectares',
+    farmSizeUnit: 'acres',
     numberOfTrees: 1200,
     altitude: 1800,
     primaryVariety: 'Bourbon',
@@ -73,9 +73,9 @@ const placeholderStories = [
         [30.2800, 0.6650]
       ]]
     },
-    farmSize: 3.8,
-    farmSizeUnit: 'hectares',
-    numberOfTrees: 1800,
+    farmSize: 3.0,
+    farmSizeUnit: 'acres',
+    numberOfTrees: 1500,
     altitude: 1650,
     primaryVariety: 'Catuai',
     varieties: [
@@ -118,9 +118,9 @@ const placeholderStories = [
         [30.2690, 0.6780]
       ]]
     },
-    farmSize: 1.5,
-    farmSizeUnit: 'hectares',
-    numberOfTrees: 800,
+    farmSize: 1.8,
+    farmSizeUnit: 'acres',
+    numberOfTrees: 900,
     altitude: 2000,
     primaryVariety: 'Gesha',
     varieties: [
@@ -165,9 +165,9 @@ const placeholderStories = [
         [30.2850, 0.6820]
       ]]
     },
-    farmSize: 5.2,
-    farmSizeUnit: 'hectares',
-    numberOfTrees: 2400,
+    farmSize: 4.2,
+    farmSizeUnit: 'acres',
+    numberOfTrees: 2100,
     altitude: 1700,
     primaryVariety: 'Caturra',
     varieties: [

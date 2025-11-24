@@ -67,7 +67,7 @@ export default function AllFarmsMap({
               <div class="p-2">
                 <p class="font-bold text-coffee-900">${farmer.name}</p>
                 <p class="text-sm text-coffee-600">${farmer.location.district || ''}, ${farmer.location.country || ''}</p>
-                ${farmer.farmSize ? `<p class="text-xs text-gray-500 mt-1">${farmer.farmSize} ${farmer.farmSizeUnit || 'hectares'}</p>` : ''}
+                ${farmer.farmSize ? `<p class="text-xs text-gray-500 mt-1">${farmer.farmSizeUnit === 'hectares' ? (farmer.farmSize * 2.47105).toFixed(1) : farmer.farmSize} acres</p>` : ''}
               </div>
             `);
             markers.push(marker);

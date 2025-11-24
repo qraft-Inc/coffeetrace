@@ -338,15 +338,15 @@ const agroInputsData = [
 
   // Irrigation
   {
-    name: 'Drip Irrigation Kit - 1 Hectare',
-    description: 'Complete drip irrigation system for 1 hectare. Water-efficient and easy to install.',
+    name: 'Drip Irrigation Kit - 2.5 Acres',
+    description: 'Complete drip irrigation system for 2.5 acres. Water-efficient and easy to install.',
     category: 'irrigation',
     price: { amount: 923.00, currency: 'USD', unit: 'per kit' },
     stock: 12,
     lowStockThreshold: 3,
     specifications: {
       brand: 'IrrigPro',
-      coverage: '1 hectare',
+      coverage: '2.5 acres',
       material: 'UV-resistant tubing',
       warranty: '3 years',
     },

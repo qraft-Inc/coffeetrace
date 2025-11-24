@@ -177,7 +177,7 @@ export default function FarmerStoryPage({ params }) {
                     <div className="bg-green-50 rounded-lg p-4">
                       <Leaf className="h-6 w-6 text-green-600 mb-2" />
                       <p className="text-2xl font-bold text-green-900">{farmer.farmSize}</p>
-                      <p className="text-sm text-green-700">{farmer.farmSizeUnit || 'hectares'}</p>
+                      <p className="text-sm text-green-700">acres</p>
                     </div>
                   )}
                   {farmer.numberOfTrees && (
@@ -254,7 +254,7 @@ export default function FarmerStoryPage({ params }) {
               {farmer.plantingDensity && (
                 <div>
                   <p className="text-sm text-coffee-600 mb-1">Planting Density</p>
-                  <p className="text-coffee-900">{farmer.plantingDensity} trees/hectare</p>
+                  <p className="text-coffee-900">{farmer.plantingDensity ? (farmer.plantingDensity / 2.47105).toFixed(0) : 0} trees/acre</p>
                 </div>
               )}
               {farmer.shade && (

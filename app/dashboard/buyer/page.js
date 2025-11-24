@@ -216,7 +216,7 @@ export default function BuyerDashboard() {
                       {farmer.farmSize && (
                         <span className="flex items-center gap-1">
                           <Leaf className="h-4 w-4" />
-                          {farmer.farmSize} {farmer.farmSizeUnit || 'hectares'}
+                          {farmer.farmSizeUnit === 'hectares' ? (farmer.farmSize * 2.47105).toFixed(1) : farmer.farmSize} acres
                         </span>
                       )}
                     </div>
