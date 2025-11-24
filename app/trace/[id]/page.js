@@ -9,6 +9,11 @@ const FarmMapPolygon = dynamic(() => import('../../../components/map/FarmMapPoly
   loading: () => <div className="h-96 bg-gray-100 rounded-lg animate-pulse"></div>
 });
 
+const TraceabilityQRCode = dynamic(() => import('../../../components/TraceabilityQRCode'), {
+  ssr: false,
+  loading: () => <div className="h-64 bg-gray-100 rounded-lg animate-pulse"></div>
+});
+
 export default function TraceabilityPage({ params }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -62,17 +67,31 @@ export default function TraceabilityPage({ params }) {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-3xl font-bold text-green-800 mb-2">
-                Coffee Traceability
-              </h1>
-              <p className="text-gray-600">Lot Number: {data.lot.lotNumber}</p>
-            </div>
-            <div className="text-right">
-              <div className="inline-block bg-green-100 px-4 py-2 rounded-full">
-                <span className="text-green-800 font-semibold">{data.lot.status}</span>
+          <div className="grid md:grid-cols-3 gap-6 mb-6">
+            <div className="md:col-span-2">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h1 className="text-3xl font-bold text-green-800 mb-2">
+                    Coffee Traceability
+                  </h1>
+                  <p className="text-gray-600">Lot Number: {data.lot.lotNumber}</p>
+                </div>
+                <div className="text-right">
+                  <div className="inline-block bg-green-100 px-4 py-2 rounded-full">
+                    <span className="text-green-800 font-semibold">{data.lot.status}</span>
+                  </div>
+                </div>
               </div>
+            </div>
+            
+            {/* QR Code Section */}
+            <div className="md:col-span-1">
+              <TraceabilityQRCode 
+                lotId={params.id}
+                size={160}
+                title="Share This Coffee"
+                description="QR verified traceability"
+              />
             </div>
           </div>
 

@@ -98,8 +98,7 @@ const TipSchema = new mongoose.Schema({
 // Indexes for efficient queries
 TipSchema.index({ farmerId: 1, createdAt: -1 });
 TipSchema.index({ status: 1, createdAt: -1 });
-TipSchema.index({ psp_reference: 1 });
-TipSchema.index({ tipId: 1 });
+// Note: psp_reference and tipId already have unique indexes from schema definition
 
 // Virtual for formatted amount
 TipSchema.virtual('formatted_amount').get(function() {

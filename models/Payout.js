@@ -96,7 +96,7 @@ const PayoutSchema = new mongoose.Schema({
 PayoutSchema.index({ farmerId: 1, createdAt: -1 });
 PayoutSchema.index({ status: 1, next_retry_at: 1 });
 PayoutSchema.index({ batch_id: 1 });
-PayoutSchema.index({ psp_reference: 1 });
+PayoutSchema.index({ psp_reference: 1 }); // Simple index for lookups
 
 // Method to check if payout can be retried
 PayoutSchema.methods.canRetry = function() {

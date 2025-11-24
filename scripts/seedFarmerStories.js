@@ -11,19 +11,19 @@ const placeholderStories = [
     profilePhotoUrl: 'https://images.unsplash.com/photo-1595475884562-073c30d45670',
     location: {
       type: 'Point',
-      coordinates: [29.8739, -1.9403], // Rwanda coordinates
-      district: 'Huye',
-      region: 'Southern Province',
-      country: 'Rwanda'
+      coordinates: [30.2745, 0.6710], // Fort Portal, Uganda
+      district: 'Fort Portal',
+      region: 'Western Region',
+      country: 'Uganda'
     },
     farmBoundary: {
       type: 'Polygon',
       coordinates: [[
-        [29.8739, -1.9403],
-        [29.8749, -1.9403],
-        [29.8749, -1.9413],
-        [29.8739, -1.9413],
-        [29.8739, -1.9403]
+        [30.2745, 0.6710],
+        [30.2755, 0.6710],
+        [30.2755, 0.6700],
+        [30.2745, 0.6700],
+        [30.2745, 0.6710]
       ]]
     },
     farmSize: 2.5,
@@ -58,19 +58,19 @@ const placeholderStories = [
     profilePhotoUrl: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e',
     location: {
       type: 'Point',
-      coordinates: [29.9167, -2.0833],
-      district: 'Nyamagabe',
-      region: 'Southern Province',
-      country: 'Rwanda'
+      coordinates: [30.2800, 0.6650],
+      district: 'Fort Portal',
+      region: 'Western Region',
+      country: 'Uganda'
     },
     farmBoundary: {
       type: 'Polygon',
       coordinates: [[
-        [29.9167, -2.0833],
-        [29.9180, -2.0833],
-        [29.9180, -2.0846],
-        [29.9167, -2.0846],
-        [29.9167, -2.0833]
+        [30.2800, 0.6650],
+        [30.2813, 0.6650],
+        [30.2813, 0.6637],
+        [30.2800, 0.6637],
+        [30.2800, 0.6650]
       ]]
     },
     farmSize: 3.8,
@@ -103,19 +103,19 @@ const placeholderStories = [
     profilePhotoUrl: 'https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb',
     location: {
       type: 'Point',
-      coordinates: [29.7500, -2.3500],
-      district: 'Nyaruguru',
-      region: 'Southern Province',
-      country: 'Rwanda'
+      coordinates: [30.2690, 0.6780],
+      district: 'Fort Portal',
+      region: 'Western Region',
+      country: 'Uganda'
     },
     farmBoundary: {
       type: 'Polygon',
       coordinates: [[
-        [29.7500, -2.3500],
-        [29.7508, -2.3500],
-        [29.7508, -2.3508],
-        [29.7500, -2.3508],
-        [29.7500, -2.3500]
+        [30.2690, 0.6780],
+        [30.2698, 0.6780],
+        [30.2698, 0.6772],
+        [30.2690, 0.6772],
+        [30.2690, 0.6780]
       ]]
     },
     farmSize: 1.5,
@@ -150,19 +150,19 @@ const placeholderStories = [
     profilePhotoUrl: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93',
     location: {
       type: 'Point',
-      coordinates: [30.0619, -1.9442],
-      district: 'Gakenke',
-      region: 'Northern Province',
-      country: 'Rwanda'
+      coordinates: [30.2850, 0.6820],
+      district: 'Fort Portal',
+      region: 'Western Region',
+      country: 'Uganda'
     },
     farmBoundary: {
       type: 'Polygon',
       coordinates: [[
-        [30.0619, -1.9442],
-        [30.0638, -1.9442],
-        [30.0638, -1.9460],
-        [30.0619, -1.9460],
-        [30.0619, -1.9442]
+        [30.2850, 0.6820],
+        [30.2869, 0.6820],
+        [30.2869, 0.6802],
+        [30.2850, 0.6802],
+        [30.2850, 0.6820]
       ]]
     },
     farmSize: 5.2,

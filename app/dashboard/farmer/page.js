@@ -8,6 +8,12 @@ import Link from 'next/link';
 import { Coffee, Plus, Package, TrendingUp, MapPin, DollarSign, Gift } from 'lucide-react';
 import DashboardLayout from '../../../components/layout/DashboardLayout';
 import { formatWeight, formatDate, formatCurrency } from '../../../lib/formatters';
+import dynamicImport from 'next/dynamic';
+
+const TraceabilityQRCode = dynamicImport(() => import('../../../components/TraceabilityQRCode'), {
+  ssr: false,
+  loading: () => <div className="h-64 bg-gray-100 rounded-lg animate-pulse"></div>
+});
 
 export default function FarmerDashboard() {
   const { data: session } = useSession();
@@ -122,14 +128,54 @@ export default function FarmerDashboard() {
               <span className="font-semibold text-coffee-900">Update Farm Info</span>
             </Link>
             <Link
-              href="/marketplace"
+              href="/marketplace/agro-inputs"
               className="flex items-center gap-3 p-4 border-2 border-coffee-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors"
             >
               <Package className="h-6 w-6 text-primary-600" />
-              <span className="font-semibold text-coffee-900">Browse Marketplace</span>
+              <span className="font-semibold text-coffee-900">Browse Agro-Inputs</span>
             </Link>
           </div>
         </div>
+
+        {/* Your Digital Story QR Code */}
+        {session?.user?.farmerProfile && (
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
+            <div className="md:col-span-2 bg-white rounded-lg shadow-sm p-6">
+              <h2 className="text-xl font-bold text-coffee-900 mb-4">Your Digital Story</h2>
+              <p className="text-coffee-600 mb-4">
+                Share your farm's complete story with buyers worldwide. Each scan of your QR code shows 
+                buyers verified information about your farm, quality standards, and sustainable practices.
+              </p>
+              <div className="bg-green-50 border-l-4 border-green-500 p-4 mb-4">
+                <div className="flex items-start">
+                  <Coffee className="h-5 w-5 text-green-600 mr-3 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-semibold text-green-900 mb-1">Build Trust with Transparency</p>
+                    <p className="text-sm text-green-700">
+                      Buyers scan your QR code to see real information: your farm location, certifications, 
+                      coffee varieties, and quality history. This builds trust and helps you get better prices.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <Link
+                  href={`/dashboard/buyer/farmers/${session.user.farmerProfile}`}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-semibold"
+                >
+                  Preview Your Story
+                </Link>
+              </div>
+            </div>
+            
+            <TraceabilityQRCode 
+              farmerId={session.user.farmerProfile}
+              size={180}
+              title="Your Farm QR Code"
+              description="Share this with buyers"
+            />
+          </div>
+        )}
 
         {/* Earnings Breakdown */}
         {earnings && (

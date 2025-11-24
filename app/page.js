@@ -42,29 +42,18 @@ export default function HomePage() {
               )}
             </nav>
             <div className="flex gap-2 sm:gap-3 items-center">
-              {session ? (
-                <Link
-                  href={`/dashboard/${session.user.role === 'admin' ? 'admin' : session.user.role === 'coopAdmin' ? 'coop' : session.user.role}`}
-                  className="px-3 sm:px-4 py-1.5 sm:py-2 text-sm bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium shadow-md hover:shadow-lg"
-                >
-                  Go to Dashboard
-                </Link>
-              ) : (
-                <>
-                  <Link
-                    href="/auth/signin"
-                    className="hidden sm:block px-3 lg:px-4 py-2 text-sm text-coffee-900 hover:text-primary-600 font-medium transition-colors"
-                  >
-                    Sign In
-                  </Link>
-                  <Link
-                    href="/auth/signup"
-                    className="px-3 sm:px-4 py-1.5 sm:py-2 text-sm bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium shadow-md hover:shadow-lg"
-                  >
-                    Get Started
-                  </Link>
-                </>
-              )}
+              <Link
+                href="/auth/signin"
+                className="hidden sm:block px-3 lg:px-4 py-2 text-sm text-coffee-900 hover:text-primary-600 font-medium transition-colors"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/auth/signup"
+                className="px-3 sm:px-4 py-1.5 sm:py-2 text-sm bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium shadow-md hover:shadow-lg"
+              >
+                Get Started
+              </Link>
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="md:hidden p-2 text-coffee-900 hover:text-primary-600"
@@ -89,16 +78,12 @@ export default function HomePage() {
               <Link href="/verified" className="block text-coffee-900 hover:text-primary-600 transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
                 Verified Members
               </Link>
-              {!session && (
-                <Link href="/marketplace" className="block text-coffee-900 hover:text-primary-600 transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
-                  Marketplace
-                </Link>
-              )}
-              {!session && (
-                <Link href="/auth/signin" className="block sm:hidden text-coffee-900 hover:text-primary-600 transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
-                  Sign In
-                </Link>
-              )}
+              <Link href="/marketplace" className="block text-coffee-900 hover:text-primary-600 transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+                Marketplace
+              </Link>
+              <Link href="/auth/signin" className="block sm:hidden text-coffee-900 hover:text-primary-600 transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+                Sign In
+              </Link>
             </nav>
           </div>
         )}

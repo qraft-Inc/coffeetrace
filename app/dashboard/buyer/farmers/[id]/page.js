@@ -12,6 +12,12 @@ import {
 import DashboardLayout from '../../../../../components/layout/DashboardLayout';
 import Link from 'next/link';
 import FarmMapPolygon from '../../../../../components/map/FarmMapPolygon';
+import dynamic from 'next/dynamic';
+
+const TraceabilityQRCode = dynamic(() => import('../../../../../components/TraceabilityQRCode'), {
+  ssr: false,
+  loading: () => <div className="h-64 bg-gray-100 rounded-lg animate-pulse"></div>
+});
 
 export default function FarmerStoryPage({ params }) {
   const { data: session } = useSession();
@@ -326,6 +332,43 @@ export default function FarmerStoryPage({ params }) {
           </div>
         )}
 
+        {/* QR Code & Traceability */}
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <h2 className="text-xl font-bold text-coffee-900 mb-4">Farmer's Digital Story</h2>
+            <p className="text-coffee-600 mb-6">
+              Share this farmer's complete story and verified farm details with your customers. 
+              Each scan shows authentic origin, quality standards, and sustainable practices.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/marketplace/coffee"
+                className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold"
+              >
+                View Coffee Lots
+              </Link>
+              {farmerId && (
+                <Link
+                  href={`/tip/${farmerId}`}
+                  className="px-6 py-3 bg-coffee-600 text-white rounded-lg hover:bg-coffee-700 transition-colors font-semibold flex items-center gap-2"
+                >
+                  <Heart className="h-5 w-5" />
+                  Send a Tip
+                </Link>
+              )}
+            </div>
+          </div>
+          
+          {farmerId && (
+            <TraceabilityQRCode 
+              farmerId={farmerId}
+              size={180}
+              title="Farmer Profile QR"
+              description="Share verified farmer story with buyers"
+            />
+          )}
+        </div>
+
         {/* Call to Action */}
         <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-lg shadow-lg p-8 text-white text-center">
           <h2 className="text-2xl font-bold mb-4">Support {farmer.name}</h2>
@@ -334,12 +377,12 @@ export default function FarmerStoryPage({ params }) {
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
-              href="/marketplace"
+              href="/marketplace/coffee"
               className="px-6 py-3 bg-white text-primary-600 rounded-lg hover:bg-primary-50 transition-colors font-semibold"
             >
               Browse Coffee Lots
             </Link>
-            {farmer.qrCodeUrl && (
+            {farmerId && (
               <Link
                 href={`/tip/${farmerId}`}
                 className="px-6 py-3 bg-primary-800 text-white rounded-lg hover:bg-primary-900 transition-colors font-semibold flex items-center gap-2"
