@@ -152,7 +152,9 @@ export default function PublicFarmerProfile({ params }) {
                         <Leaf className="h-5 w-5 text-green-600 mt-0.5" />
                         <div>
                           <div className="font-semibold text-gray-900">Coffee Varieties</div>
-                          <div className="text-gray-600">{farmer.varieties.join(', ')}</div>
+                          <div className="text-gray-600">
+                            {farmer.varieties.map(v => typeof v === 'string' ? v : v.name).join(', ')}
+                          </div>
                         </div>
                       </div>
                     )}
@@ -161,7 +163,12 @@ export default function PublicFarmerProfile({ params }) {
                         <Mountain className="h-5 w-5 text-blue-600 mt-0.5" />
                         <div>
                           <div className="font-semibold text-gray-900">Altitude</div>
-                          <div className="text-gray-600">{farmer.altitude.min}-{farmer.altitude.max}m</div>
+                          <div className="text-gray-600">
+                            {typeof farmer.altitude === 'object' 
+                              ? `${farmer.altitude.min}-${farmer.altitude.max}m`
+                              : `${farmer.altitude}m`
+                            }
+                          </div>
                         </div>
                       </div>
                     )}
@@ -181,12 +188,15 @@ export default function PublicFarmerProfile({ params }) {
                   <div>
                     <h3 className="text-xl font-bold text-gray-900 mb-4">Certifications</h3>
                     <div className="flex flex-wrap gap-2">
-                      {farmer.certifications.map((cert, idx) => (
-                        <div key={idx} className="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
-                          <Award className="h-4 w-4" />
-                          {cert}
-                        </div>
-                      ))}
+                      {farmer.certifications.map((cert, idx) => {
+                        const certName = typeof cert === 'string' ? cert : cert.name;
+                        return (
+                          <div key={idx} className="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
+                            <Award className="h-4 w-4" />
+                            {certName}
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
