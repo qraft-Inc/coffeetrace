@@ -16,6 +16,7 @@ interface FarmerData {
     country?: string;
   };
   farmSize?: number;
+  farmSizeUnit?: string;
   certifications?: Array<{
     name: string;
   }>;
