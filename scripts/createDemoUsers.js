@@ -124,6 +124,26 @@ const demoUsers = [
     },
   },
   {
+    role: 'coopAdmin',
+    name: 'Tooro Coffee Farmers Union (TCFU)',
+    email: 'tcfu@coffeetrace-demo.com',
+    description: 'Tooro Coffee Farmers Union cooperative admin (TCFU)',
+    coopData: {
+      name: 'Tooro Coffee Farmers Union (TCFU)',
+      registrationNumber: 'TCFU-2025-001',
+      email: 'info@tcfu.org',
+      phoneNumber: '+256772000111',
+      location: { type: 'Point', coordinates: [30.6771, 0.6934] },
+      address: {
+        district: 'Kabarole',
+        region: 'Western',
+        country: 'Uganda',
+      },
+      memberCount: 420,
+      verificationStatus: 'verified',
+    },
+  },
+  {
     role: 'buyer',
     name: 'Coffee Buyer',
     email: 'buyer@coffeetrace-demo.com',

@@ -23,7 +23,7 @@ export async function POST(request) {
     }
 
     const body = await request.json();
-    const { name, email, password, role, phone, ...profileData } = body;
+    const { name, email, password, role, phone, cooperativeId, ...profileData } = body;
 
     // Validation
     if (!name || !email || !password || !role) {
@@ -68,6 +68,7 @@ export async function POST(request) {
       passwordHash,
       role,
       phone,
+      cooperativeId,
     });
 
     await user.save();
@@ -80,6 +81,7 @@ export async function POST(request) {
           name,
           phone,
           email: email.toLowerCase(),
+          cooperativeId,
           ...profileData,
         });
         await farmer.save();

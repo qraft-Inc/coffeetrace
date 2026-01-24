@@ -14,6 +14,14 @@ export default function AdminVerificationPage() {
     fetchPendingVerifications();
   }, []);
 
+  const formatFarmSize = (farmer) => {
+    if (!farmer?.farmSize) return 'N/A';
+    const sizeNumber = Number(farmer.farmSize);
+    const unit = farmer.farmSizeUnit || 'acres';
+    const acres = unit === 'hectares' ? sizeNumber * 2.47105 : sizeNumber;
+    return `${acres.toFixed(1)} acres`;
+  };
+
   const fetchPendingVerifications = async () => {
     try {
       const response = await fetch('/api/farmers?verificationStatus=pending');
@@ -110,7 +118,7 @@ export default function AdminVerificationPage() {
                         <p className="text-sm text-gray-500">{farmer.email}</p>
                         <div className="mt-2 flex flex-wrap gap-4 text-sm text-gray-600">
                           <span>📍 {farmer.location?.district || farmer.location?.region || 'Location not provided'}</span>
-                          <span>🌾 {farmer.farmSize || 'N/A'} hectares</span>
+                          <span>🌾 {formatFarmSize(farmer)}</span>
                           <span>📅 Applied: {new Date(farmer.createdAt).toLocaleDateString()}</span>
                         </div>
                         {farmer.documents && farmer.documents.length > 0 && (
@@ -183,7 +191,7 @@ export default function AdminVerificationPage() {
                     </div>
                     <div>
                       <p className="text-sm text-gray-500">Farm Size</p>
-                      <p className="text-gray-900">{selectedFarmer.farmSize || 'N/A'} hectares</p>
+                      <p className="text-gray-900">{formatFarmSize(selectedFarmer)}</p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-500">Phone</p>

@@ -32,7 +32,7 @@ export async function POST(req) {
     // Based on ICO/SCA carbon footprint standards for coffee production
     
     const {
-      farmSize = 1, // hectares
+      farmSize = 1, // acres
       fertilizers = 0, // kg
       pesticides = 0, // kg
       fuelUsed = 0, // liters (processing)
@@ -60,12 +60,16 @@ export async function POST(req) {
       'wet-hulled': 1.1,
     };
 
+    const acresToHectares = (acres) => acres * 0.404686;
+    const farmSizeAcres = Number(farmSize) || 0;
+    const farmSizeHectares = acresToHectares(farmSizeAcres);
+
     // Calculate component emissions
     const emissions = {
       farming: {
         fertilizers: fertilizers * emissionFactors.fertilizer,
         pesticides: pesticides * emissionFactors.pesticide,
-        landUse: farmSize * 100, // Base land use emission
+        landUse: farmSizeHectares * 100, // Base land use emission
       },
       processing: {
         fuel: fuelUsed * emissionFactors.diesel,
@@ -86,7 +90,7 @@ export async function POST(req) {
     const perKgEmissions = lot.quantityKg > 0 ? totalEmissions / lot.quantityKg : 0;
 
     // Carbon sequestration credit (shade trees, etc.)
-    const sequestration = farmSize * 50; // Approximate annual sequestration per hectare
+    const sequestration = farmSizeHectares * 50; // Approximate annual sequestration per hectare
     const netEmissions = Math.max(0, totalEmissions - sequestration);
     const netPerKg = lot.quantityKg > 0 ? netEmissions / lot.quantityKg : 0;
 

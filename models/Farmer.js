@@ -112,7 +112,7 @@ const FarmerSchema = new mongoose.Schema({
     },
   },
   farmSize: {
-    type: Number, // in hectares
+    type: Number, // in acres
     min: 0,
   },
   farmSizeUnit: {
@@ -153,7 +153,7 @@ const FarmerSchema = new mongoose.Schema({
     plantingYear: Number,
   }],
   numberOfTrees: Number,
-  plantingDensity: Number, // trees per hectare
+  plantingDensity: Number, // trees per acre
   certifications: [
     mongoose.Schema.Types.Mixed // Can be string or object with {name, issuedBy, issuedDate, expiryDate}
   ],

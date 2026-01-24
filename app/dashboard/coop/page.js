@@ -43,18 +43,18 @@ export default function CoopDashboard() {
   return (
     <RequireAuth requiredRole="coopAdmin">
       <DashboardLayout title="Cooperative Dashboard">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8">
         {/* Welcome */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-coffee-900 mb-2">
+        <div className="space-y-1">
+          <h1 className="text-2xl sm:text-3xl font-bold text-coffee-900">
             Welcome back, {session?.user?.name}
           </h1>
-          <p className="text-coffee-600">Manage your cooperative and support your farmers</p>
+          <p className="text-sm sm:text-base text-coffee-600">Manage your cooperative and support your farmers</p>
         </div>
 
         {/* Stats Grid */}
         {stats && (
-          <div className="grid md:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             <StatCard
               icon={<Users className="h-6 w-6" />}
               label="Total Farmers"
@@ -83,9 +83,9 @@ export default function CoopDashboard() {
         )}
 
         {/* Quick Actions */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <h2 className="text-xl font-bold text-coffee-900 mb-4">Quick Actions</h2>
-          <div className="grid md:grid-cols-4 gap-4">
+        <div className="bg-white rounded-lg shadow-sm p-5 sm:p-6">
+          <h2 className="text-lg sm:text-xl font-bold text-coffee-900 mb-3 sm:mb-4">Quick Actions</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <Link
               href="/dashboard/coop/farmers"
               className="flex items-center gap-3 p-4 border-2 border-coffee-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors"
@@ -118,11 +118,11 @@ export default function CoopDashboard() {
         </div>
 
         {/* Member Farmers */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-bold text-coffee-900 mb-4">Member Farmers</h2>
+        <div className="bg-white rounded-lg shadow-sm p-5 sm:p-6">
+          <h2 className="text-lg sm:text-xl font-bold text-coffee-900 mb-3 sm:mb-4">Member Farmers</h2>
           
           {loading ? (
-            <p className="text-coffee-600">Loading farmers...</p>
+            <p className="text-sm sm:text-base text-coffee-600">Loading farmers...</p>
           ) : farmers.length === 0 ? (
             <div className="text-center py-8">
               <Users className="h-12 w-12 text-coffee-300 mx-auto mb-3" />
@@ -135,7 +135,7 @@ export default function CoopDashboard() {
               </Link>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {farmers.map((farmer) => (
                 <div key={farmer._id} className="border border-coffee-200 rounded-lg p-4">
                   <h3 className="font-semibold text-coffee-900">{farmer.farmerName}</h3>

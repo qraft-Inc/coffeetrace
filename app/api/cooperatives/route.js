@@ -11,15 +11,7 @@ import Farmer from '../../../models/Farmer';
  */
 export async function GET(request) {
   try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session) {
-      return NextResponse.json(
-        { success: false, message: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
+    // Allow public access for listing cooperatives (verified/public page)
     await dbConnect();
 
     const { searchParams } = new URL(request.url);

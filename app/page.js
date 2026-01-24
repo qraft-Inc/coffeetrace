@@ -126,6 +126,12 @@ export default function HomePage() {
                 I'm a Farmer
               </Link>
               <Link
+                href="/auth/signup?role=coopAdmin"
+                className="px-6 sm:px-8 py-3 sm:py-4 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              >
+                I'm a Cooperative
+              </Link>
+              <Link
                 href="/auth/signup?role=buyer"
                 className="px-6 sm:px-8 py-3 sm:py-4 bg-white text-coffee-800 border-2 border-white rounded-lg hover:bg-coffee-50 transition-all text-base sm:text-lg font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
               >

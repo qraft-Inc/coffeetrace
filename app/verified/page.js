@@ -33,26 +33,21 @@ export default function VerifiedPage() {
       } else {
         console.error('Failed to fetch farmers:', farmersRes.status);
       }
-
-      // Mock cooperatives data (add API endpoint when ready)
-      setCooperatives([
-        {
-          _id: '1',
-          name: 'Mount Kenya Cooperative',
-          location: { country: 'Kenya', region: 'Central' },
-          memberCount: 250,
-          certifications: ['Organic', 'Fairtrade'],
-          established: 2010
-        },
-        {
-          _id: '2',
-          name: 'Uganda Coffee Alliance',
-          location: { country: 'Uganda', region: 'Western' },
-          memberCount: 180,
-          certifications: ['Rainforest Alliance'],
-          established: 2015
+      // Fetch cooperatives from public API (show verified/public cooperatives)
+      try {
+        const coopRes = await fetch('/api/cooperatives?limit=100');
+        if (coopRes.ok) {
+          const coopData = await coopRes.json();
+          console.log('Cooperatives API Response:', coopData);
+          setCooperatives(coopData.cooperatives || []);
+        } else {
+          console.warn('Failed to fetch cooperatives:', coopRes.status);
+          setCooperatives([]);
         }
-      ]);
+      } catch (err) {
+        console.warn('Error fetching cooperatives:', err.message || err);
+        setCooperatives([]);
+      }
 
       // Mock buyers data (add API endpoint when ready)
       setBuyers([

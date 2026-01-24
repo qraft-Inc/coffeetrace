@@ -69,6 +69,9 @@ const FarmerSchema = new mongoose.Schema({
 
 const User = mongoose.models.User || mongoose.model('User', UserSchema);
 const Farmer = mongoose.models.Farmer || mongoose.model('Farmer', FarmerSchema);
+// Minimal Cooperative model used for seeding references
+const CooperativeSchema = new mongoose.Schema({}, { strict: false });
+const Cooperative = mongoose.models.Cooperative || mongoose.model('Cooperative', CooperativeSchema);
 
 // Coffee Trace OutGrowers data
 const outgrowers = [
@@ -144,6 +147,33 @@ async function seedOutgrowers() {
     await mongoose.connect(process.env.MONGODB_URI);
     console.log('✅ Connected to MongoDB');
 
+    // Ensure Tooro Coffee Farmers Union (TCFU) exists and get its id
+    let cooperativeId = null;
+    try {
+      const reg = 'TCFU-2025-001';
+      let coop = await Cooperative.findOne({ registrationNumber: reg });
+      if (!coop) {
+        coop = await Cooperative.findOne({ name: /Tooro Coffee Farmers Union/i });
+      }
+      if (!coop) {
+        coop = await Cooperative.create({
+          name: 'Tooro Coffee Farmers Union (TCFU)',
+          registrationNumber: reg,
+          email: 'info@tcfu.org',
+          phoneNumber: '+256772000111',
+          address: { district: 'Kabarole', region: 'Western', country: 'Uganda' },
+          memberCount: 420,
+          verificationStatus: 'verified',
+        });
+        console.log(`🆕 Created cooperative: ${coop.name} (${coop._id})`);
+      } else {
+        console.log(`ℹ️  Using cooperative: ${coop.name} (${coop._id})`);
+      }
+      cooperativeId = coop._id;
+    } catch (err) {
+      console.warn('⚠️  Could not ensure cooperative exists:', err.message || err);
+    }
+
     let successCount = 0;
     let errorCount = 0;
 
@@ -159,7 +189,19 @@ async function seedOutgrowers() {
         // Check if user already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-          console.log(`⚠️  ${grower.name} already exists, skipping...`);
+          // If farmer profile exists but missing cooperativeId, link it
+          const existingFarmer = await Farmer.findOne({ userId: existingUser._id });
+          if (existingFarmer) {
+            if (!existingFarmer.cooperativeId && cooperativeId) {
+              existingFarmer.cooperativeId = cooperativeId;
+              await existingFarmer.save();
+              console.log(`🔗 Linked existing farmer ${grower.name} to cooperative`);
+            } else {
+              console.log(`⚠️  ${grower.name} already exists, skipping...`);
+            }
+          } else {
+            console.log(`⚠️  ${grower.name} already exists (no farmer profile), skipping...`);
+          }
           continue;
         }
 
@@ -174,7 +216,7 @@ async function seedOutgrowers() {
         });
 
         // Create farmer profile
-        const farmer = await Farmer.create({
+            const farmer = await Farmer.create({
           userId: user._id,
           name: grower.name,
           farmSize: farmSizeHectares,
@@ -188,7 +230,8 @@ async function seedOutgrowers() {
             district: 'Kasese',
           },
           certifications: ['Organic'],
-          isVerified: true,
+              isVerified: true,
+              cooperativeId: cooperativeId || undefined,
           totalLots: 0,
           totalYieldKg: 0,
         });

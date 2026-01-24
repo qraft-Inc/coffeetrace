@@ -23,7 +23,7 @@ export default function BuyerTraceabilityPage() {
           farmer: {
             name: 'John Mukasa',
             location: 'Kigali, Rwanda',
-            farmSize: '5 hectares',
+            farmSize: '12.4 acres',
             certified: true
           },
           harvest: {

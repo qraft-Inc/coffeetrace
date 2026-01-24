@@ -98,7 +98,7 @@ const LoanSchema = new mongoose.Schema({
     type: Number,
   },
   collateral: {
-    type: String, // Description of collateral (e.g., "Expected harvest from 2.5 hectares")
+    type: String, // Description of collateral (e.g., "Expected harvest from 6 acres")
   },
   guarantorId: {
     type: mongoose.Schema.Types.ObjectId,

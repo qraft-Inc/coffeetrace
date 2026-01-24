@@ -32,6 +32,14 @@ export default function AdminFarmersPage() {
     }
   };
 
+  const formatFarmSize = (farmer) => {
+    if (!farmer?.farmSize) return 'N/A';
+    const sizeNumber = Number(farmer.farmSize);
+    const unit = farmer.farmSizeUnit || 'acres';
+    const acres = unit === 'hectares' ? sizeNumber * 2.47105 : sizeNumber;
+    return `${acres.toFixed(1)} acres`;
+  };
+
   const filteredFarmers = Array.isArray(farmers) ? farmers.filter(farmer => {
     const matchesSearch = farmer.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          farmer.email?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -180,7 +188,7 @@ export default function AdminFarmersPage() {
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {farmer.farmSize ? `${farmer.farmSize} ha` : 'N/A'}
+                          {formatFarmSize(farmer)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${

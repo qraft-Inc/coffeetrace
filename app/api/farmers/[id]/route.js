@@ -3,7 +3,9 @@ import { getServerSession } from 'next-auth/next';
 import dbConnect from '../../../../lib/dbConnect';
 import Farmer from '../../../../models/Farmer';
 import Lot from '../../../../models/Lot';
+import User from '../../../../models/User';
 import AuditTrail from '../../../../models/AuditTrail';
+import Cooperative from '../../../../models/Cooperative';
 import { authOptions } from '../../../../lib/authOptions';
 
 export const dynamic = 'force-dynamic';
@@ -166,14 +168,6 @@ export async function DELETE(request, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Only admins can delete
-    if (session.user.role !== 'admin') {
-      return NextResponse.json(
-        { error: 'Forbidden - admin only' },
-        { status: 403 }
-      );
-    }
-
     await dbConnect();
     const { id } = params;
 
@@ -185,17 +179,33 @@ export async function DELETE(request, { params }) {
       );
     }
 
-    // Soft delete - just mark as inactive in the user record
-    await User.findByIdAndUpdate(farmer.userId, { isActive: false });
+    const isAdmin = session.user.role === 'admin';
+    const isCoopAdmin = session.user.role === 'coopAdmin';
 
-    // Log deletion
-    await AuditTrail.log({
-      entityType: 'Farmer',
-      entityId: farmer._id,
-      action: 'deleted',
-      actorId: session.user.id,
-      description: `Farmer profile deactivated`,
-    });
+    if (!isAdmin && !isCoopAdmin) {
+      return NextResponse.json(
+        { error: 'Forbidden - insufficient permissions' },
+        { status: 403 }
+      );
+    }
+
+    // Soft delete - just mark as inactive in the user record if exists
+    if (farmer.userId) {
+      await User.findByIdAndUpdate(farmer.userId, { isActive: false });
+    }
+
+    // Log deletion (non-blocking)
+    try {
+      await AuditTrail.log({
+        entityType: 'Farmer',
+        entityId: farmer._id,
+        action: 'deleted',
+        actorId: session.user.id,
+        description: `Farmer profile deactivated`,
+      });
+    } catch (logErr) {
+      console.error('Audit log failed (non-blocking):', logErr);
+    }
 
     return NextResponse.json({
       message: 'Farmer deactivated successfully',

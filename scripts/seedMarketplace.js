@@ -317,7 +317,7 @@ async function seedMarketplace() {
       users[i].farmerProfile = farmer._id;
       await users[i].save();
       
-      console.log(`  ✓ ${farmer.name} - ${farmer.address.district}, ${farmer.farmSize}ha`);
+      console.log(`  ✓ ${farmer.name} - ${farmer.address.district}, ${farmer.farmSize} acres`);
     }
     console.log(`\n✅ Created ${farmers.length} farmers\n`);
 
