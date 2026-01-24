@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Coffee, Plus, Package, TrendingUp, MapPin, DollarSign, Gift } from 'lucide-react';
+import { Coffee, Plus, Package, TrendingUp, MapPin, DollarSign, Gift, Sprout } from 'lucide-react';
 import DashboardLayout from '../../../components/layout/DashboardLayout';
 import { formatWeight, formatDate, formatCurrency } from '../../../lib/formatters';
 import dynamicImport from 'next/dynamic';
@@ -112,7 +112,7 @@ export default function FarmerDashboard() {
         {/* Quick Actions */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
           <h2 className="text-xl font-bold text-coffee-900 mb-4">Quick Actions</h2>
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-4 gap-4">
             <Link
               href="/dashboard/farmer/lots/new"
               className="flex items-center gap-3 p-4 border-2 border-dashed border-coffee-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors"
@@ -126,6 +126,13 @@ export default function FarmerDashboard() {
             >
               <MapPin className="h-6 w-6 text-primary-600" />
               <span className="font-semibold text-coffee-900">Update Farm Info</span>
+            </Link>
+            <Link
+              href="/dashboard/farmer/agronomist"
+              className="flex items-center gap-3 p-4 border-2 border-green-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition-colors"
+            >
+              <Sprout className="h-6 w-6 text-green-600" />
+              <span className="font-semibold text-coffee-900">Get Expert Advice</span>
             </Link>
             <Link
               href="/marketplace/agro-inputs"

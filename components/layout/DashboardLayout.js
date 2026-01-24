@@ -42,6 +42,7 @@ const roleNavigation = {
   farmer: [
     { name: 'Dashboard', href: '/dashboard/farmer', icon: Home },
     { name: 'My Lots', href: '/dashboard/farmer/lots', icon: Package },
+    { name: 'Agronomist', href: '/dashboard/farmer/agronomist', icon: TrendingUp },
     { name: 'Marketplace', href: '/marketplace', icon: ShoppingCart },
     { name: 'Wallet', href: '/dashboard/wallet', icon: Wallet },
     { name: 'Payouts', href: '/dashboard/payouts', icon: DollarSign },
@@ -50,6 +51,8 @@ const roleNavigation = {
   coopAdmin: [
     { name: 'Dashboard', href: '/dashboard/coop', icon: Home },
     { name: 'Farmers', href: '/dashboard/coop/farmers', icon: Users },
+    { name: 'Buyers', href: '/dashboard/coop/buyers', icon: ShoppingCart },
+    { name: 'Finance', href: '/dashboard/coop/finance', icon: DollarSign },
     { name: 'Lots', href: '/dashboard/coop/lots', icon: Package },
     { name: 'Quality', href: '/dashboard/coop/quality', icon: Award },
     { name: 'Reports', href: '/dashboard/coop/reports', icon: FileText },

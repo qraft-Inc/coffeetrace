@@ -10,6 +10,10 @@ const BuyerSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  cooperativeId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Cooperative',
+  },
   companyName: {
     type: String,
     required: [true, 'Company name is required'],
@@ -77,6 +81,7 @@ const BuyerSchema = new mongoose.Schema({
 });
 
 BuyerSchema.index({ userId: 1 });
+BuyerSchema.index({ cooperativeId: 1 });
 BuyerSchema.index({ businessType: 1 });
 // Only create geospatial index if location.coordinates exists
 BuyerSchema.index({ location: '2dsphere' }, { sparse: true });

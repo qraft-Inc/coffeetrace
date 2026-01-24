@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Users, Package, TrendingUp, MapPin, DollarSign } from 'lucide-react';
+import { Users, Package, TrendingUp, MapPin, DollarSign, ShoppingCart, PiggyBank } from 'lucide-react';
 import DashboardLayout from '../../../components/layout/DashboardLayout';
 import StatCard from '../../../components/dashboard/StatCard';
 import RequireAuth from '../../../components/dashboard/RequireAuth';
@@ -94,6 +94,20 @@ export default function CoopDashboard() {
               <span className="font-semibold text-coffee-900">Manage Farmers</span>
             </Link>
             <Link
+              href="/dashboard/coop/buyers"
+              className="flex items-center gap-3 p-4 border-2 border-orange-300 rounded-lg hover:border-orange-500 hover:bg-orange-50 transition-colors"
+            >
+              <ShoppingCart className="h-6 w-6 text-orange-600" />
+              <span className="font-semibold text-coffee-900">Manage Buyers</span>
+            </Link>
+            <Link
+              href="/dashboard/coop/finance"
+              className="flex items-center gap-3 p-4 border-2 border-emerald-300 rounded-lg hover:border-emerald-500 hover:bg-emerald-50 transition-colors"
+            >
+              <PiggyBank className="h-6 w-6 text-emerald-600" />
+              <span className="font-semibold text-coffee-900">Finance Partners</span>
+            </Link>
+            <Link
               href="/dashboard/cooperative/agro-inputs"
               className="flex items-center gap-3 p-4 border-2 border-green-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition-colors"
             >
@@ -106,13 +120,6 @@ export default function CoopDashboard() {
             >
               <Package className="h-6 w-6 text-primary-600" />
               <span className="font-semibold text-coffee-900">View All Lots</span>
-            </Link>
-            <Link
-              href="/dashboard/coop/reports"
-              className="flex items-center gap-3 p-4 border-2 border-coffee-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors"
-            >
-              <TrendingUp className="h-6 w-6 text-primary-600" />
-              <span className="font-semibold text-coffee-900">Generate Reports</span>
             </Link>
           </div>
         </div>
