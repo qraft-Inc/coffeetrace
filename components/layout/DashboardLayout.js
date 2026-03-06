@@ -69,6 +69,7 @@ const roleNavigation = {
   investor: [
     { name: 'Dashboard', href: '/dashboard/investor', icon: Home },
     { name: 'Portfolio', href: '/dashboard/investor/portfolio', icon: TrendingUp },
+    { name: 'All Investors', href: '/dashboard/investor/investors', icon: Users },
     { name: 'Impact Metrics', href: '/dashboard/investor/impact', icon: BarChart3 },
     { name: 'Farmers', href: '/dashboard/investor/farmers', icon: Users },
     { name: 'Reports', href: '/dashboard/investor/reports', icon: FileText },

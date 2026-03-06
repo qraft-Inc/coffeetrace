@@ -30,6 +30,9 @@ export default function DashboardPage() {
       case 'coopAdmin':
         router.push('/dashboard/coop');
         break;
+      case 'investor':
+        router.push('/dashboard/investor');
+        break;
       case 'admin':
         router.push('/dashboard/admin');
         break;
