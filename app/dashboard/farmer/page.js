@@ -112,7 +112,14 @@ export default function FarmerDashboard() {
         {/* Quick Actions */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
           <h2 className="text-xl font-bold text-coffee-900 mb-4">Quick Actions</h2>
-          <div className="grid md:grid-cols-4 gap-4">
+          <div className="grid md:grid-cols-5 gap-4">
+            <Link
+              href="/dashboard/farmer/farm-profile"
+              className="flex items-center gap-3 p-4 border-2 border-green-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition-colors"
+            >
+              <MapPin className="h-6 w-6 text-green-600" />
+              <span className="font-semibold text-coffee-900">View Farm Profile</span>
+            </Link>
             <Link
               href="/dashboard/farmer/lots/new"
               className="flex items-center gap-3 p-4 border-2 border-dashed border-coffee-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors"

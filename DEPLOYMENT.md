@@ -20,7 +20,6 @@
 - [ ] `MONGODB_URI` - MongoDB connection string
 - [ ] `NEXTAUTH_SECRET` - 32+ character random string
 - [ ] `NEXTAUTH_URL` - Production URL
-- [ ] `NEXT_PUBLIC_MAPBOX_TOKEN` - Mapbox public token (optional)
 - [ ] `CLOUDINARY_*` - Image upload credentials (optional)
 
 ### Security
@@ -73,7 +72,6 @@ NEXTAUTH_URL = https://your-site.netlify.app
 
 **Optional:**
 ```
-NEXT_PUBLIC_MAPBOX_TOKEN = pk.your_mapbox_token
 CLOUDINARY_CLOUD_NAME = your-cloud-name
 CLOUDINARY_API_KEY = your-api-key
 CLOUDINARY_API_SECRET = your-api-secret
@@ -162,9 +160,8 @@ Monitor build progress in **Deploys** tab.
 - Clear cookies and re-login
 
 ### Map Not Loading
-- **Solution:** Add `NEXT_PUBLIC_MAPBOX_TOKEN`
-- Verify token is public (starts with `pk.`)
-- Check browser console for errors
+- **Solution:** Verify internet access to `https://{s}.tile.openstreetmap.org`
+- Ensure Leaflet CSS is loaded and no client-side map errors appear in browser console
 
 ---
 

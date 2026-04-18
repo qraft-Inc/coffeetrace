@@ -115,6 +115,13 @@ export default function CoopDashboard() {
               <span className="font-semibold text-coffee-900">Agro-Inputs</span>
             </Link>
             <Link
+              href="/dashboard/coop/farm-identity"
+              className="flex items-center gap-3 p-4 border-2 border-lime-300 rounded-lg hover:border-lime-500 hover:bg-lime-50 transition-colors"
+            >
+              <MapPin className="h-6 w-6 text-lime-700" />
+              <span className="font-semibold text-coffee-900">Farm Identity</span>
+            </Link>
+            <Link
               href="/dashboard/coop/lots"
               className="flex items-center gap-3 p-4 border-2 border-coffee-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors"
             >

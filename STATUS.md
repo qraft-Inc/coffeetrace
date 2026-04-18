@@ -58,7 +58,7 @@
 #### Components & Utilities
 - [x] **React Components**
   - `Providers.js` - SessionProvider wrapper
-  - `FarmMap.js` - Mapbox integration with fallback
+  - `FarmMap.js` - Leaflet + OpenStreetMap integration with fallback
   - **`dashboard/StatCard.js`** - Reusable stat card (NEW)
   - **`dashboard/DashboardHeader.js`** - Shared header (NEW)
   - **`dashboard/StatusBadge.js`** - Status badges (NEW)
@@ -79,7 +79,7 @@
 - [x] **Configuration Files**
   - `package.json` with all dependencies
   - `tailwind.config.js` with custom coffee theme
-  - `next.config.js` with Mapbox domain
+  - `next.config.js` for Next.js runtime configuration
   - `netlify.toml` with build settings
   - `.env.local.example` template
 
@@ -244,7 +244,7 @@
 ## 🐛 Known Issues
 
 ### Minor Issues
-1. **Mapbox CSS Warning** - Commented import in globals.css (expected, not a blocker)
+1. **Leaflet map is client-only** - Expected in App Router to avoid SSR `window` access
 2. **No Error Boundaries** - React error boundaries not implemented yet
 3. **No Loading States** - Loading spinners/skeletons not added to all pages
 

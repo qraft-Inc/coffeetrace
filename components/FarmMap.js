@@ -1,126 +1,84 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
 import { MapPin } from 'lucide-react';
 
 /**
  * FarmMap Component
- * Displays farm locations on a map using Mapbox GL JS
- * 
- * Note: Requires NEXT_PUBLIC_MAPBOX_TOKEN in environment variables
+ * Displays farm locations on a map using Leaflet + OpenStreetMap
  */
 export default function FarmMap({ locations = [], center, zoom = 10, height = '400px' }) {
-  const mapContainer = useRef(null);
-  const map = useRef(null);
-  const [mapLoaded, setMapLoaded] = useState(false);
-  const [error, setError] = useState(null);
-
   useEffect(() => {
-    // Check if Mapbox token is available
-    const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
-    
-    if (!mapboxToken) {
-      setError('Mapbox token not configured');
-      return;
-    }
-
-    // Only initialize map once
-    if (map.current) return;
-
-    // Dynamically import mapbox-gl
-    import('mapbox-gl').then((mapboxgl) => {
-      mapboxgl.default.accessToken = mapboxToken;
-
-      const defaultCenter = center || [32.5825, 0.3476]; // Uganda center
-      
-      map.current = new mapboxgl.default.Map({
-        container: mapContainer.current,
-        style: 'mapbox://styles/mapbox/outdoors-v12',
-        center: defaultCenter,
-        zoom: zoom,
-      });
-
-      // Add navigation controls
-      map.current.addControl(new mapboxgl.default.NavigationControl(), 'top-right');
-
-      map.current.on('load', () => {
-        setMapLoaded(true);
-
-        // Add markers for locations
-        locations.forEach((location) => {
-          if (location.coordinates && location.coordinates.length === 2) {
-            new mapboxgl.default.Marker({ color: '#16a34a' })
-              .setLngLat(location.coordinates)
-              .setPopup(
-                new mapboxgl.default.Popup({ offset: 25 }).setHTML(
-                  `<div class="p-2">
-                    <h3 class="font-semibold">${location.name || 'Farm'}</h3>
-                    ${location.farmSize ? `<p class="text-sm">Size: ${location.farmSizeUnit === 'hectares' ? (location.farmSize * 2.47105).toFixed(1) : location.farmSize} acres</p>` : ''}
-                  </div>`
-                )
-              )
-              .addTo(map.current);
-          }
-        });
-
-        // Fit map to markers if multiple locations
-        if (locations.length > 1) {
-          const bounds = new mapboxgl.default.LngLatBounds();
-          locations.forEach((loc) => {
-            if (loc.coordinates && loc.coordinates.length === 2) {
-              bounds.extend(loc.coordinates);
-            }
-          });
-          map.current.fitBounds(bounds, { padding: 50 });
-        }
-      });
-    }).catch((err) => {
-      console.error('Failed to load Mapbox:', err);
-      setError('Failed to load map');
+    L.Marker.prototype.options.icon = new L.Icon({
+      iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+      iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
     });
+  }, []);
 
-    // Cleanup
-    return () => {
-      if (map.current) {
-        map.current.remove();
-        map.current = null;
-      }
-    };
-  }, [locations, center, zoom]);
-
-  if (error) {
-    return (
-      <div
-        style={{ height }}
-        className="bg-coffee-100 rounded-lg flex items-center justify-center"
-      >
-        <div className="text-center text-coffee-600">
-          <MapPin className="h-12 w-12 mx-auto mb-2 opacity-50" />
-          <p className="text-sm">{error}</p>
-          <p className="text-xs mt-1">Map will be available when Mapbox token is configured</p>
-        </div>
-      </div>
-    );
-  }
+  const mapCenter = center ? [center[1], center[0]] : [0.3476, 32.5825];
 
   return (
-    <div style={{ height }} className="relative rounded-lg overflow-hidden">
-      <div ref={mapContainer} style={{ height: '100%', width: '100%' }} />
-      {!mapLoaded && (
-        <div className="absolute inset-0 bg-coffee-100 flex items-center justify-center">
-          <div className="text-center text-coffee-600">
-            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary-600 border-r-transparent mb-2"></div>
-            <p className="text-sm">Loading map...</p>
-          </div>
-        </div>
-      )}
+    <div style={{ height }} className="relative overflow-hidden rounded-lg border border-gray-200">
+      <MapContainer center={mapCenter} zoom={zoom} className="h-full w-full" scrollWheelZoom>
+        <TileLayer
+          attribution="&copy; OpenStreetMap contributors"
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        <FitMapToLocations locations={locations} />
+
+        {locations.map((location, index) => {
+          if (!location.coordinates || location.coordinates.length !== 2) return null;
+
+          const [lng, lat] = location.coordinates;
+          return (
+            <Marker key={`${location.name || 'farm'}-${index}`} position={[lat, lng]}>
+              <Popup>
+                <div className="p-1">
+                  <h3 className="font-semibold">{location.name || 'Farm'}</h3>
+                  {location.farmSize ? (
+                    <p className="text-sm">
+                      Size: {location.farmSizeUnit === 'hectares' ? (location.farmSize * 2.47105).toFixed(1) : location.farmSize} acres
+                    </p>
+                  ) : null}
+                </div>
+              </Popup>
+            </Marker>
+          );
+        })}
+      </MapContainer>
     </div>
   );
 }
 
+function FitMapToLocations({ locations }) {
+  const map = useMap();
+
+  useEffect(() => {
+    const points = locations
+      .filter((loc) => loc.coordinates && loc.coordinates.length === 2)
+      .map((loc) => [loc.coordinates[1], loc.coordinates[0]]);
+
+    if (!points.length) return;
+    if (points.length === 1) {
+      map.setView(points[0], 13);
+      return;
+    }
+
+    map.fitBounds(points, { padding: [24, 24] });
+  }, [locations, map]);
+
+  return null;
+}
+
 /**
  * SimpleFarmMap Component
- * Fallback static map component when Mapbox is not available
+ * Lightweight fallback visualization component
  */
 export function SimpleFarmMap({ locations = [], height = '400px' }) {
   return (

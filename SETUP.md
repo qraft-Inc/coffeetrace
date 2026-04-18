@@ -9,7 +9,7 @@ Complete guide to get Coffee Trace running locally and deploy to Netlify.
 - **Node.js** 18+ installed ([Download](https://nodejs.org/))
 - **MongoDB Atlas** account ([Sign up free](https://www.mongodb.com/cloud/atlas/register))
 - **Netlify** account ([Sign up](https://app.netlify.com/signup))
-- **Mapbox** account for maps ([Get free token](https://account.mapbox.com/))
+- **No map provider account needed** (maps use OpenStreetMap tiles via Leaflet)
 - **Git** installed
 
 ---
@@ -45,9 +45,6 @@ MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/coffeetrace?retr
 # NextAuth Configuration
 NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=generate-a-random-32-character-secret-here
-
-# Mapbox (for maps)
-NEXT_PUBLIC_MAPBOX_TOKEN=pk.your_mapbox_public_token_here
 
 # Optional: Cloudinary (for image uploads)
 CLOUDINARY_CLOUD_NAME=your-cloud-name
@@ -123,7 +120,6 @@ In Netlify dashboard → **Site settings** → **Environment variables**, add:
 MONGODB_URI=mongodb+srv://...
 NEXTAUTH_SECRET=your-secret-here
 NEXTAUTH_URL=https://your-site.netlify.app
-NEXT_PUBLIC_MAPBOX_TOKEN=pk.your_token
 ```
 
 ### 4. Deploy
@@ -252,9 +248,9 @@ PUT    /api/offers/[id]          # Accept/reject/counter offer
 - Ensure network access is enabled
 
 ### "Map not loading"
-- Verify `NEXT_PUBLIC_MAPBOX_TOKEN` is set
+- Verify internet access to `https://{s}.tile.openstreetmap.org`
 - Check browser console for errors
-- Ensure token is valid on Mapbox dashboard
+- Ensure Leaflet CSS is loaded (`leaflet/dist/leaflet.css`)
 
 ### "Session undefined in API route"
 - Make sure `NEXTAUTH_SECRET` is set
@@ -273,7 +269,8 @@ PUT    /api/offers/[id]          # Accept/reject/counter offer
 - [Next.js Documentation](https://nextjs.org/docs)
 - [NextAuth.js Guide](https://next-auth.js.org/getting-started/introduction)
 - [MongoDB Mongoose](https://mongoosejs.com/docs/guide.html)
-- [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/api/)
+- [Leaflet](https://leafletjs.com/reference.html)
+- [React Leaflet](https://react-leaflet.js.org/)
 - [Tailwind CSS](https://tailwindcss.com/docs)
 
 ---
