@@ -105,7 +105,6 @@ const InvestmentSchema = new mongoose.Schema(
 
 // Indexes for efficient querying
 InvestmentSchema.index({ investorUserId: 1, status: 1 });
-InvestmentSchema.index({ cooperativeId: 1 });
 InvestmentSchema.index({ investmentDate: -1 });
 
 export default mongoose.models.Investment || mongoose.model('Investment', InvestmentSchema);

@@ -102,6 +102,5 @@ WalletTransactionSchema.index({ walletId: 1, createdAt: -1 });
 WalletTransactionSchema.index({ userId: 1, createdAt: -1 });
 WalletTransactionSchema.index({ type: 1 });
 WalletTransactionSchema.index({ status: 1 });
-WalletTransactionSchema.index({ reference: 1 });
 
 export default mongoose.models.WalletTransaction || mongoose.model('WalletTransaction', WalletTransactionSchema);

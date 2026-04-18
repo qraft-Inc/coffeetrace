@@ -147,7 +147,6 @@ const OrderSchema = new mongoose.Schema({
 
 OrderSchema.index({ buyerId: 1, createdAt: -1 });
 OrderSchema.index({ supplierId: 1, createdAt: -1 });
-OrderSchema.index({ orderNumber: 1 });
 OrderSchema.index({ orderStatus: 1 });
 OrderSchema.index({ paymentStatus: 1 });
 

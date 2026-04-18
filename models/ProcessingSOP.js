@@ -121,7 +121,6 @@ const ProcessingSOPSchema = new mongoose.Schema({
 
 ProcessingSOPSchema.index({ category: 1 });
 ProcessingSOPSchema.index({ processingMethod: 1 });
-ProcessingSOPSchema.index({ slug: 1 });
 ProcessingSOPSchema.index({ isActive: 1 });
 
 export default mongoose.models.ProcessingSOP || mongoose.model('ProcessingSOP', ProcessingSOPSchema);

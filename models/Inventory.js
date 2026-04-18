@@ -380,11 +380,9 @@ InventoryMovementSchema.index({ 'toLocation.warehouseId': 1 });
 InventoryMovementSchema.index({ date: -1 });
 
 WarehouseSchema.index({ cooperativeId: 1 });
-WarehouseSchema.index({ code: 1 });
 WarehouseSchema.index({ location: '2dsphere' });
 WarehouseSchema.index({ isActive: 1 });
 
-ExportBatchSchema.index({ batchNumber: 1 });
 ExportBatchSchema.index({ exporterId: 1 });
 ExportBatchSchema.index({ buyerId: 1 });
 ExportBatchSchema.index({ status: 1 });

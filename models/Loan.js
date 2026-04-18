@@ -147,6 +147,5 @@ LoanSchema.index({ farmerId: 1 });
 LoanSchema.index({ userId: 1 });
 LoanSchema.index({ status: 1 });
 LoanSchema.index({ dueDate: 1 });
-LoanSchema.index({ loanNumber: 1 });
 
 export default mongoose.models.Loan || mongoose.model('Loan', LoanSchema);

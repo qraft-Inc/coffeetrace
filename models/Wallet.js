@@ -66,7 +66,6 @@ const WalletSchema = new mongoose.Schema({
 });
 
 // Indexes
-WalletSchema.index({ userId: 1 });
 WalletSchema.index({ balance: -1 });
 WalletSchema.index({ creditScore: -1 });
 

@@ -164,7 +164,6 @@ const TrainingContentSchema = new mongoose.Schema({
 
 // Indexes
 TrainingContentSchema.index({ category: 1, difficulty: 1 });
-TrainingContentSchema.index({ slug: 1 });
 TrainingContentSchema.index({ isPublished: 1 });
 TrainingContentSchema.index({ keywords: 1 });
 TrainingContentSchema.index({ addressesIssues: 1 });

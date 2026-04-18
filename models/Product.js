@@ -166,7 +166,6 @@ const ProductSchema = new mongoose.Schema({
 
 ProductSchema.index({ category: 1 });
 ProductSchema.index({ supplierId: 1 });
-ProductSchema.index({ slug: 1 });
 ProductSchema.index({ isActive: 1 });
 ProductSchema.index({ 'ratings.average': -1 });
 

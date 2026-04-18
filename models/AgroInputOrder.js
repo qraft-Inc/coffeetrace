@@ -155,7 +155,6 @@ const AgroInputOrderSchema = new mongoose.Schema({
 // Indexes
 AgroInputOrderSchema.index({ farmerId: 1, status: 1 });
 AgroInputOrderSchema.index({ cooperativeId: 1, status: 1 });
-AgroInputOrderSchema.index({ orderNumber: 1 }, { unique: true });
 AgroInputOrderSchema.index({ 'paymentDetails.status': 1 });
 
 // Generate unique order number
