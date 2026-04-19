@@ -645,8 +645,8 @@ function ListingCard({ listing, type, computeGrade }) {
 
   // Coffee lots
   return (
-    <Link href={`/marketplace/${listing._id}`}>
-      <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden border border-coffee-200 hover:border-primary-600 h-full flex flex-col">
+    <Link href={`/marketplace/coffee/${listing._id}`}>
+      <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden border border-coffee-200 hover:border-primary-600 h-full flex flex-col cursor-pointer">
         <div className="relative h-24 sm:h-32 flex items-center justify-center overflow-hidden flex-shrink-0" 
           style={{
             backgroundColor: lot?.region === 'Mt. Elgon' ? '#4a7c59' : 
@@ -700,9 +700,19 @@ function ListingCard({ listing, type, computeGrade }) {
 function ListingListItem({ listing, type, computeGrade }) {
   const lot = listing.lotId || listing;
 
+  // Build the appropriate URL based on type
+  let href = `/marketplace/${listing._id}`;
+  if (type === 'coffee') {
+    href = `/marketplace/coffee/${listing._id}`;
+  } else if (type === 'agro') {
+    href = `/marketplace/agro/${listing._id}`;
+  } else if (type === 'products') {
+    href = `/marketplace/products/${listing._id}`;
+  }
+
   return (
-    <Link href={`/marketplace/${listing._id}`}>
-      <div className="bg-white rounded-lg border border-coffee-200 hover:border-primary-600 hover:shadow-md transition-all p-3 sm:p-4 flex items-center gap-3 sm:gap-4">
+    <Link href={href}>
+      <div className="bg-white rounded-lg border border-coffee-200 hover:border-primary-600 hover:shadow-md transition-all p-3 sm:p-4 flex items-center gap-3 sm:gap-4 cursor-pointer">
         <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-orange-200 to-amber-300 rounded-lg flex-shrink-0 flex items-center justify-center">
           {type === 'coffee' ? (
             <Coffee className="h-8 w-8 sm:h-10 sm:w-10 text-white opacity-40" />
