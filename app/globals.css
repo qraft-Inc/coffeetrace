@@ -149,3 +149,43 @@
 .animate-stagger-2 { animation-delay: 0.2s; }
 .animate-stagger-3 { animation-delay: 0.3s; }
 .animate-stagger-4 { animation-delay: 0.4s; }
+
+/* Scroll-triggered animations with data attributes */
+[data-scroll-animate][data-animated="true"] {
+  animation: slideInUp 0.6s ease-out forwards;
+}
+
+[data-scroll-animate]:not([data-animated="true"]) {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+/* Individual scroll animation elements */
+[data-scroll-animate][data-animation="slideInUp"][data-animated="true"] {
+  animation: slideInUp 0.6s ease-out forwards !important;
+}
+
+[data-scroll-animate][data-animation="fadeIn"][data-animated="true"] {
+  animation: fadeIn 0.6s ease-out forwards !important;
+}
+
+[data-scroll-animate][data-animation="scaleIn"][data-animated="true"] {
+  animation: scaleIn 0.6s ease-out forwards !important;
+}
+
+/* Stagger delays for child elements */
+[data-scroll-animate-stagger="1"] {
+  animation-delay: 0.1s !important;
+}
+
+[data-scroll-animate-stagger="2"] {
+  animation-delay: 0.2s !important;
+}
+
+[data-scroll-animate-stagger="3"] {
+  animation-delay: 0.3s !important;
+}
+
+[data-scroll-animate-stagger="4"] {
+  animation-delay: 0.4s !important;
+}

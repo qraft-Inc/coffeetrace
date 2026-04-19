@@ -8,7 +8,33 @@ import { Coffee, Leaf, TrendingUp, Shield, MapPin, Users, Award, CheckCircle, St
 
 export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [animatedElements, setAnimatedElements] = useState(new Set());
   const { data: session } = useSession();
+
+  useEffect(() => {
+    // Intersection Observer for scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !animatedElements.has(entry.target)) {
+          entry.target.setAttribute('data-animated', 'true');
+          setAnimatedElements((prev) => new Set([...prev, entry.target]));
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -100px 0px', // Trigger animation 100px before element is fully visible
+    });
+
+    // Observe all elements with data-scroll-animate attribute
+    document.querySelectorAll('[data-scroll-animate]').forEach((el) => {
+      observer.observe(el);
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [animatedElements]);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-coffee-50 to-white">
       {/* Header */}
@@ -157,13 +183,13 @@ export default function HomePage() {
       </section>
 
       {/* Problem Statement Section */}
-      <section id="farmers" className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-primary-50 to-white">
+      <section id="farmers" className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-primary-50 to-white" data-scroll-animate="true">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-coffee-900 mb-6 sm:mb-8">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-coffee-900 mb-6 sm:mb-8" data-scroll-animate="true">
             Why Coffee Traceability Fails Today
           </h2>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 text-left">
-            <div className="p-4 sm:p-6 border border-coffee-200 rounded-lg bg-white">
+            <div className="p-4 sm:p-6 border border-coffee-200 rounded-lg bg-white" data-scroll-animate="true" data-scroll-animate-stagger="1">
               <div className="text-red-600 mb-3">
                 <Shield className="h-6 w-6 sm:h-8 sm:w-8" />
               </div>
@@ -172,7 +198,7 @@ export default function HomePage() {
                 Buyers struggle to verify origin, quality, and ethical practices in the supply chain.
               </p>
             </div>
-            <div className="p-4 sm:p-6 border border-coffee-200 rounded-lg bg-white">
+            <div className="p-4 sm:p-6 border border-coffee-200 rounded-lg bg-white" data-scroll-animate="true" data-scroll-animate-stagger="2">
               <div className="text-orange-600 mb-3">
                 <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8" />
               </div>
@@ -181,7 +207,7 @@ export default function HomePage() {
                 Smallholder farmers lack market access and data to negotiate fair prices.
               </p>
             </div>
-            <div className="p-4 sm:p-6 border border-coffee-200 rounded-lg bg-white">
+            <div className="p-4 sm:p-6 border border-coffee-200 rounded-lg bg-white" data-scroll-animate="true" data-scroll-animate-stagger="3">
               <div className="text-yellow-600 mb-3">
                 <MapPin className="h-6 w-6 sm:h-8 sm:w-8" />
               </div>
@@ -195,9 +221,9 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section id="cooperatives" className="py-12 sm:py-16 lg:py-20 bg-coffee-50">
+      <section id="cooperatives" className="py-12 sm:py-16 lg:py-20 bg-coffee-50" data-scroll-animate="true">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10 sm:mb-12 lg:mb-16">
+          <div className="text-center mb-10 sm:mb-12 lg:mb-16" data-scroll-animate="true">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-coffee-900 mb-3 sm:mb-4">
               One Platform for Traceability, Trade, and Compliance
             </h2>
@@ -206,26 +232,32 @@ export default function HomePage() {
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-            <FeatureCard
-              icon={<QrCode className="h-8 w-8" />}
-              title="QR Code Traceability"
-              description="Track every coffee lot from harvest to export with QR codes and GPS-tagged events at each step."
-              color="blue"
-            />
-            <FeatureCard
-              icon={<Shield className="h-8 w-8" />}
-              title="EUDR Compliance"
-              description="EU Deforestation Regulation compliance tracking with geolocation, risk assessment, and due diligence statements."
-              color="blue"
-            />
-            <FeatureCard
-              icon={<ShoppingBag className="h-8 w-8" />}
-              title="Marketplace"
-              description="Connect farmers to verified buyers, post coffee listings, and complete secure transactions directly."
-              color="orange"
-            />
+            <div data-scroll-animate="true" data-scroll-animate-stagger="1">
+              <FeatureCard
+                icon={<QrCode className="h-8 w-8" />}
+                title="QR Code Traceability"
+                description="Track every coffee lot from harvest to export with QR codes and GPS-tagged events at each step."
+                color="blue"
+              />
+            </div>
+            <div data-scroll-animate="true" data-scroll-animate-stagger="2">
+              <FeatureCard
+                icon={<Shield className="h-8 w-8" />}
+                title="EUDR Compliance"
+                description="EU Deforestation Regulation compliance tracking with geolocation, risk assessment, and due diligence statements."
+                color="blue"
+              />
+            </div>
+            <div data-scroll-animate="true" data-scroll-animate-stagger="3">
+              <FeatureCard
+                icon={<ShoppingBag className="h-8 w-8" />}
+                title="Marketplace"
+                description="Connect farmers to verified buyers, post coffee listings, and complete secure transactions directly."
+                color="orange"
+              />
+            </div>
           </div>
-          <div className="text-center mt-8 sm:mt-10 lg:mt-12">
+          <div className="text-center mt-8 sm:mt-10 lg:mt-12" data-scroll-animate="true">
             <Link
               href="#"
               className="inline-block text-primary-600 hover:text-primary-700 font-semibold text-lg transition-colors"
@@ -237,9 +269,9 @@ export default function HomePage() {
       </section>
 
       {/* Choose Your Path / Role Segmentation - Dashboard Entry Points */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-white">
+      <section className="py-12 sm:py-16 lg:py-20 bg-white" data-scroll-animate="true">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10 sm:mb-12 lg:mb-16">
+          <div className="text-center mb-10 sm:mb-12 lg:mb-16" data-scroll-animate="true">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-coffee-900 mb-3 sm:mb-4">
               Choose Your Path
             </h2>
@@ -249,7 +281,7 @@ export default function HomePage() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {/* Farmer Card */}
-            <div className="p-6 sm:p-8 border-2 border-coffee-200 rounded-xl hover:border-primary-600 hover:shadow-lg transition-all bg-gradient-to-br from-coffee-50 to-white">
+            <div className="p-6 sm:p-8 border-2 border-coffee-200 rounded-xl hover:border-primary-600 hover:shadow-lg transition-all bg-gradient-to-br from-coffee-50 to-white" data-scroll-animate="true" data-scroll-animate-stagger="1">
               <div className="p-4 bg-coffee-200 rounded-lg inline-block mb-4">
                 <Leaf className="h-8 w-8 text-coffee-900" />
               </div>
@@ -261,7 +293,7 @@ export default function HomePage() {
             </div>
 
             {/* Cooperative Card */}
-            <div className="p-6 sm:p-8 border-2 border-coffee-200 rounded-xl hover:border-primary-600 hover:shadow-lg transition-all bg-gradient-to-br from-coffee-50 to-white">
+            <div className="p-6 sm:p-8 border-2 border-coffee-200 rounded-xl hover:border-primary-600 hover:shadow-lg transition-all bg-gradient-to-br from-coffee-50 to-white" data-scroll-animate="true" data-scroll-animate-stagger="2">
               <div className="p-4 bg-orange-200 rounded-lg inline-block mb-4">
                 <Users className="h-8 w-8 text-orange-900" />
               </div>
@@ -273,7 +305,7 @@ export default function HomePage() {
             </div>
 
             {/* Buyer Card */}
-            <div className="p-6 sm:p-8 border-2 border-coffee-200 rounded-xl hover:border-primary-600 hover:shadow-lg transition-all bg-gradient-to-br from-coffee-50 to-white">
+            <div className="p-6 sm:p-8 border-2 border-coffee-200 rounded-xl hover:border-primary-600 hover:shadow-lg transition-all bg-gradient-to-br from-coffee-50 to-white" data-scroll-animate="true" data-scroll-animate-stagger="3">
               <div className="p-4 bg-blue-200 rounded-lg inline-block mb-4">
                 <ShoppingBag className="h-8 w-8 text-blue-900" />
               </div>
@@ -285,7 +317,7 @@ export default function HomePage() {
             </div>
 
             {/* Investor Card */}
-            <div className="p-6 sm:p-8 border-2 border-coffee-200 rounded-xl hover:border-primary-600 hover:shadow-lg transition-all bg-gradient-to-br from-coffee-50 to-white">
+            <div className="p-6 sm:p-8 border-2 border-coffee-200 rounded-xl hover:border-primary-600 hover:shadow-lg transition-all bg-gradient-to-br from-coffee-50 to-white" data-scroll-animate="true" data-scroll-animate-stagger="4">
               <div className="p-4 bg-yellow-200 rounded-lg inline-block mb-4">
                 <DollarSign className="h-8 w-8 text-yellow-900" />
               </div>
@@ -300,9 +332,9 @@ export default function HomePage() {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-12 sm:py-16 lg:py-20 bg-white">
+      <section id="how-it-works" className="py-12 sm:py-16 lg:py-20 bg-white" data-scroll-animate="true">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10 sm:mb-12 lg:mb-16">
+          <div className="text-center mb-10 sm:mb-12 lg:mb-16" data-scroll-animate="true">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-coffee-900 mb-3 sm:mb-4">
               How It Works
             </h2>
@@ -311,32 +343,38 @@ export default function HomePage() {
             </p>
           </div>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 sm:gap-10 lg:gap-12">
-            <Step
-              number="1"
-              title="Register & Create Lots"
-              description="Farmers register their farms and create traceable coffee lots with harvest details, GPS coordinates, and quality metrics."
-              icon={<Users className="h-12 w-12" />}
-            />
-            <Step
-              number="2"
-              title="Capture Trace Events"
-              description="Add events at each stage: processing, drying, grading, storage, and shipping with photos and timestamps."
-              icon={<MapPin className="h-12 w-12" />}
-            />
-            <Step
-              number="3"
-              title="List & Sell Securely"
-              description="Post lots on the marketplace and receive offers from verified buyers. Complete transactions securely."
-              icon={<TrendingUp className="h-12 w-12" />}
-            />
+            <div data-scroll-animate="true" data-scroll-animate-stagger="1">
+              <Step
+                number="1"
+                title="Register & Create Lots"
+                description="Farmers register their farms and create traceable coffee lots with harvest details, GPS coordinates, and quality metrics."
+                icon={<Users className="h-12 w-12" />}
+              />
+            </div>
+            <div data-scroll-animate="true" data-scroll-animate-stagger="2">
+              <Step
+                number="2"
+                title="Capture Trace Events"
+                description="Add events at each stage: processing, drying, grading, storage, and shipping with photos and timestamps."
+                icon={<MapPin className="h-12 w-12" />}
+              />
+            </div>
+            <div data-scroll-animate="true" data-scroll-animate-stagger="3">
+              <Step
+                number="3"
+                title="List & Sell Securely"
+                description="Post lots on the marketplace and receive offers from verified buyers. Complete transactions securely."
+                icon={<TrendingUp className="h-12 w-12" />}
+              />
+            </div>
           </div>
         </div>
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-12 sm:py-16 lg:py-20 bg-white">
+      <section id="testimonials" className="py-12 sm:py-16 lg:py-20 bg-white" data-scroll-animate="true">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10 sm:mb-12 lg:mb-16">
+          <div className="text-center mb-10 sm:mb-12 lg:mb-16" data-scroll-animate="true">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-coffee-900 mb-3 sm:mb-4">
               Trusted Across the Value Chain
             </h2>
@@ -345,32 +383,38 @@ export default function HomePage() {
             </p>
           </div>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-            <Testimonial
-              quote="Coffee Trace helped us increase our income by 30% through direct buyer connections. The traceability features give us credibility in international markets."
-              name="James Okello"
-              role="Smallholder Farmer, Kenya"
-              rating={5}
-            />
-            <Testimonial
-              quote="Managing our 200+ farmers was chaotic until Coffee Trace. Now we track every lot, maintain certifications digitally, and access premium buyers directly."
-              name="Sarah Nyambura"
-              role="Cooperative Manager, Uganda"
-              rating={5}
-            />
-            <Testimonial
-              quote="As a specialty coffee buyer, verifying origin was always a challenge. Coffee Trace gives us complete transparency from farm to shipment."
-              name="Michael Chen"
-              role="Coffee Buyer, Netherlands"
-              rating={5}
-            />
+            <div data-scroll-animate="true" data-scroll-animate-stagger="1">
+              <Testimonial
+                quote="Coffee Trace helped us increase our income by 30% through direct buyer connections. The traceability features give us credibility in international markets."
+                name="James Okello"
+                role="Smallholder Farmer, Kenya"
+                rating={5}
+              />
+            </div>
+            <div data-scroll-animate="true" data-scroll-animate-stagger="2">
+              <Testimonial
+                quote="Managing our 200+ farmers was chaotic until Coffee Trace. Now we track every lot, maintain certifications digitally, and access premium buyers directly."
+                name="Sarah Nyambura"
+                role="Cooperative Manager, Uganda"
+                rating={5}
+              />
+            </div>
+            <div data-scroll-animate="true" data-scroll-animate-stagger="3">
+              <Testimonial
+                quote="As a specialty coffee buyer, verifying origin was always a challenge. Coffee Trace gives us complete transparency from farm to shipment."
+                name="Michael Chen"
+                role="Coffee Buyer, Netherlands"
+                rating={5}
+              />
+            </div>
           </div>
         </div>
       </section>
 
       {/* Product Screenshots Section */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-primary-50 to-coffee-50">
+      <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-primary-50 to-coffee-50" data-scroll-animate="true">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10 sm:mb-12 lg:mb-16">
+          <div className="text-center mb-10 sm:mb-12 lg:mb-16" data-scroll-animate="true">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-coffee-900 mb-3 sm:mb-4">
               Powerful Dashboard & Analytics
             </h2>
@@ -379,7 +423,7 @@ export default function HomePage() {
             </p>
           </div>
           <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-            <div className="bg-white p-5 sm:p-6 lg:p-8 rounded-xl sm:rounded-2xl shadow-xl">
+            <div className="bg-white p-5 sm:p-6 lg:p-8 rounded-xl sm:rounded-2xl shadow-xl" data-scroll-animate="true" data-scroll-animate-stagger="1">
               <div className="relative w-full h-48 sm:h-56 lg:h-64 bg-gradient-to-br from-primary-100 to-coffee-100 rounded-lg mb-3 sm:mb-4 flex items-center justify-center">
                 <Coffee className="h-16 w-16 sm:h-20 sm:w-20 lg:h-24 lg:w-24 text-primary-600 opacity-20" />
                 <span className="absolute text-coffee-900 font-bold text-base sm:text-lg">Farmer Dashboard</span>
@@ -387,7 +431,7 @@ export default function HomePage() {
               <h3 className="text-lg sm:text-xl font-bold text-coffee-900 mb-2">Farm Management</h3>
               <p className="text-sm sm:text-base text-coffee-600">Track lots, monitor yields, manage certifications, wallet, and loans all in one place.</p>
             </div>
-            <div className="bg-white p-5 sm:p-6 lg:p-8 rounded-xl sm:rounded-2xl shadow-xl">
+            <div className="bg-white p-5 sm:p-6 lg:p-8 rounded-xl sm:rounded-2xl shadow-xl" data-scroll-animate="true" data-scroll-animate-stagger="2">
               <div className="relative w-full h-48 sm:h-56 lg:h-64 bg-gradient-to-br from-green-100 to-primary-100 rounded-lg mb-3 sm:mb-4 flex items-center justify-center">
                 <MapPin className="h-16 w-16 sm:h-20 sm:w-20 lg:h-24 lg:w-24 text-green-600 opacity-20" />
                 <span className="absolute text-coffee-900 font-bold text-base sm:text-lg">Marketplace</span>
@@ -400,7 +444,7 @@ export default function HomePage() {
       </section>
 
       {/* Final CTA Section */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-primary-600 text-white">
+      <section className="py-12 sm:py-16 lg:py-20 bg-primary-600 text-white" data-scroll-animate="true" data-animation="fadeIn">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">
             Start Tracking Your Coffee Lots Today
