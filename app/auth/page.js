@@ -244,13 +244,19 @@ function AuthForm() {
           {currentMode === 'signup' && signupStep === 1 ? (
             // Step 1: Role Selection
             <>
-              <div className="mb-12">
-                <h1 className="text-4xl font-bold text-coffee-900 mb-4 text-center">
-                  Choose Your Path
+              <div className="mb-8">
+                <div className="mb-6">
+                  <img 
+                    src="https://res.cloudinary.com/ddew8kfxf/image/upload/v1763059666/Coffee_Trap_Mix_ky8mwv.png" 
+                    alt="Coffee Trace Logo" 
+                    className="h-16 w-auto"
+                  />
+                </div>
+                <h1 className="text-3xl font-bold text-coffee-900 mb-2">
+                  Select your role
                 </h1>
-                <p className="text-center text-coffee-700">
-                  Whether you're growing, aggregating, buying, or investing—Coffee Trace<br />
-                  connects you to opportunities
+                <p className="text-coffee-600 text-sm">
+                  Choose the role that best describes you
                 </p>
               </div>
 
@@ -261,83 +267,79 @@ function AuthForm() {
                 </div>
               )}
 
-              {/* Role Selection Grid - 4 columns */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+              {/* Role Selection Grid - 2x2 */}
+              <div className="space-y-4 mb-8">
                 {/* Investor Card */}
-                <div className="flex flex-col items-center gap-4 p-6 rounded-lg border-2 border-coffee-300 hover:border-coffee-400 transition-all bg-white animate-slideInUp animate-stagger-1">
-                  <div className="p-4 rounded-lg bg-indigo-100">
-                    <TrendingUp className="h-8 w-8 text-indigo-600" />
+                <button
+                  onClick={() => handleRoleSelect('investor')}
+                  className="w-full flex items-center gap-4 p-4 rounded-lg border-2 border-coffee-300 hover:border-coffee-400 hover:bg-indigo-50 transition-all bg-white"
+                >
+                  <div className="p-3 rounded-lg bg-indigo-100 flex-shrink-0">
+                    <TrendingUp className="h-6 w-6 text-indigo-600" />
                   </div>
-                  <div className="text-center">
-                    <h3 className="font-bold text-coffee-900 mb-2">For Investors</h3>
-                    <p className="text-sm text-coffee-600 mb-4">
-                      Support sustainable coffee and track impact returns
-                    </p>
+                  <div className="text-left">
+                    <div className="font-semibold text-coffee-900">
+                      Investor
+                    </div>
+                    <div className="text-xs text-coffee-600">
+                      Support sustainable coffee
+                    </div>
                   </div>
-                  <button
-                    onClick={() => handleRoleSelect('investor')}
-                    className="w-full py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold text-sm hover:scale-105 transform"
-                  >
-                    Learn More
-                  </button>
-                </div>
+                </button>
 
                 {/* Farmer Card */}
-                <div className="flex flex-col items-center gap-4 p-6 rounded-lg border-2 border-coffee-300 hover:border-coffee-400 transition-all bg-white animate-slideInUp animate-stagger-2">
-                  <div className="p-4 rounded-lg bg-emerald-100">
-                    <Leaf className="h-8 w-8 text-emerald-600" />
+                <button
+                  onClick={() => handleRoleSelect('farmer')}
+                  className="w-full flex items-center gap-4 p-4 rounded-lg border-2 border-coffee-300 hover:border-coffee-400 hover:bg-emerald-50 transition-all bg-white"
+                >
+                  <div className="p-3 rounded-lg bg-emerald-100 flex-shrink-0">
+                    <Leaf className="h-6 w-6 text-emerald-600" />
                   </div>
-                  <div className="text-center">
-                    <h3 className="font-bold text-coffee-900 mb-2">For Farmers</h3>
-                    <p className="text-sm text-coffee-600 mb-4">
-                      Sell lots with verified origin and earn premium prices
-                    </p>
+                  <div className="text-left">
+                    <div className="font-semibold text-coffee-900">
+                      Farmer
+                    </div>
+                    <div className="text-xs text-coffee-600">
+                      Sell lots with verified origin
+                    </div>
                   </div>
-                  <button
-                    onClick={() => handleRoleSelect('farmer')}
-                    className="w-full py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-semibold text-sm hover:scale-105 transform"
-                  >
-                    Get Started
-                  </button>
-                </div>
+                </button>
 
                 {/* Cooperative Card */}
-                <div className="flex flex-col items-center gap-4 p-6 rounded-lg border-2 border-coffee-300 hover:border-coffee-400 transition-all bg-white animate-slideInUp animate-stagger-3">
-                  <div className="p-4 rounded-lg bg-emerald-100">
-                    <Users className="h-8 w-8 text-emerald-600" />
+                <button
+                  onClick={() => handleRoleSelect('cooperative')}
+                  className="w-full flex items-center gap-4 p-4 rounded-lg border-2 border-coffee-300 hover:border-coffee-400 hover:bg-emerald-50 transition-all bg-white"
+                >
+                  <div className="p-3 rounded-lg bg-emerald-100 flex-shrink-0">
+                    <Users className="h-6 w-6 text-emerald-600" />
                   </div>
-                  <div className="text-center">
-                    <h3 className="font-bold text-coffee-900 mb-2">For Cooperatives</h3>
-                    <p className="text-sm text-coffee-600 mb-4">
-                      Aggregate, track, and export coffee with compliance proof
-                    </p>
+                  <div className="text-left">
+                    <div className="font-semibold text-coffee-900">
+                      Cooperative
+                    </div>
+                    <div className="text-xs text-coffee-600">
+                      Aggregate and export coffee
+                    </div>
                   </div>
-                  <button
-                    onClick={() => handleRoleSelect('cooperative')}
-                    className="w-full py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-semibold text-sm hover:scale-105 transform"
-                  >
-                    Get Started
-                  </button>
-                </div>
+                </button>
 
                 {/* Buyer Card */}
-                <div className="flex flex-col items-center gap-4 p-6 rounded-lg border-2 border-coffee-300 hover:border-coffee-400 transition-all bg-white animate-slideInUp animate-stagger-4">
-                  <div className="p-4 rounded-lg bg-blue-100">
-                    <ShoppingBag className="h-8 w-8 text-blue-600" />
+                <button
+                  onClick={() => handleRoleSelect('buyer')}
+                  className="w-full flex items-center gap-4 p-4 rounded-lg border-2 border-coffee-300 hover:border-coffee-400 hover:bg-blue-50 transition-all bg-white"
+                >
+                  <div className="p-3 rounded-lg bg-blue-100 flex-shrink-0">
+                    <ShoppingBag className="h-6 w-6 text-blue-600" />
                   </div>
-                  <div className="text-center">
-                    <h3 className="font-bold text-coffee-900 mb-2">For Buyers</h3>
-                    <p className="text-sm text-coffee-600 mb-4">
-                      Source specialty coffee with verified quality and origin
-                    </p>
+                  <div className="text-left">
+                    <div className="font-semibold text-coffee-900">
+                      Buyer
+                    </div>
+                    <div className="text-xs text-coffee-600">
+                      Source specialty coffee
+                    </div>
                   </div>
-                  <button
-                    onClick={() => handleRoleSelect('buyer')}
-                    className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold text-sm hover:scale-105 transform"
-                  >
-                    Browse Lots
-                  </button>
-                </div>
+                </button>
               </div>
 
               {/* Sign In Link */}
