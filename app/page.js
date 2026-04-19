@@ -257,14 +257,6 @@ export default function HomePage() {
               />
             </div>
           </div>
-          <div className="text-center mt-8 sm:mt-10 lg:mt-12" data-scroll-animate="true">
-            <Link
-              href="#"
-              className="inline-block text-primary-600 hover:text-primary-700 font-semibold text-lg transition-colors"
-            >
-              See all features →
-            </Link>
-          </div>
         </div>
       </section>
 
