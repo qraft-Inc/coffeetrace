@@ -1,78 +1,72 @@
 'use client';
 
-import { use, useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { 
-  Package, DollarSign, TrendingUp, MapPin, Calendar, CreditCard, 
-  Truck, ShoppingCart, CheckCircle, AlertCircle, ChevronLeft, Building
-} from 'lucide-react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { ChevronRight, Phone, Mail, MessageSquare, Share2, Heart, CheckCircle, AlertCircle, Loader, Sprout } from 'lucide-react';
+import { formatCurrency } from '@/lib/formatters';
 
-export default function AgroInputDetailPage({ params }) {
-  const unwrappedParams = use(params);
-  const { data: session } = useSession();
-  const router = useRouter();
-  const [product, setProduct] = useState(null);
+export default function AgroDetailPage({ params }) {
+  const { id } = params;
+  
+  const [item, setItem] = useState(null);
+  const [seller, setSeller] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [quantity, setQuantity] = useState(1);
-  const [paymentMethod, setPaymentMethod] = useState('cash');
-  const [deliveryMethod, setDeliveryMethod] = useState('pickup');
+  const [error, setError] = useState(null);
+  const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
-    fetchProduct();
-  }, []);
+    fetchDetails();
+  }, [id]);
 
-  const fetchProduct = async () => {
+  const fetchDetails = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/agro-inputs/${unwrappedParams.id}`);
-      const data = await response.json();
+      setError(null);
 
-      if (data.success) {
-        setProduct(data.item);
+      const res = await fetch(`/api/agro-inputs/${id}`, {
+        cache: 'no-store',
+      });
+
+      if (!res.ok) {
+        throw new Error('Item not found');
       }
+
+      const data = await res.json();
+      setItem(data);
+      setSeller(data.seller || { name: 'Supplier' });
     } catch (error) {
-      console.error('Error fetching product:', error);
+      console.error('Error fetching details:', error);
+      setError(error.message || 'Failed to load item details');
     } finally {
       setLoading(false);
     }
   };
 
-  const calculateTotal = () => {
-    if (!product) return 0;
-    return product.price.amount * quantity;
-  };
-
-  const handleOrder = async () => {
-    if (!session) {
-      router.push('/auth/signin');
-      return;
-    }
-
-    // TODO: Implement order creation
-    alert('Order functionality coming soon!');
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="flex items-center justify-center pt-32">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-green-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading product...</p>
+          <Loader className="h-12 w-12 text-primary-600 animate-spin mx-auto mb-4" />
+          <p className="text-coffee-600">Loading item details...</p>
         </div>
       </div>
     );
   }
 
-  if (!product) {
+  if (error || !item) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Product not found</h2>
-          <Link href="/marketplace/agro-inputs" className="text-green-600 hover:underline">
-            Back to marketplace
+      <div className="pt-8 px-6 sm:px-8 lg:px-10">
+        <div className="bg-white rounded-lg p-8 text-center border border-red-200 max-w-md mx-auto">
+          <AlertCircle className="h-12 w-12 text-red-600 mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-coffee-900 mb-2">Item Not Found</h2>
+          <p className="text-coffee-600 mb-6">{error || 'This item is no longer available'}</p>
+          <Link
+            href="/marketplace?tab=agro"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+          >
+            Back to Items
           </Link>
         </div>
       </div>
@@ -80,233 +74,164 @@ export default function AgroInputDetailPage({ params }) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Back Button */}
-        <Link
-          href="/marketplace/agro-inputs"
-          className="inline-flex items-center gap-2 text-green-600 hover:text-green-700 mb-6"
-        >
-          <ChevronLeft className="h-5 w-5" />
-          Back to marketplace
-        </Link>
+    <div className="px-6 sm:px-8 lg:px-10 pt-6 pb-16">
+      {/* Save & Share Actions */}
+      <div className="mb-6 flex justify-end">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsSaved(!isSaved)}
+            className={`p-2 rounded-lg transition-colors ${
+              isSaved
+                ? 'bg-red-100 text-red-600'
+                : 'text-coffee-600 hover:bg-coffee-100'
+            }`}
+          >
+            <Heart className={`h-5 w-5 ${isSaved ? 'fill-current' : ''}`} />
+          </button>
+          <button className="p-2 text-coffee-600 hover:bg-coffee-100 rounded-lg transition-colors">
+            <Share2 className="h-5 w-5" />
+          </button>
+        </div>
+      </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Product Image and Info */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Image */}
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="h-96 bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center relative">
-                <Package className="h-32 w-32 text-green-600" />
-                {product.stock <= product.lowStockThreshold && (
-                  <div className="absolute top-6 right-6 px-4 py-2 bg-red-500 text-white font-bold rounded-full">
-                    Low Stock
-                  </div>
-                )}
-              </div>
-            </div>
+      {/* Breadcrumb */}
+      <div className="mb-8 pb-4 border-b border-coffee-200">
+        <div className="flex items-center gap-2 text-sm flex-wrap">
+          <Link href="/marketplace" className="text-primary-600 hover:text-primary-700">Marketplace</Link>
+          <ChevronRight className="h-4 w-4 text-coffee-400" />
+          <Link href="/marketplace?tab=agro" className="text-primary-600 hover:text-primary-700">Agro-Inputs</Link>
+          <ChevronRight className="h-4 w-4 text-coffee-400" />
+          <span className="text-coffee-900 font-medium truncate">{item?.name || 'Item Details'}</span>
+        </div>
+      </div>
 
-            {/* Product Details */}
-            <div className="bg-white rounded-lg shadow-md p-8">
-              <div className="flex items-start justify-between mb-6">
-                <div>
-                  <h1 className="text-4xl font-bold text-coffee-900 mb-2">{product.name}</h1>
-                  <div className="flex items-center gap-3">
-                    <span className="px-4 py-1 bg-green-100 text-green-700 font-semibold rounded-full">
-                      {product.category}
-                    </span>
-                    <span className={`px-4 py-1 font-semibold rounded-full ${
-                      product.status === 'active' 
-                        ? 'bg-green-100 text-green-700' 
-                        : 'bg-yellow-100 text-yellow-700'
-                    }`}>
-                      {product.status}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mb-8">
-                <h2 className="text-xl font-bold text-coffee-900 mb-3">Description</h2>
-                <p className="text-gray-700 leading-relaxed">{product.description}</p>
-              </div>
-
-              {/* Specifications */}
-              {product.specifications && Object.keys(product.specifications).length > 0 && (
-                <div className="mb-8">
-                  <h2 className="text-xl font-bold text-coffee-900 mb-4">Specifications</h2>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    {product.specifications.brand && (
-                      <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
-                        <CheckCircle className="h-5 w-5 text-green-600" />
-                        <div>
-                          <p className="text-sm text-gray-600">Brand</p>
-                          <p className="font-semibold text-coffee-900">{product.specifications.brand}</p>
-                        </div>
-                      </div>
-                    )}
-                    {product.specifications.manufacturer && (
-                      <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
-                        <Building className="h-5 w-5 text-green-600" />
-                        <div>
-                          <p className="text-sm text-gray-600">Manufacturer</p>
-                          <p className="font-semibold text-coffee-900">{product.specifications.manufacturer}</p>
-                        </div>
-                      </div>
-                    )}
-                    {product.specifications.composition && (
-                      <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
-                        <Package className="h-5 w-5 text-green-600" />
-                        <div>
-                          <p className="text-sm text-gray-600">Composition</p>
-                          <p className="font-semibold text-coffee-900">{product.specifications.composition}</p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Certifications */}
-              {product.certifications && product.certifications.length > 0 && (
-                <div className="mb-8">
-                  <h2 className="text-xl font-bold text-coffee-900 mb-4">Certifications</h2>
-                  <div className="flex flex-wrap gap-2">
-                    {product.certifications.map((cert, index) => (
-                      <span
-                        key={index}
-                        className="px-4 py-2 bg-blue-100 text-blue-700 font-semibold rounded-lg"
-                      >
-                        {cert}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Cooperative Info */}
-              {product.cooperativeId && (
-                <div className="border-t pt-6">
-                  <h2 className="text-xl font-bold text-coffee-900 mb-4">Sold By</h2>
-                  <div className="flex items-center gap-4 p-4 bg-green-50 rounded-lg">
-                    <Building className="h-12 w-12 text-green-600" />
-                    <div>
-                      <p className="font-bold text-lg text-coffee-900">{product.cooperativeId.name}</p>
-                      {product.cooperativeId.location && (
-                        <p className="text-gray-600 flex items-center gap-2">
-                          <MapPin className="h-4 w-4" />
-                          {product.cooperativeId.location}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
+      {/* Main Content Grid */}
+      <div className="grid lg:grid-cols-3 gap-8">
+        {/* Left Column - Images & Details */}
+        <div className="lg:col-span-2 space-y-8">
+          {/* Main Image */}
+          <div className="bg-white rounded-lg shadow-sm border border-coffee-100 overflow-hidden">
+            <div className="aspect-square bg-gradient-to-br from-green-50 to-emerald-50 flex items-center justify-center">
+              {item?.image ? (
+                <Image
+                  src={item.image}
+                  alt={item.name}
+                  width={500}
+                  height={500}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <Sprout className="h-32 w-32 text-green-300" />
               )}
             </div>
           </div>
 
-          {/* Order Card */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-md p-6 sticky top-8">
-              <div className="mb-6">
-                <p className="text-gray-600 mb-2">Price per {product.price.unit}</p>
-                <p className="text-4xl font-bold text-green-600 mb-4">
-                  {product.price.currency} {product.price.amount.toLocaleString()}
-                </p>
-                <p className="text-sm text-gray-600">Stock Available: {product.stock}</p>
-              </div>
+          {/* Details Section */}
+          <div className="bg-white rounded-lg shadow-sm border border-coffee-100 p-6">
+            <h1 className="text-3xl font-bold text-coffee-900 mb-4">{item?.name}</h1>
 
-              {/* Quantity Selector */}
-              <div className="mb-6">
-                <label className="block text-sm font-semibold text-coffee-900 mb-2">
-                  Quantity
-                </label>
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-                  >
-                    -
-                  </button>
-                  <input
-                    type="number"
-                    min="1"
-                    max={product.stock}
-                    value={quantity}
-                    onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-20 text-center px-4 py-2 border border-gray-300 rounded-lg"
-                  />
-                  <button
-                    onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
-                    className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-                  >
-                    +
-                  </button>
+            {/* Product Info */}
+            <div className="mb-6 grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-coffee-600 mb-1">Category</p>
+                <p className="font-semibold text-coffee-900">{item?.category || 'Agro-Input'}</p>
+              </div>
+              <div>
+                <p className="text-sm text-coffee-600 mb-1">Status</p>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-green-500" />
+                  <p className="font-semibold text-coffee-900">{item?.status || 'Available'}</p>
                 </div>
               </div>
+            </div>
 
-              {/* Payment Method */}
+            {/* Description */}
+            {item?.description && (
               <div className="mb-6">
-                <label className="block text-sm font-semibold text-coffee-900 mb-2">
-                  Payment Method
-                </label>
-                <div className="space-y-2">
-                  {product.paymentOptions.map((option) => (
-                    <label
-                      key={option}
-                      className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50"
-                    >
-                      <input
-                        type="radio"
-                        name="payment"
-                        value={option}
-                        checked={paymentMethod === option}
-                        onChange={(e) => setPaymentMethod(e.target.value)}
-                        className="text-green-600"
-                      />
-                      <span className="capitalize">{option.replace('_', ' ')}</span>
-                    </label>
-                  ))}
-                </div>
+                <p className="text-coffee-700 leading-relaxed">{item.description}</p>
               </div>
+            )}
 
-              {/* Credit Terms */}
-              {product.creditAvailable && paymentMethod === 'credit' && product.creditTerms && (
-                <div className="mb-6 p-4 bg-blue-50 rounded-lg">
-                  <h3 className="font-semibold text-coffee-900 mb-3">Credit Terms</h3>
-                  <div className="space-y-2 text-sm">
-                    <p>Down Payment: {product.creditTerms.downPaymentPercentage}%</p>
-                    <p>Installments: {product.creditTerms.installmentMonths} months</p>
-                    <p>Interest Rate: {product.creditTerms.interestRate}%</p>
-                  </div>
+            {/* Specs Grid */}
+            <div className="grid grid-cols-2 gap-4">
+              {item?.specifications?.brand && (
+                <div className="p-4 bg-coffee-50 rounded-lg">
+                  <p className="text-xs text-coffee-600 mb-1">Brand</p>
+                  <p className="font-semibold text-coffee-900">{item.specifications.brand}</p>
                 </div>
               )}
-
-              {/* Total */}
-              <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-                <div className="flex items-center justify-between text-lg font-bold text-coffee-900">
-                  <span>Total</span>
-                  <span>{product.price.currency} {calculateTotal().toLocaleString()}</span>
+              {item?.specifications?.unit && (
+                <div className="p-4 bg-coffee-50 rounded-lg">
+                  <p className="text-xs text-coffee-600 mb-1">Unit</p>
+                  <p className="font-semibold text-coffee-900">{item.specifications.unit}</p>
                 </div>
-              </div>
+              )}
+              {item?.specifications?.composition && (
+                <div className="p-4 bg-coffee-50 rounded-lg col-span-2">
+                  <p className="text-xs text-coffee-600 mb-1">Composition</p>
+                  <p className="font-semibold text-coffee-900">{item.specifications.composition}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
 
-              {/* Order Button */}
-              <button
-                onClick={handleOrder}
-                disabled={product.stock === 0}
-                className="w-full py-4 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                <ShoppingCart className="h-5 w-5" />
-                {product.stock === 0 ? 'Out of Stock' : 'Place Order'}
+        {/* Right Column - Sidebar */}
+        <div className="lg:col-span-1">
+          {/* Price Card */}
+          <div className="bg-white rounded-lg shadow-sm border border-coffee-100 p-6 sticky top-24">
+            <div className="mb-6">
+              <p className="text-sm text-coffee-600 mb-2">Price</p>
+              <p className="text-4xl font-bold text-green-600">{formatCurrency(item?.price || 0)}</p>
+              <p className="text-sm text-coffee-600 mt-2">per {item?.unit || 'unit'}</p>
+            </div>
+
+            {/* Availability */}
+            <div className="mb-6 p-4 bg-green-50 rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <CheckCircle className="h-4 w-4 text-green-600" />
+                <p className="text-sm font-semibold text-coffee-900">In Stock</p>
+              </div>
+              <p className="text-sm text-coffee-600">{item?.stock || 'Available'}</p>
+            </div>
+
+            {/* Contact Actions */}
+            <div className="space-y-2">
+              <button className="w-full py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center gap-2">
+                <Mail className="h-4 w-4" />
+                Send Inquiry
               </button>
-
-              {session?.user?.role === 'farmer' && (
-                <p className="text-xs text-gray-600 text-center mt-4">
-                  Order as {session.user.name}
-                </p>
-              )}
+              <button className="w-full py-3 border-2 border-primary-600 text-primary-600 font-semibold rounded-lg hover:bg-primary-50 transition-colors flex items-center justify-center gap-2">
+                <Phone className="h-4 w-4" />
+                Call Supplier
+              </button>
             </div>
           </div>
+
+          {/* Seller Card */}
+          {seller && (
+            <div className="mt-6 bg-white rounded-lg shadow-sm border border-coffee-100 p-6">
+              <h3 className="font-semibold text-coffee-900 mb-4">Supplier</h3>
+              <div className="flex items-start gap-3">
+                <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                  <Sprout className="h-6 w-6 text-green-600" />
+                </div>
+                <div>
+                  <p className="font-semibold text-coffee-900">{seller.name}</p>
+                  {seller.phone && (
+                    <p className="text-sm text-coffee-600 flex items-center gap-1 mt-2">
+                      <Phone className="h-4 w-4" /> {seller.phone}
+                    </p>
+                  )}
+                  {seller.email && (
+                    <p className="text-sm text-coffee-600 flex items-center gap-1 mt-1">
+                      <Mail className="h-4 w-4" /> {seller.email}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

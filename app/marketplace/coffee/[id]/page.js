@@ -3,10 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { 
   ChevronRight, 
-  ArrowLeft, 
   MapPin, 
   Calendar, 
   Award, 
@@ -24,7 +22,6 @@ import {
 import { formatCurrency } from '@/lib/formatters';
 
 export default function LotDetailPage({ params }) {
-  const router = useRouter();
   const { id } = params;
   
   const [lot, setLot] = useState(null);
@@ -118,7 +115,7 @@ export default function LotDetailPage({ params }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-coffee-50 flex items-center justify-center pt-32">
+      <div className="flex items-center justify-center pt-32">
         <div className="text-center">
           <Loader className="h-12 w-12 text-primary-600 animate-spin mx-auto mb-4" />
           <p className="text-coffee-600">Loading lot details...</p>
@@ -135,13 +132,12 @@ export default function LotDetailPage({ params }) {
             <AlertCircle className="h-12 w-12 text-red-600 mx-auto mb-4" />
             <h2 className="text-xl font-bold text-coffee-900 mb-2">Lot Not Found</h2>
             <p className="text-coffee-600 mb-6">{error || 'This lot is no longer available'}</p>
-            <button
-              onClick={() => router.back()}
+            <Link
+              href="/marketplace?tab=coffee"
               className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
             >
-              <ArrowLeft className="h-5 w-5" />
-              Back to Marketplace
-            </button>
+              Back to Lots
+            </Link>
           </div>
         </div>
       </div>
@@ -168,46 +164,37 @@ export default function LotDetailPage({ params }) {
 
   return (
     <div className="px-6 sm:px-8 lg:px-10 pt-6 pb-16">
-        {/* Back Button & Actions */}
-        <div className="mb-6 flex items-center justify-between">
+      {/* Save & Share Actions */}
+      <div className="mb-6 flex justify-end">
+        <div className="flex items-center gap-2">
           <button
-            onClick={() => router.back()}
-            className="flex items-center gap-2 px-3 py-2 text-coffee-700 hover:bg-coffee-100 rounded-lg transition-colors"
+            onClick={() => setIsSaved(!isSaved)}
+            className={`p-2 rounded-lg transition-colors ${
+              isSaved
+                ? 'bg-red-100 text-red-600'
+                : 'text-coffee-600 hover:bg-coffee-100'
+            }`}
           >
-            <ArrowLeft className="h-5 w-5" />
-            <span className="text-sm font-medium">Back</span>
+            <Heart className={`h-5 w-5 ${isSaved ? 'fill-current' : ''}`} />
           </button>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setIsSaved(!isSaved)}
-              className={`p-2 rounded-lg transition-colors ${
-                isSaved
-                  ? 'bg-red-100 text-red-600'
-                  : 'text-coffee-600 hover:bg-coffee-100'
-              }`}
-            >
-              <Heart className={`h-5 w-5 ${isSaved ? 'fill-current' : ''}`} />
-            </button>
-            <button className="p-2 text-coffee-600 hover:bg-coffee-100 rounded-lg transition-colors">
-              <Share2 className="h-5 w-5" />
-            </button>
-          </div>
+          <button className="p-2 text-coffee-600 hover:bg-coffee-100 rounded-lg transition-colors">
+            <Share2 className="h-5 w-5" />
+          </button>
         </div>
+      </div>
 
-        {/* Breadcrumb */}
-        <div className="mb-6 pb-4 border-b border-coffee-200">
-          <div className="flex items-center gap-2 text-sm flex-wrap">
-            <Link href="/" className="text-primary-600 hover:text-primary-700">Home</Link>
-            <ChevronRight className="h-4 w-4 text-coffee-400" />
-            <Link href="/marketplace" className="text-primary-600 hover:text-primary-700">Marketplace</Link>
-            <ChevronRight className="h-4 w-4 text-coffee-400" />
-            <Link href="/marketplace?tab=coffee" className="text-primary-600 hover:text-primary-700">Coffee Lots</Link>
-            <ChevronRight className="h-4 w-4 text-coffee-400" />
-            <span className="text-coffee-900 font-medium truncate">{lot?.variety || 'Loading...'}</span>
-          </div>
+      {/* Breadcrumb */}
+      <div className="mb-6 pb-4 border-b border-coffee-200">
+        <div className="flex items-center gap-2 text-sm flex-wrap">
+          <Link href="/marketplace" className="text-primary-600 hover:text-primary-700">Marketplace</Link>
+          <ChevronRight className="h-4 w-4 text-coffee-400" />
+          <Link href="/marketplace?tab=coffee" className="text-primary-600 hover:text-primary-700">Coffee Lots</Link>
+          <ChevronRight className="h-4 w-4 text-coffee-400" />
+          <span className="text-coffee-900 font-medium truncate">{lot?.variety || 'Lot Details'}</span>
         </div>
+      </div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
+      <div className="grid lg:grid-cols-3 gap-6">
           {/* Left Column - Gallery & Images */}
           <div className="lg:col-span-2 space-y-6">
             {/* Main Image */}
