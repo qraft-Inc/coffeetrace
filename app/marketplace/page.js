@@ -1,15 +1,20 @@
 'use client';
 
-export const dynamic = 'force-dynamic';
-
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Coffee, Sprout, Package, Grid3x3, List, MapPin, Award, Filter, X } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { Coffee, Sprout, Package, Grid3x3, List, MapPin, Filter, X } from 'lucide-react';
 import { formatCurrency, formatWeight } from '@/lib/formatters';
 
 export default function MarketplacePage() {
-  const [activeTab, setActiveTab] = useState('coffee');
+  const searchParams = useSearchParams();
+  const tab = searchParams.get('tab') || 'coffee';
+  const variety = searchParams.get('variety') || '';
+  const minQuality = searchParams.get('minQuality') ? parseFloat(searchParams.get('minQuality')) : 0;
+  const maxPrice = searchParams.get('maxPrice') ? parseFloat(searchParams.get('maxPrice')) : '';
+  const certification = searchParams.get('certification') || '';
+
   const [view, setView] = useState('grid');
   const [sort, setSort] = useState('newest');
   const [listings, setListings] = useState([]);
@@ -18,16 +23,10 @@ export default function MarketplacePage() {
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState(null);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
-  const [filters, setFilters] = useState({
-    variety: '',
-    minQuality: 0,
-    maxPrice: '',
-    certification: '',
-  });
 
   useEffect(() => {
     fetchListings();
-  }, [activeTab, filters, page, sort]);
+  }, [tab, variety, minQuality, maxPrice, certification, page, sort]);
 
   const fetchListings = async () => {
     setLoading(true);
@@ -37,14 +36,16 @@ export default function MarketplacePage() {
         page: page.toString(),
         sortBy: 'postedAt',
         sortOrder: sort === 'lowest' ? 'asc' : 'desc',
-        ...Object.fromEntries(
-          Object.entries(filters).filter(([_, v]) => v !== '' && v !== 0)
-        ),
       });
 
-      const endpoint = activeTab === 'coffee' 
+      if (variety) params.set('variety', variety);
+      if (minQuality > 0) params.set('minQuality', minQuality.toString());
+      if (maxPrice) params.set('maxPrice', maxPrice.toString());
+      if (certification) params.set('certification', certification);
+
+      const endpoint = tab === 'coffee' 
         ? '/api/marketplace'
-        : activeTab === 'agro'
+        : tab === 'agro'
         ? '/api/agro-inputs'
         : '/api/products';
 
@@ -61,7 +62,6 @@ export default function MarketplacePage() {
       }
 
       const data = await res.json();
-      console.log(`Fetched ${activeTab}:`, data);
       
       if (data.error) {
         throw new Error(data.error || 'Failed to fetch listings');
@@ -87,215 +87,13 @@ export default function MarketplacePage() {
   };
 
   return (
-    <div className="min-h-screen bg-coffee-50">
-      {/* HEADER */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white bg-opacity-95 backdrop-blur-sm border-b border-coffee-200">
-        <div className="w-full">
-          {/* Header top row: Logo + CTA buttons */}
-          <div className="flex justify-between items-center h-14 sm:h-16 px-6 sm:px-8 lg:px-10">
-            <Link href="/" className="flex items-center gap-2 sm:gap-3">
-              <Image 
-                src="https://res.cloudinary.com/ddew8kfxf/image/upload/v1763059666/Coffee_Trap_Mix_ky8mwv.png"
-                alt="Coffee Trace Logo"
-                width={32}
-                height={32}
-                className="object-contain sm:w-10 sm:h-10"
-              />
-              <span className="text-lg sm:text-2xl font-bold text-coffee-900">Coffee Trace</span>
-            </Link>
-
-            <div className="flex gap-2 sm:gap-3 items-center">
-              <Link
-                href="/auth/signin"
-                className="hidden sm:block px-3 lg:px-4 py-2 text-sm text-coffee-900 hover:text-primary-600 font-medium transition-colors"
-              >
-                Sign In
-              </Link>
-              <Link
-                href="/auth/signup"
-                className="px-3 sm:px-4 py-1.5 sm:py-2 text-sm bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium shadow-md hover:shadow-lg"
-              >
-                Get Started
-              </Link>
-            </div>
-          </div>
-
-        </div>
-      </header>
-
-      {/* MAIN CONTENT AREA */}
-      <div className="w-full pt-16">
-        <div className="w-full">
-          <div className="flex gap-0 min-h-screen">
-            {/* SIDEBAR - Desktop only */}
-            <aside className="hidden lg:w-80 lg:flex flex-col flex-shrink-0 bg-white border-r border-coffee-200">
-              <div className="p-8">
-                {/* Marketplace Label */}
-                <h1 className="text-xs font-bold uppercase tracking-widest text-coffee-600 mb-8">Marketplace</h1>
-
-                {/* Category Menu */}
-                <div className="mb-10">
-                  <div className="space-y-2">
-                    <button
-                      onClick={() => { setActiveTab('coffee'); setPage(1); }}
-                      className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all ${
-                        activeTab === 'coffee'
-                          ? 'bg-primary-100 text-primary-600 font-semibold'
-                          : 'text-coffee-700 hover:bg-coffee-50'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <Coffee className="h-5 w-5" />
-                        <span>Coffee lots</span>
-                      </div>
-                      <span className={`inline-flex items-center justify-center w-6 h-6 text-xs font-bold rounded-full ${
-                        activeTab === 'coffee'
-                          ? 'bg-primary-600 text-white'
-                          : 'bg-coffee-200 text-coffee-700'
-                      }`}>
-                        {listings.length}
-                      </span>
-                    </button>
-                    <button
-                      onClick={() => { setActiveTab('agro'); setPage(1); }}
-                      className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all ${
-                        activeTab === 'agro'
-                          ? 'bg-primary-100 text-primary-600 font-semibold'
-                          : 'text-coffee-700 hover:bg-coffee-50'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <Sprout className="h-5 w-5" />
-                        <span>Agro-Inputs</span>
-                      </div>
-                      <span className={`inline-flex items-center justify-center w-6 h-6 text-xs font-bold rounded-full ${
-                        activeTab === 'agro'
-                          ? 'bg-primary-600 text-white'
-                          : 'bg-coffee-200 text-coffee-700'
-                      }`}>
-                        15
-                      </span>
-                    </button>
-                    <button
-                      onClick={() => { setActiveTab('products'); setPage(1); }}
-                      className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all ${
-                        activeTab === 'products'
-                          ? 'bg-primary-100 text-primary-600 font-semibold'
-                          : 'text-coffee-700 hover:bg-coffee-50'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <Package className="h-5 w-5" />
-                        <span>Products</span>
-                      </div>
-                      <span className={`inline-flex items-center justify-center w-6 h-6 text-xs font-bold rounded-full ${
-                        activeTab === 'products'
-                          ? 'bg-primary-600 text-white'
-                          : 'bg-coffee-200 text-coffee-700'
-                      }`}>
-                        9
-                      </span>
-                    </button>
-                  </div>
-                </div>
-
-                <div className="h-px bg-coffee-200 mb-8"></div>
-
-                {/* Filters Header */}
-                <div className="flex items-center gap-3 mb-10">
-                  <div className="p-2 bg-primary-100 rounded-lg">
-                    <Filter className="h-5 w-5 text-primary-600" />
-                  </div>
-                  <h2 className="text-xs font-bold uppercase tracking-wider text-coffee-600">Filters</h2>
-                </div>
-
-                {/* Coffee Filters */}
-                {activeTab === 'coffee' && (
-                  <div className="space-y-8">
-                    <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-coffee-900 mb-3">Variety</label>
-                      <select
-                        value={filters.variety}
-                        onChange={(e) => { setFilters({ ...filters, variety: e.target.value }); setPage(1); }}
-                        className="w-full px-4 py-3 bg-coffee-50 border border-coffee-200 rounded-lg text-sm text-coffee-900 hover:border-coffee-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:bg-white transition-all"
-                      >
-                        <option value="">All Varieties</option>
-                        <option value="Arabica">Arabica</option>
-                        <option value="Robusta">Robusta</option>
-                        <option value="SL28">SL28</option>
-                        <option value="Geisha">Geisha</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-coffee-900 mb-3">Quality Score</label>
-                      <input
-                        type="number"
-                        value={filters.minQuality}
-                        onChange={(e) => { setFilters({ ...filters, minQuality: parseFloat(e.target.value) || 0 }); setPage(1); }}
-                        className="w-full px-4 py-3 bg-coffee-50 border border-coffee-200 rounded-lg text-sm text-coffee-900 placeholder-coffee-500 hover:border-coffee-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:bg-white transition-all"
-                        placeholder="Minimum: 0-100"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-coffee-900 mb-3">Max Price / kg</label>
-                      <input
-                        type="number"
-                        value={filters.maxPrice}
-                        onChange={(e) => { setFilters({ ...filters, maxPrice: e.target.value }); setPage(1); }}
-                        className="w-full px-4 py-3 bg-coffee-50 border border-coffee-200 rounded-lg text-sm text-coffee-900 placeholder-coffee-500 hover:border-coffee-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:bg-white transition-all"
-                        placeholder="No limit"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-coffee-900 mb-3">Certification</label>
-                      <select
-                        value={filters.certification}
-                        onChange={(e) => { setFilters({ ...filters, certification: e.target.value }); setPage(1); }}
-                        className="w-full px-4 py-3 bg-coffee-50 border border-coffee-200 rounded-lg text-sm text-coffee-900 hover:border-coffee-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:bg-white transition-all"
-                      >
-                        <option value="">Any Certification</option>
-                        <option value="organic">Organic Certified</option>
-                        <option value="fair trade">Fair Trade</option>
-                        <option value="rainforest">Rainforest Alliance</option>
-                      </select>
-                    </div>
-
-                    <div className="h-px bg-coffee-200"></div>
-
-                    <button
-                      onClick={() => { setFilters({ variety: '', minQuality: 0, maxPrice: '', certification: '' }); setPage(1); }}
-                      className="w-full px-4 py-3 bg-coffee-100 hover:bg-coffee-200 text-coffee-900 font-semibold rounded-lg transition-all text-sm"
-                    >
-                      Clear All Filters
-                    </button>
-                  </div>
-                )}
-
-                {activeTab === 'agro' && (
-                  <div className="text-center py-8">
-                    <p className="text-coffee-600 text-sm">Filters coming soon for Agro-Inputs</p>
-                  </div>
-                )}
-
-                {activeTab === 'products' && (
-                  <div className="text-center py-8">
-                    <p className="text-coffee-600 text-sm">Filters coming soon for Products</p>
-                  </div>
-                )}
-              </div>
-            </aside>
-
-            {/* MAIN CONTENT */}
-            <main className="flex-1 px-6 sm:px-8 lg:px-10 pt-6">
-              {/* Mobile category tabs */}
+    <div className="px-6 sm:px-8 lg:px-10 pt-6 pb-16">
+      {/* Mobile category tabs */}
               <div className="lg:hidden mb-6 flex gap-2 overflow-x-auto">
                 <button
-                  onClick={() => { setActiveTab('coffee'); setPage(1); }}
+                  onClick={() => { /* update tab via URL */ }}
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg whitespace-nowrap transition-all text-sm font-medium ${
-                    activeTab === 'coffee'
+                    tab === 'coffee'
                       ? 'bg-primary-600 text-white'
                       : 'bg-coffee-100 text-coffee-900 hover:bg-coffee-200'
                   }`}
@@ -304,9 +102,9 @@ export default function MarketplacePage() {
                   Coffee lots
                 </button>
                 <button
-                  onClick={() => { setActiveTab('agro'); setPage(1); }}
+                  onClick={() => { /* update tab via URL */ }}
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg whitespace-nowrap transition-all text-sm font-medium ${
-                    activeTab === 'agro'
+                    tab === 'agro'
                       ? 'bg-primary-600 text-white'
                       : 'bg-coffee-100 text-coffee-900 hover:bg-coffee-200'
                   }`}
@@ -315,9 +113,9 @@ export default function MarketplacePage() {
                   Agro-Inputs
                 </button>
                 <button
-                  onClick={() => { setActiveTab('products'); setPage(1); }}
+                  onClick={() => { /* update tab via URL */ }}
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg whitespace-nowrap transition-all text-sm font-medium ${
-                    activeTab === 'products'
+                    tab === 'products'
                       ? 'bg-primary-600 text-white'
                       : 'bg-coffee-100 text-coffee-900 hover:bg-coffee-200'
                   }`}
@@ -348,13 +146,12 @@ export default function MarketplacePage() {
                       </button>
                     </div>
 
-                    {activeTab === 'coffee' && (
+                    {tab === 'coffee' && (
                       <div className="space-y-6">
                         <div>
                           <label className="block text-sm font-medium text-coffee-700 mb-2">Variety</label>
                           <select
-                            value={filters.variety}
-                            onChange={(e) => { setFilters({ ...filters, variety: e.target.value }); setPage(1); }}
+                            value={variety}
                             className="w-full px-3 py-2 border border-coffee-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm"
                           >
                             <option value="">All Varieties</option>
@@ -369,8 +166,7 @@ export default function MarketplacePage() {
                           <label className="block text-sm font-medium text-coffee-700 mb-2">Min Quality Score</label>
                           <input
                             type="number"
-                            value={filters.minQuality}
-                            onChange={(e) => { setFilters({ ...filters, minQuality: parseFloat(e.target.value) || 0 }); setPage(1); }}
+                            value={minQuality}
                             className="w-full px-3 py-2 border border-coffee-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm"
                             placeholder="0-100"
                           />
@@ -380,8 +176,7 @@ export default function MarketplacePage() {
                           <label className="block text-sm font-medium text-coffee-700 mb-2">Max Price (per kg)</label>
                           <input
                             type="number"
-                            value={filters.maxPrice}
-                            onChange={(e) => { setFilters({ ...filters, maxPrice: e.target.value }); setPage(1); }}
+                            value={maxPrice}
                             className="w-full px-3 py-2 border border-coffee-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm"
                             placeholder="No limit"
                           />
@@ -390,8 +185,7 @@ export default function MarketplacePage() {
                         <div>
                           <label className="block text-sm font-medium text-coffee-700 mb-2">Certification</label>
                           <select
-                            value={filters.certification}
-                            onChange={(e) => { setFilters({ ...filters, certification: e.target.value }); setPage(1); }}
+                            value={certification}
                             className="w-full px-3 py-2 border border-coffee-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm"
                           >
                             <option value="">Any Certification</option>
@@ -400,13 +194,6 @@ export default function MarketplacePage() {
                             <option value="rainforest">Rainforest Alliance</option>
                           </select>
                         </div>
-
-                        <button
-                          onClick={() => { setFilters({ variety: '', minQuality: 0, maxPrice: '', certification: '' }); setPage(1); }}
-                          className="w-full px-3 py-2 bg-coffee-100 hover:bg-coffee-200 text-coffee-900 font-semibold rounded-lg transition-all text-sm"
-                        >
-                          Clear Filters
-                        </button>
                       </div>
                     )}
                   </div>
@@ -452,7 +239,7 @@ export default function MarketplacePage() {
               {/* Listings */}
               {error && (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
-                  <p className="text-red-800 font-medium mb-2">Failed to load {activeTab === 'coffee' ? 'coffee lots' : activeTab === 'agro' ? 'agro-inputs' : 'products'}</p>
+                  <p className="text-red-800 font-medium mb-2">Failed to load {tab === 'coffee' ? 'coffee lots' : tab === 'agro' ? 'agro-inputs' : 'products'}</p>
                   <p className="text-red-600 text-sm mb-4">{error}</p>
                   <button
                     onClick={fetchListings}
@@ -468,19 +255,19 @@ export default function MarketplacePage() {
                   <div className="inline-block animate-spin mb-4">
                     <Coffee className="h-8 w-8 text-primary-600" />
                   </div>
-                  <p className="text-coffee-600">Loading {activeTab === 'coffee' ? 'coffee lots' : activeTab === 'agro' ? 'agro-inputs' : 'products'}...</p>
+                  <p className="text-coffee-600">Loading {tab === 'coffee' ? 'coffee lots' : tab === 'agro' ? 'agro-inputs' : 'products'}...</p>
                 </div>
               ) : listings.length === 0 ? (
                 <div className="bg-white p-8 sm:p-12 rounded-lg text-center border border-coffee-200">
                   <Coffee className="h-12 w-12 text-coffee-400 mx-auto mb-4" />
-                  <p className="text-coffee-600 font-medium mb-2">No {activeTab === 'coffee' ? 'coffee lots' : activeTab === 'agro' ? 'agro products' : 'products'} found</p>
-                  <p className="text-sm text-coffee-500">No {activeTab === 'coffee' ? 'coffee lots' : activeTab === 'agro' ? 'agro products' : 'products'} matching your filters. Try adjusting your search.</p>
+                  <p className="text-coffee-600 font-medium mb-2">No {tab === 'coffee' ? 'coffee lots' : tab === 'agro' ? 'agro products' : 'products'} found</p>
+                  <p className="text-sm text-coffee-500">No {tab === 'coffee' ? 'coffee lots' : tab === 'agro' ? 'agro products' : 'products'} matching your filters. Try adjusting your search.</p>
                 </div>
               ) : view === 'grid' ? (
                 <>
                   <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
                     {listings.map((item) => (
-                      <ListingCard key={item._id} listing={item} type={activeTab} computeGrade={computeGrade} />
+                      <ListingCard key={item._id} listing={item} type={tab} computeGrade={computeGrade} />
                     ))}
                   </div>
 
@@ -540,7 +327,7 @@ export default function MarketplacePage() {
                 <>
                   <div className="space-y-4 max-w-4xl">
                     {listings.map((item) => (
-                      <ListingListItem key={item._id} listing={item} type={activeTab} computeGrade={computeGrade} />
+                      <ListingListItem key={item._id} listing={item} type={tab} computeGrade={computeGrade} />
                     ))}
                   </div>
 
@@ -571,11 +358,7 @@ export default function MarketplacePage() {
                   <p className="text-sm text-coffee-500">Locations will be displayed on an interactive map</p>
                 </div>
               )}
-            </main>
-          </div>
-        </div>
-      </div>
-    </div>
+            </div>
   );
 }
 

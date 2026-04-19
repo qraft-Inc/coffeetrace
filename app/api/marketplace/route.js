@@ -16,6 +16,7 @@ export async function GET(request) {
   try {
     // Safety guard for build time
     if (!process.env.MONGODB_URI) {
+      console.error('❌ MONGODB_URI environment variable is not set');
       return NextResponse.json(
         { error: 'Database not configured' },
         { status: 503 }
@@ -106,7 +107,23 @@ export async function GET(request) {
       },
     });
   } catch (error) {
-    console.error('GET /api/marketplace error:', error);
+    console.error('❌ GET /api/marketplace error:', error);
+    console.error('Error name:', error?.name);
+    console.error('Error message:', error?.message);
+    console.error('Error stack:', error?.stack);
+    
+    // Check if it's a connection error
+    if (error?.name === 'MongooseError' || error?.message?.includes('connect')) {
+      return NextResponse.json(
+        { 
+          error: 'Database connection failed', 
+          details: error.message,
+          hint: 'Check MONGODB_URI and network access'
+        },
+        { status: 503 }
+      );
+    }
+    
     return NextResponse.json(
       { error: 'Failed to fetch marketplace listings', details: error.message },
       { status: 500 }
