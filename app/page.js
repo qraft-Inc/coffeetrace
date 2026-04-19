@@ -758,14 +758,14 @@ function Step({ number, title, description, icon }) {
 
 function Testimonial({ quote, name, role, rating }) {
   return (
-    <article className="bg-white p-8 rounded-xl shadow-lg border border-coffee-100 hover:shadow-xl transition-shadow">
+    <article className="bg-white p-8 rounded-xl shadow-lg border border-coffee-100 hover:shadow-xl transition-shadow h-full flex flex-col">
       <div className="flex gap-1 mb-4">
         {[...Array(rating)].map((_, i) => (
           <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
         ))}
       </div>
-      <blockquote className="text-coffee-700 mb-6 italic">"{quote}"</blockquote>
-      <div className="border-t border-coffee-100 pt-4">
+      <blockquote className="text-coffee-700 mb-6 italic flex-grow">"{quote}"</blockquote>
+      <div className="border-t border-coffee-100 pt-4 mt-auto">
         <p className="font-bold text-coffee-900">{name}</p>
         <p className="text-sm text-coffee-600">{role}</p>
       </div>
