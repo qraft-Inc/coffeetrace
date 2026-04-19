@@ -702,26 +702,24 @@ function ListingListItem({ listing, type, computeGrade }) {
 
   return (
     <Link href={`/marketplace/${listing._id}`}>
-      <div className="bg-white rounded-lg border border-coffee-200 hover:border-primary-600 hover:shadow-md transition-all p-3 sm:p-4 flex flex-col sm:flex-row gap-3 sm:gap-4">
-        <div className="w-24 h-24 sm:w-28 sm:h-28 bg-gradient-to-br from-orange-200 to-amber-300 rounded-lg flex-shrink-0 flex items-center justify-center">
+      <div className="bg-white rounded-lg border border-coffee-200 hover:border-primary-600 hover:shadow-md transition-all p-3 sm:p-4 flex items-center gap-3 sm:gap-4">
+        <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-orange-200 to-amber-300 rounded-lg flex-shrink-0 flex items-center justify-center">
           {type === 'coffee' ? (
-            <Coffee className="h-10 w-10 sm:h-12 sm:w-12 text-white opacity-40" />
+            <Coffee className="h-8 w-8 sm:h-10 sm:w-10 text-white opacity-40" />
           ) : type === 'agro' ? (
-            <Sprout className="h-10 w-10 sm:h-12 sm:w-12 text-white opacity-40" />
+            <Sprout className="h-8 w-8 sm:h-10 sm:w-10 text-white opacity-40" />
           ) : (
-            <Package className="h-10 w-10 sm:h-12 sm:w-12 text-white opacity-40" />
+            <Package className="h-8 w-8 sm:h-10 sm:w-10 text-white opacity-40" />
           )}
         </div>
 
-        <div className="flex-1 flex flex-col justify-between">
-          <div>
-            <h3 className="text-sm sm:text-base font-semibold text-coffee-900">{lot?.variety || listing.name}</h3>
-            <p className="text-xs sm:text-sm text-coffee-600">{listing.category || lot?.region}</p>
-          </div>
-
+        <div className="flex-1 min-w-0">
+          <h3 className="text-sm sm:text-base font-semibold text-coffee-900 truncate">{lot?.variety || listing.name}</h3>
+          <p className="text-xs sm:text-sm text-coffee-600 truncate">{listing.category || lot?.region}</p>
+          
           {type === 'coffee' && (
-            <div className="mt-2 flex items-center gap-2 sm:gap-3">
-              <span className="text-base sm:text-lg font-bold text-primary-600">
+            <div className="mt-1.5 flex items-center gap-2">
+              <span className="text-sm sm:text-base font-bold text-primary-600">
                 {lot?.pricePerKg && formatCurrency(lot.pricePerKg)}/kg
               </span>
               {lot?.gradeScore && (
@@ -733,13 +731,13 @@ function ListingListItem({ listing, type, computeGrade }) {
           )}
 
           {type !== 'coffee' && (
-            <span className="text-base sm:text-lg font-bold text-primary-600 block mt-2">
+            <span className="text-sm sm:text-base font-bold text-primary-600 block mt-1.5">
               {listing.price && formatCurrency(listing.price)}
             </span>
           )}
         </div>
 
-        <button className="self-center sm:self-auto px-3 sm:px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-xs sm:text-sm font-medium whitespace-nowrap">
+        <button className="px-4 sm:px-5 py-2.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-xs sm:text-sm font-medium whitespace-nowrap flex-shrink-0 h-fit">
           View
         </button>
       </div>
