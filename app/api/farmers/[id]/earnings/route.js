@@ -4,7 +4,7 @@ import dbConnect from '../../../../../lib/dbConnect';
 import PaymentTransaction from '../../../../../models/PaymentTransaction';
 import Tip from '../../../../../models/Tip';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../../../api/auth/[...nextauth]/route';
+import { authOptions } from '../../../../../lib/authOptions';
 
 export const dynamic = 'force-dynamic';
 
