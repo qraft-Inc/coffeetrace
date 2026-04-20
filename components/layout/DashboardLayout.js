@@ -35,6 +35,7 @@ const roleNavigation = {
     { name: 'Overview', href: '/dashboard/admin', icon: LayoutDashboard },
     { name: 'Users', href: '/dashboard/admin/users', icon: Users },
     { name: 'Farmers', href: '/dashboard/admin/farmers', icon: Users },
+    { name: 'All Investors', href: '/dashboard/admin/investors', icon: TrendingUp },
     { name: 'Verification', href: '/dashboard/admin/verification', icon: Award },
     { name: 'Analytics', href: '/dashboard/admin/analytics', icon: BarChart3 },
     { name: 'Settings', href: '/dashboard/admin/settings', icon: Settings },
@@ -71,7 +72,6 @@ const roleNavigation = {
   investor: [
     { name: 'Dashboard', href: '/dashboard/investor', icon: Home },
     { name: 'Portfolio', href: '/dashboard/investor/portfolio', icon: TrendingUp },
-    { name: 'All Investors', href: '/dashboard/investor/investors', icon: Users },
     { name: 'Impact Metrics', href: '/dashboard/investor/impact', icon: BarChart3 },
     { name: 'Farmers', href: '/dashboard/investor/farmers', icon: Users },
     { name: 'Reports', href: '/dashboard/investor/reports', icon: FileText },

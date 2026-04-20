@@ -5,6 +5,10 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Coffee, Leaf, TrendingUp, Shield, MapPin, Users, Award, CheckCircle, Star, Mail, Phone, MapPinIcon, Linkedin, Twitter, Instagram, Wallet, DollarSign, ShoppingBag, CloudRain, FileCheck, QrCode, Menu, X } from 'lucide-react';
+import VerifiedFarmerNetworkSection from '@/components/home/VerifiedFarmerNetworkSection';
+import FarmerProgramSection from '@/components/home/FarmerProgramSection';
+import FarmerProgressLevelsSection from '@/components/home/FarmerProgressLevelsSection';
+import BusinessImpactSection from '@/components/home/BusinessImpactSection';
 
 export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -135,8 +139,15 @@ export default function HomePage() {
               <br />
               <span className="text-primary-400">Every Lot Verified</span>
             </h1>
-            <p className="text-base sm:text-lg lg:text-xl text-coffee-100 mb-6 sm:mb-8 max-w-2xl mx-auto px-4">
+            <p className="text-base sm:text-lg lg:text-xl text-coffee-100 mb-4 sm:mb-5 max-w-2xl mx-auto px-4">
               QR traceability, quality grading, and compliance records—so farmers earn more and buyers trust origin.
+            </p>
+            {/* Farmer journey tagline */}
+            <p className="text-sm sm:text-base text-primary-300 font-semibold mb-3 tracking-wide px-4">
+              Built on the farmer journey: Train → Digitize → Verify → Aggregate → Sell
+            </p>
+            <p className="text-sm sm:text-base text-coffee-200 mb-6 sm:mb-8 max-w-xl mx-auto px-4 leading-relaxed">
+              We do not just trace coffee. We build export-ready farmer networks that can produce, prove, and sell verified coffee.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8 justify-center px-4">
               <Link
@@ -220,6 +231,9 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Verified Farmer Network — 5-step pipeline */}
+      <VerifiedFarmerNetworkSection />
+
       {/* Features Section */}
       <section id="cooperatives" className="py-12 sm:py-16 lg:py-20 bg-coffee-50" data-scroll-animate="true">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -260,6 +274,12 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Coffee Trap Verified Farmer Network — 6 modules */}
+      <FarmerProgramSection />
+
+      {/* Farmer Progress Levels — 3 tiers */}
+      <FarmerProgressLevelsSection />
+
       {/* Choose Your Path / Role Segmentation - Dashboard Entry Points */}
       <section className="py-12 sm:py-16 lg:py-20 bg-white" data-scroll-animate="true">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -278,7 +298,7 @@ export default function HomePage() {
                 <Leaf className="h-8 w-8 text-coffee-900" />
               </div>
               <h3 className="text-lg sm:text-xl font-bold text-coffee-900 mb-2">Farmer</h3>
-              <p className="text-coffee-600 text-sm mb-6">Track lots, sell directly, access financing and training</p>
+              <p className="text-coffee-600 text-sm mb-6">Learn modern coffee production, digitize your farm, verify your lots, and sell with stronger pricing power.</p>
               <Link href="/auth/signup?role=farmer" className="text-primary-600 hover:text-primary-700 font-semibold text-sm">
                 Get Started →
               </Link>
@@ -290,7 +310,7 @@ export default function HomePage() {
                 <Users className="h-8 w-8 text-orange-900" />
               </div>
               <h3 className="text-lg sm:text-xl font-bold text-coffee-900 mb-2">Cooperative</h3>
-              <p className="text-coffee-600 text-sm mb-6">Manage farmers, certifications, bulk sales, and compliance</p>
+              <p className="text-coffee-600 text-sm mb-6">Train and manage farmer networks, maintain compliance, aggregate verified lots, and access premium export markets.</p>
               <Link href="/auth/signup?role=cooperative" className="text-primary-600 hover:text-primary-700 font-semibold text-sm">
                 Get Started →
               </Link>
@@ -302,7 +322,7 @@ export default function HomePage() {
                 <ShoppingBag className="h-8 w-8 text-blue-900" />
               </div>
               <h3 className="text-lg sm:text-xl font-bold text-coffee-900 mb-2">Buyer</h3>
-              <p className="text-coffee-600 text-sm mb-6">Discover verified lots, verify origin, complete secure transactions</p>
+              <p className="text-coffee-600 text-sm mb-6">Source verified lots with full origin traceability, quality grades, and EUDR compliance — and complete secure transactions directly.</p>
               <Link href="/auth/signup?role=buyer" className="text-primary-600 hover:text-primary-700 font-semibold text-sm">
                 Get Started →
               </Link>
@@ -314,7 +334,7 @@ export default function HomePage() {
                 <DollarSign className="h-8 w-8 text-yellow-900" />
               </div>
               <h3 className="text-lg sm:text-xl font-bold text-coffee-900 mb-2">Investor</h3>
-              <p className="text-coffee-600 text-sm mb-6">Finance farms, offer inputs, and build supply networks</p>
+              <p className="text-coffee-600 text-sm mb-6">Finance verified farmer networks, support inputs and compliance, and build traceable supply chains with measurable returns.</p>
               <Link href="/auth/signup?role=investor" className="text-primary-600 hover:text-primary-700 font-semibold text-sm">
                 Get Started →
               </Link>
@@ -324,44 +344,280 @@ export default function HomePage() {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-12 sm:py-16 lg:py-20 bg-white" data-scroll-animate="true">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10 sm:mb-12 lg:mb-16" data-scroll-animate="true">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-coffee-900 mb-3 sm:mb-4">
-              How It Works
+      <section id="how-it-works" className="py-16 sm:py-20 lg:py-28 relative overflow-hidden" data-scroll-animate="true">
+        {/* Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-50 via-orange-50 to-stone-100" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(120,53,15,0.06)_0%,_transparent_60%)]" />
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+          {/* Heading */}
+          <div className="text-center mb-8 sm:mb-10" data-scroll-animate="true">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-primary-100 text-primary-700 text-xs font-semibold tracking-widest uppercase mb-4">
+              The System
+            </span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-coffee-900 mb-5 leading-tight">
+              How the System Works
             </h2>
-            <p className="text-base sm:text-lg lg:text-xl text-coffee-600 max-w-2xl mx-auto px-4">
-              Create a lot, capture events, sell with proof
+            {/* System intro */}
+            <p className="text-base sm:text-lg text-coffee-600 max-w-2xl mx-auto leading-relaxed">
+              Coffee Trace is not a linear supply chain — it is a self-reinforcing system powered by households, finance, and verified market access.
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 sm:gap-10 lg:gap-12">
-            <div data-scroll-animate="true" data-scroll-animate-stagger="1">
-              <Step
-                number="1"
-                title="Register & Create Lots"
-                description="Farmers register their farms and create traceable coffee lots with harvest details, GPS coordinates, and quality metrics."
-                icon={<Users className="h-12 w-12" />}
-              />
+
+          {/* SACCO Financing Layer — desktop banner, mobile compact badge */}
+          <div className="mb-8 sm:mb-10 flex justify-center" data-scroll-animate="true">
+            <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-amber-100 border border-amber-300 shadow-sm">
+              <div className="w-2 h-2 rounded-full bg-amber-500 flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-semibold text-amber-800 tracking-wide">
+                SACCO Financing Layer
+              </span>
+              <span className="hidden sm:inline text-amber-600 text-xs">—</span>
+              <span className="hidden sm:inline text-amber-700 text-xs">
+                connects household finance to Step&nbsp;1 and returns revenue from Step&nbsp;5
+              </span>
+              <div className="w-2 h-2 rounded-full bg-amber-500 flex-shrink-0" />
             </div>
-            <div data-scroll-animate="true" data-scroll-animate-stagger="2">
-              <Step
-                number="2"
-                title="Capture Trace Events"
-                description="Add events at each stage: processing, drying, grading, storage, and shipping with photos and timestamps."
-                icon={<MapPin className="h-12 w-12" />}
-              />
+          </div>
+
+          {/* Steps */}
+          <div className="relative">
+            {/* Connector line — desktop only */}
+            <div className="hidden lg:block absolute top-[72px] left-[calc(10%+40px)] right-[calc(10%+40px)] h-px bg-gradient-to-r from-amber-200 via-primary-300 to-amber-200 z-0" />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-4 relative z-10">
+
+              {/* Step 1 — Enable Households & Farmers */}
+              <div className="group relative bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl border border-amber-200 hover:border-amber-400 transition-all duration-300 hover:-translate-y-1" data-scroll-animate="true" data-scroll-animate-stagger="1">
+                {/* SACCO entry indicator */}
+                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-1 px-2.5 py-1 bg-amber-100 border border-amber-300 rounded-full shadow-sm z-20">
+                  <Wallet className="h-3 w-3 text-amber-600" />
+                  <span className="text-[10px] font-bold text-amber-700 whitespace-nowrap">SACCO input</span>
+                </div>
+                <div className="flex lg:flex-col lg:items-start items-center gap-4 lg:gap-0">
+                  <div className="flex-shrink-0 flex items-center justify-center w-14 h-14 rounded-2xl bg-amber-100 group-hover:bg-amber-200 transition-colors mb-0 lg:mb-5">
+                    <Users className="h-7 w-7 text-amber-700" />
+                  </div>
+                  <div className="absolute -top-3 -right-3 hidden lg:flex items-center justify-center w-7 h-7 rounded-full bg-primary-600 text-white text-xs font-bold shadow-md">1</div>
+                  <div>
+                    <span className="inline-block lg:hidden text-xs font-bold text-primary-600 bg-primary-50 px-2 py-0.5 rounded-full mb-1">Step 1</span>
+                    <h3 className="text-base font-bold text-coffee-900 mb-1 leading-snug">Enable Households &amp; Farmers</h3>
+                    <p className="text-xs text-amber-700 font-medium mb-3 uppercase tracking-wider">Household &amp; Farmer Readiness</p>
+                    <ul className="space-y-1.5">
+                      <li className="flex items-start gap-2 text-sm text-coffee-600">
+                        <CheckCircle className="h-3.5 w-3.5 text-green-500 mt-0.5 flex-shrink-0" />
+                        Training &amp; good agricultural practices
+                      </li>
+                      <li className="flex items-start gap-2 text-sm text-coffee-600">
+                        <CheckCircle className="h-3.5 w-3.5 text-green-500 mt-0.5 flex-shrink-0" />
+                        Input financing &amp; household stability
+                      </li>
+                      <li className="flex items-start gap-2 text-sm text-coffee-600">
+                        <CheckCircle className="h-3.5 w-3.5 text-green-500 mt-0.5 flex-shrink-0" />
+                        Production support &amp; supply reliability
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 2 — Process */}
+              <div className="group relative bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl border border-stone-100 hover:border-primary-200 transition-all duration-300 hover:-translate-y-1" data-scroll-animate="true" data-scroll-animate-stagger="2">
+                <div className="flex lg:flex-col lg:items-start items-center gap-4 lg:gap-0">
+                  <div className="flex-shrink-0 flex items-center justify-center w-14 h-14 rounded-2xl bg-orange-100 group-hover:bg-orange-200 transition-colors mb-0 lg:mb-5">
+                    <Award className="h-7 w-7 text-orange-700" />
+                  </div>
+                  <div className="absolute -top-3 -right-3 hidden lg:flex items-center justify-center w-7 h-7 rounded-full bg-primary-600 text-white text-xs font-bold shadow-md">2</div>
+                  <div>
+                    <span className="inline-block lg:hidden text-xs font-bold text-primary-600 bg-primary-50 px-2 py-0.5 rounded-full mb-1">Step 2</span>
+                    <h3 className="text-base font-bold text-coffee-900 mb-1 leading-snug">Process</h3>
+                    <p className="text-xs text-coffee-500 font-medium mb-3 uppercase tracking-wider">Quality Engine</p>
+                    <ul className="space-y-1.5">
+                      <li className="flex items-start gap-2 text-sm text-coffee-600">
+                        <CheckCircle className="h-3.5 w-3.5 text-green-500 mt-0.5 flex-shrink-0" />
+                        Drying, washing &amp; sorting
+                      </li>
+                      <li className="flex items-start gap-2 text-sm text-coffee-600">
+                        <CheckCircle className="h-3.5 w-3.5 text-green-500 mt-0.5 flex-shrink-0" />
+                        Hulling, grading &amp; cleaning
+                      </li>
+                      <li className="flex items-start gap-2 text-sm text-coffee-600">
+                        <CheckCircle className="h-3.5 w-3.5 text-green-500 mt-0.5 flex-shrink-0" />
+                        Export-ready green coffee beans
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 3 — Verify (highlighted) */}
+              <div className="group relative bg-primary-700 rounded-2xl p-6 shadow-lg hover:shadow-2xl border border-primary-600 transition-all duration-300 hover:-translate-y-1" data-scroll-animate="true" data-scroll-animate-stagger="3">
+                <div className="flex lg:flex-col lg:items-start items-center gap-4 lg:gap-0">
+                  <div className="flex-shrink-0 flex items-center justify-center w-14 h-14 rounded-2xl bg-white/20 group-hover:bg-white/30 transition-colors mb-0 lg:mb-5">
+                    <Shield className="h-7 w-7 text-white" />
+                  </div>
+                  <div className="absolute -top-3 -right-3 hidden lg:flex items-center justify-center w-7 h-7 rounded-full bg-white text-primary-700 text-xs font-bold shadow-md">3</div>
+                  <div>
+                    <span className="inline-block lg:hidden text-xs font-bold text-primary-200 bg-white/10 px-2 py-0.5 rounded-full mb-1">Step 3</span>
+                    <h3 className="text-base font-bold text-white mb-1 leading-snug">Verify</h3>
+                    <p className="text-xs text-primary-200 font-medium mb-3 uppercase tracking-wider">Trust &amp; Compliance Layer</p>
+                    <ul className="space-y-1.5">
+                      <li className="flex items-start gap-2 text-sm text-primary-100">
+                        <CheckCircle className="h-3.5 w-3.5 text-primary-300 mt-0.5 flex-shrink-0" />
+                        Lot tracking &amp; QR traceability
+                      </li>
+                      <li className="flex items-start gap-2 text-sm text-primary-100">
+                        <CheckCircle className="h-3.5 w-3.5 text-primary-300 mt-0.5 flex-shrink-0" />
+                        Quality grading records
+                      </li>
+                      <li className="flex items-start gap-2 text-sm text-primary-100">
+                        <CheckCircle className="h-3.5 w-3.5 text-primary-300 mt-0.5 flex-shrink-0" />
+                        EUDR-ready compliance data
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 4 — Aggregate & Match */}
+              <div className="group relative bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl border border-stone-100 hover:border-primary-200 transition-all duration-300 hover:-translate-y-1" data-scroll-animate="true" data-scroll-animate-stagger="4">
+                <div className="flex lg:flex-col lg:items-start items-center gap-4 lg:gap-0">
+                  <div className="flex-shrink-0 flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-100 group-hover:bg-emerald-200 transition-colors mb-0 lg:mb-5">
+                    <ShoppingBag className="h-7 w-7 text-emerald-700" />
+                  </div>
+                  <div className="absolute -top-3 -right-3 hidden lg:flex items-center justify-center w-7 h-7 rounded-full bg-primary-600 text-white text-xs font-bold shadow-md">4</div>
+                  <div>
+                    <span className="inline-block lg:hidden text-xs font-bold text-primary-600 bg-primary-50 px-2 py-0.5 rounded-full mb-1">Step 4</span>
+                    <h3 className="text-base font-bold text-coffee-900 mb-1 leading-snug">Aggregate &amp; Match</h3>
+                    <p className="text-xs text-coffee-500 font-medium mb-3 uppercase tracking-wider">Supply Coordination Layer</p>
+                    <ul className="space-y-1.5">
+                      <li className="flex items-start gap-2 text-sm text-coffee-600">
+                        <CheckCircle className="h-3.5 w-3.5 text-green-500 mt-0.5 flex-shrink-0" />
+                        Cooperative aggregation &amp; bulk lots
+                      </li>
+                      <li className="flex items-start gap-2 text-sm text-coffee-600">
+                        <CheckCircle className="h-3.5 w-3.5 text-green-500 mt-0.5 flex-shrink-0" />
+                        Matched to verified premium buyers
+                      </li>
+                      <li className="flex items-start gap-2 text-sm text-coffee-600">
+                        <CheckCircle className="h-3.5 w-3.5 text-green-500 mt-0.5 flex-shrink-0" />
+                        Export-ready consolidation
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 5 — Sell & Distribute Value */}
+              <div className="group relative bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl border border-purple-200 hover:border-purple-400 transition-all duration-300 hover:-translate-y-1" data-scroll-animate="true" data-scroll-animate-stagger="5">
+                {/* SACCO return indicator */}
+                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-1 px-2.5 py-1 bg-amber-100 border border-amber-300 rounded-full shadow-sm z-20">
+                  <TrendingUp className="h-3 w-3 text-amber-600" />
+                  <span className="text-[10px] font-bold text-amber-700 whitespace-nowrap">SACCO return</span>
+                </div>
+                <div className="flex lg:flex-col lg:items-start items-center gap-4 lg:gap-0">
+                  <div className="flex-shrink-0 flex items-center justify-center w-14 h-14 rounded-2xl bg-purple-100 group-hover:bg-purple-200 transition-colors mb-0 lg:mb-5">
+                    <Wallet className="h-7 w-7 text-purple-700" />
+                  </div>
+                  <div className="absolute -top-3 -right-3 hidden lg:flex items-center justify-center w-7 h-7 rounded-full bg-primary-600 text-white text-xs font-bold shadow-md">5</div>
+                  <div>
+                    <span className="inline-block lg:hidden text-xs font-bold text-primary-600 bg-primary-50 px-2 py-0.5 rounded-full mb-1">Step 5</span>
+                    <h3 className="text-base font-bold text-coffee-900 mb-1 leading-snug">Sell &amp; Distribute Value</h3>
+                    <p className="text-xs text-coffee-500 font-medium mb-3 uppercase tracking-wider">Market Access Layer</p>
+                    <ul className="space-y-1.5">
+                      <li className="flex items-start gap-2 text-sm text-coffee-600">
+                        <CheckCircle className="h-3.5 w-3.5 text-green-500 mt-0.5 flex-shrink-0" />
+                        Coffee sold into stronger markets
+                      </li>
+                      <li className="flex items-start gap-2 text-sm text-coffee-600">
+                        <CheckCircle className="h-3.5 w-3.5 text-green-500 mt-0.5 flex-shrink-0" />
+                        Premium pricing on quality &amp; traceability
+                      </li>
+                      <li className="flex items-start gap-2 text-sm text-coffee-600">
+                        <CheckCircle className="h-3.5 w-3.5 text-green-500 mt-0.5 flex-shrink-0" />
+                        Value distributed across the network
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
             </div>
-            <div data-scroll-animate="true" data-scroll-animate-stagger="3">
-              <Step
-                number="3"
-                title="List & Sell Securely"
-                description="Post lots on the marketplace and receive offers from verified buyers. Complete transactions securely."
-                icon={<TrendingUp className="h-12 w-12" />}
-              />
+          </div>
+
+          {/* Reinvestment Loop */}
+          <div className="mt-10 sm:mt-12" data-scroll-animate="true">
+            <div className="relative rounded-2xl border border-amber-200 bg-gradient-to-r from-amber-50 via-white to-amber-50 px-5 sm:px-8 py-5 shadow-sm overflow-hidden">
+              {/* Decorative loop arrow — desktop */}
+              <div className="hidden lg:flex absolute inset-0 items-center justify-center pointer-events-none" aria-hidden="true">
+                <svg viewBox="0 0 900 48" className="w-full h-12 opacity-20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M860 24 C860 24, 880 4, 860 4 L40 4 C20 4, 40 24, 40 24" stroke="#b45309" strokeWidth="2" strokeDasharray="6 4" strokeLinecap="round"/>
+                  <polygon points="40,16 30,24 40,32" fill="#b45309"/>
+                </svg>
+              </div>
+
+              <div className="relative flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+                {/* Left — Step 5 origin */}
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-purple-100 border border-purple-300 flex items-center justify-center">
+                    <span className="text-xs font-bold text-purple-700">5</span>
+                  </div>
+                  <span className="text-sm font-semibold text-coffee-700">Revenue</span>
+                </div>
+
+                {/* Arrow + label flow */}
+                <div className="flex-1 flex flex-col sm:flex-row items-center gap-2 sm:gap-0">
+                  <div className="hidden sm:flex flex-1 items-center gap-0">
+                    <div className="h-px flex-1 bg-gradient-to-r from-amber-300 to-amber-400" />
+                    <div className="px-3 py-1 bg-amber-100 border border-amber-300 rounded-full text-xs font-bold text-amber-800 whitespace-nowrap mx-2 flex items-center gap-1.5">
+                      <Wallet className="h-3 w-3" />
+                      SACCO
+                    </div>
+                    <div className="h-px flex-1 bg-gradient-to-r from-amber-400 to-amber-300" />
+                  </div>
+                  {/* Mobile version */}
+                  <div className="sm:hidden flex items-center gap-2 text-amber-700">
+                    <TrendingUp className="h-4 w-4" />
+                    <span className="text-xs font-bold">via SACCO</span>
+                    <TrendingUp className="h-4 w-4" />
+                  </div>
+                </div>
+
+                {/* Right — Step 1 destination */}
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <span className="text-sm font-semibold text-coffee-700">Households &amp; Farmers</span>
+                  <div className="w-8 h-8 rounded-full bg-amber-100 border border-amber-300 flex items-center justify-center">
+                    <span className="text-xs font-bold text-amber-700">1</span>
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-center text-xs sm:text-sm text-amber-800 mt-3 font-medium">
+                Revenue is reinvested through the SACCO into households and farmers, strengthening future production.
+              </p>
             </div>
+          </div>
+
+          {/* Bottom caption */}
+          <p className="text-center text-sm text-coffee-500 mt-6 max-w-2xl mx-auto leading-relaxed" data-scroll-animate="true">
+            A closed-loop system where market revenue is reinvested into households and farmers through the SACCO, improving quality, supply, and long-term resilience.
+          </p>
+
+          {/* Bottom CTA */}
+          <div className="text-center mt-10 sm:mt-12">
+            <Link
+              href="/auth/signup"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-primary-600 text-white rounded-xl font-semibold hover:bg-primary-700 transition-colors shadow-lg hover:shadow-xl text-sm sm:text-base"
+            >
+              Join the Network
+              <TrendingUp className="h-4 w-4" />
+            </Link>
           </div>
         </div>
       </section>
+
+      {/* Business Impact — Why This Model Works */}
+      <BusinessImpactSection />
 
       {/* Testimonials Section */}
       <section id="testimonials" className="py-12 sm:py-16 lg:py-20 bg-white" data-scroll-animate="true">

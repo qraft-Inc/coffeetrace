@@ -126,13 +126,6 @@ export default function InvestorDashboard() {
               <span className="font-semibold text-coffee-900">My Portfolio</span>
             </Link>
             <Link
-              href="/dashboard/investor/investors"
-              className="flex items-center gap-3 p-4 border-2 border-coffee-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors"
-            >
-              <Users className="h-6 w-6 text-primary-600" />
-              <span className="font-semibold text-coffee-900">All Investors</span>
-            </Link>
-            <Link
               href="/dashboard/investor/impact"
               className="flex items-center gap-3 p-4 border-2 border-coffee-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors"
             >
