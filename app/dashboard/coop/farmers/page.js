@@ -22,6 +22,7 @@ export default function CoopFarmersPage() {
   const [editLoading, setEditLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [error, setError] = useState('');
+  const [deleteNotice, setDeleteNotice] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -47,6 +48,12 @@ export default function CoopFarmersPage() {
   useEffect(() => {
     fetchFarmers();
   }, [session?.user?.cooperativeId]);
+
+  useEffect(() => {
+    if (!deleteNotice) return;
+    const timeoutId = setTimeout(() => setDeleteNotice(null), 4000);
+    return () => clearTimeout(timeoutId);
+  }, [deleteNotice]);
 
   const fetchFarmers = async () => {
     try {
@@ -83,8 +90,37 @@ export default function CoopFarmersPage() {
     return `${acres.toFixed(1)} acres`;
   };
 
+  const getLocationSource = (farmer) => {
+    const hasTextLocation = (value) => {
+      if (!value || typeof value !== 'object') return false;
+      return Boolean(value.district || value.region || value.country);
+    };
+
+    const hasCoordinates = (value) => {
+      return Array.isArray(value?.coordinates) && value.coordinates.length === 2;
+    };
+
+    const isUsableLocation = (value) => {
+      if (!value) return false;
+      if (typeof value === 'string') return value.trim().length > 0;
+      return hasTextLocation(value) || hasCoordinates(value);
+    };
+
+    if (isUsableLocation(farmer?.location)) return farmer.location;
+    if (isUsableLocation(farmer?.address)) return farmer.address;
+    if (isUsableLocation(farmer?.cooperativeId?.address)) return farmer.cooperativeId.address;
+    if (isUsableLocation(farmer?.cooperativeId?.location)) return farmer.cooperativeId.location;
+
+    return (
+      farmer?.address
+      || farmer?.cooperativeId?.address
+      || farmer?.cooperativeId?.location
+      || null
+    );
+  };
+
   const formatLocation = (farmer) => {
-    const loc = farmer?.location;
+    const loc = getLocationSource(farmer);
     if (!loc) return 'N/A';
     if (typeof loc === 'string') return loc;
     const parts = [loc.district, loc.region, loc.country].filter(Boolean);
@@ -97,9 +133,10 @@ export default function CoopFarmersPage() {
 
   const filteredFarmers = farmers.filter(farmer => {
     const nameMatch = (farmer.name || '').toLowerCase().includes(searchTerm.toLowerCase());
-    const locationText = typeof farmer.location === 'string'
-      ? farmer.location
-      : `${farmer.location?.district || ''} ${farmer.location?.region || ''}`;
+    const sourceLoc = getLocationSource(farmer);
+    const locationText = typeof sourceLoc === 'string'
+      ? sourceLoc
+      : `${sourceLoc?.district || ''} ${sourceLoc?.region || ''} ${sourceLoc?.country || ''}`;
     const locationMatch = (locationText || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesSearch = nameMatch || locationMatch;
     const matchesFilter = filterStatus === 'all' || getStatus(farmer) === filterStatus;
@@ -178,9 +215,9 @@ export default function CoopFarmersPage() {
       phone: farmer.userId?.phone || farmer.phone || '',
       farmSize: farmer.farmSize || '',
       farmSizeUnit: farmer.farmSizeUnit || 'acres',
-      district: farmer.address?.district || '',
-      region: farmer.address?.region || '',
-      country: farmer.address?.country || 'Uganda',
+      district: farmer.location?.district || farmer.address?.district || farmer.cooperativeId?.address?.district || '',
+      region: farmer.location?.region || farmer.address?.region || farmer.cooperativeId?.address?.region || '',
+      country: farmer.location?.country || farmer.address?.country || farmer.cooperativeId?.address?.country || 'Uganda',
     });
     setError('');
     setShowEditModal(true);
@@ -195,6 +232,9 @@ export default function CoopFarmersPage() {
     setError('');
     setEditLoading(true);
     try {
+      const hasGeoCoordinates = Array.isArray(editTarget?.location?.coordinates)
+        && editTarget.location.coordinates.length === 2;
+
       const payload = {
         name: editData.name,
         phone: editData.phone,
@@ -207,6 +247,13 @@ export default function CoopFarmersPage() {
         },
       };
 
+      if (hasGeoCoordinates) {
+        payload.location = {
+          type: 'Point',
+          coordinates: editTarget.location.coordinates,
+        };
+      }
+
       const res = await fetch(`/api/farmers/${editTarget._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -214,8 +261,8 @@ export default function CoopFarmersPage() {
       });
 
       if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || 'Failed to update farmer');
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.details || err.error || 'Failed to update farmer');
       }
 
       setShowEditModal(false);
@@ -231,6 +278,7 @@ export default function CoopFarmersPage() {
   const confirmDelete = (farmer) => {
     setDeleteTarget(farmer);
     setError('');
+    setDeleteNotice(null);
     setShowDeleteConfirm(true);
   };
 
@@ -247,11 +295,19 @@ export default function CoopFarmersPage() {
         const err = await res.json();
         throw new Error(err.error || 'Failed to delete farmer');
       }
+      setDeleteNotice({
+        type: 'success',
+        message: `${deleteTarget?.name || 'Farmer'} deleted successfully.`,
+      });
       setShowDeleteConfirm(false);
       setDeleteTarget(null);
       await fetchFarmers();
     } catch (err) {
       setError(err.message);
+      setDeleteNotice({
+        type: 'error',
+        message: err.message || 'Failed to delete farmer.',
+      });
     } finally {
       setDeleteLoading(false);
     }
@@ -261,6 +317,19 @@ export default function CoopFarmersPage() {
     <RequireAuth allowedRoles={['coopAdmin']}>
       <DashboardLayout title="Cooperative Farmers">
         <div className="space-y-6">
+          {deleteNotice && (
+            <div
+              role="alert"
+              className={`rounded-md border p-3 text-sm ${
+                deleteNotice.type === 'success'
+                  ? 'bg-green-50 border-green-200 text-green-800'
+                  : 'bg-red-50 border-red-200 text-red-800'
+              }`}
+            >
+              {deleteNotice.message}
+            </div>
+          )}
+
           {/* Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm">

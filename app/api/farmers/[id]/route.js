@@ -110,31 +110,74 @@ export async function PUT(request, { params }) {
     // Store old values for audit
     const oldValues = existingFarmer.toObject();
 
-    // Update farmer
-    Object.assign(existingFarmer, body);
-    
-    // Handle location update
-    if (body.location?.coordinates) {
-      existingFarmer.location = {
-        type: 'Point',
-        coordinates: body.location.coordinates,
+    // Normalize legacy address payload into location for compatibility.
+    const normalizedBody = { ...body };
+    if (!normalizedBody.location && normalizedBody.address) {
+      normalizedBody.location = {
+        district: normalizedBody.address.district,
+        region: normalizedBody.address.region,
+        country: normalizedBody.address.country,
       };
+    }
+
+    const hasValidGeoPoint = (value) => {
+      if (!value || typeof value !== 'object') return false;
+      if (value.type !== 'Point') return false;
+      if (!Array.isArray(value.coordinates) || value.coordinates.length !== 2) return false;
+      return Number.isFinite(value.coordinates[0]) && Number.isFinite(value.coordinates[1]);
+    };
+
+    const locationText = {
+      district: normalizedBody.location?.district,
+      region: normalizedBody.location?.region,
+      country: normalizedBody.location?.country,
+    };
+
+    normalizedBody.address = {
+      ...(existingFarmer.address?.toObject ? existingFarmer.address.toObject() : existingFarmer.address || {}),
+      ...(normalizedBody.address || {}),
+      ...Object.fromEntries(Object.entries(locationText).filter(([, value]) => value !== undefined)),
+    };
+
+    // Update scalar fields first.
+    Object.assign(existingFarmer, normalizedBody);
+
+    // Keep location only when it is valid GeoJSON for the 2dsphere index.
+    if (normalizedBody.location && hasValidGeoPoint(normalizedBody.location)) {
+      const currentLocation = existingFarmer.location?.toObject
+        ? existingFarmer.location.toObject()
+        : (existingFarmer.location || {});
+
+      existingFarmer.location = {
+        ...currentLocation,
+        ...normalizedBody.location,
+      };
+
+      existingFarmer.location.type = 'Point';
+      existingFarmer.markModified('location');
+    } else {
+      existingFarmer.set('location', undefined);
+      existingFarmer.markModified('location');
     }
 
     await existingFarmer.save();
 
-    // Log update
-    await AuditTrail.log({
-      entityType: 'Farmer',
-      entityId: existingFarmer._id,
-      action: 'updated',
-      actorId: session.user.id,
-      changes: {
-        before: oldValues,
-        after: existingFarmer.toObject(),
-      },
-      description: `Farmer profile updated`,
-    });
+    // Log update (non-blocking)
+    try {
+      await AuditTrail.log({
+        entityType: 'Farmer',
+        entityId: existingFarmer._id,
+        action: 'updated',
+        actorId: session.user.id,
+        changes: {
+          before: oldValues,
+          after: existingFarmer.toObject(),
+        },
+        description: `Farmer profile updated`,
+      });
+    } catch (auditErr) {
+      console.error('Audit log failed (non-blocking):', auditErr);
+    }
 
     return NextResponse.json({
       message: 'Farmer updated successfully',
@@ -169,7 +212,7 @@ export async function DELETE(request, { params }) {
     }
 
     await dbConnect();
-    const { id } = params;
+    const { id } = await params;
 
     const farmer = await Farmer.findById(id);
     if (!farmer) {
@@ -180,7 +223,8 @@ export async function DELETE(request, { params }) {
     }
 
     const isAdmin = session.user.role === 'admin';
-    const isCoopAdmin = session.user.role === 'coopAdmin';
+    const isCoopAdmin = session.user.role === 'coopAdmin' &&
+      session.user.cooperativeId === farmer.cooperativeId?.toString();
 
     if (!isAdmin && !isCoopAdmin) {
       return NextResponse.json(
@@ -189,10 +233,20 @@ export async function DELETE(request, { params }) {
       );
     }
 
-    // Soft delete - just mark as inactive in the user record if exists
+    // Best-effort user deactivation for login safety; do not block farmer deletion if this fails.
     if (farmer.userId) {
-      await User.findByIdAndUpdate(farmer.userId, { isActive: false });
+      try {
+        await User.findByIdAndUpdate(farmer.userId, {
+          isActive: false,
+          farmerProfile: null,
+        });
+      } catch (userUpdateErr) {
+        console.error('User deactivation failed (non-blocking):', userUpdateErr);
+      }
     }
+
+    // Remove the farmer profile record so it no longer appears in management lists.
+    await Farmer.findByIdAndDelete(id);
 
     // Log deletion (non-blocking)
     try {
@@ -201,14 +255,14 @@ export async function DELETE(request, { params }) {
         entityId: farmer._id,
         action: 'deleted',
         actorId: session.user.id,
-        description: `Farmer profile deactivated`,
+        description: `Farmer profile deleted`,
       });
     } catch (logErr) {
       console.error('Audit log failed (non-blocking):', logErr);
     }
 
     return NextResponse.json({
-      message: 'Farmer deactivated successfully',
+      message: 'Farmer deleted successfully',
     });
   } catch (error) {
     console.error('DELETE /api/farmers/[id] error:', error);

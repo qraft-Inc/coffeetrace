@@ -61,14 +61,14 @@ export default function CoopBuyersPage() {
     setSubmitLoading(true);
     try {
       const payload = {
-        companyName: formData.companyName,
+        companyName: formData.companyName.trim(),
         businessType: formData.businessType,
-        email: formData.email,
-        phone: formData.phone,
-        website: formData.website,
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        website: formData.website.trim() || undefined,
         address: {
-          city: formData.city,
-          country: formData.country,
+          city: formData.city.trim(),
+          country: formData.country.trim(),
         },
         cooperativeId: session?.user?.cooperativeId,
       };
@@ -81,7 +81,7 @@ export default function CoopBuyersPage() {
 
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.error || 'Failed to add buyer');
+        throw new Error(err.details || err.error || 'Failed to add buyer');
       }
 
       setShowAddModal(false);
@@ -308,7 +308,8 @@ export default function CoopBuyersPage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Website</label>
                     <input
-                      type="url"
+                      type="text"
+                      placeholder="Optional"
                       value={formData.website}
                       onChange={(e) => setFormData({ ...formData, website: e.target.value })}
                       className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500"

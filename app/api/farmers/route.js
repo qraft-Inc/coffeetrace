@@ -23,6 +23,7 @@ export async function GET(request) {
       'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
     };
     const cooperativeId = searchParams.get('cooperativeId');
+    const includeInactive = searchParams.get('includeInactive') === 'true';
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '20');
     const skip = (page - 1) * limit;
@@ -34,10 +35,10 @@ export async function GET(request) {
     }
 
     // Execute query with pagination
-    const [farmers, total] = await Promise.all([
+    const [rawFarmers, total] = await Promise.all([
       Farmer.find(query)
-        .populate('userId', 'name email phone')
-        .populate('cooperativeId', 'name location')
+        .populate('userId', 'name email phone isActive')
+        .populate('cooperativeId', 'name location address')
         .select('-kycDocuments -nationalId -photoIdUrl') // Exclude sensitive data
         .sort({ createdAt: -1 })
         .skip(skip)
@@ -46,13 +47,17 @@ export async function GET(request) {
       Farmer.countDocuments(query),
     ]);
 
+    const farmers = includeInactive
+      ? rawFarmers
+      : rawFarmers.filter((farmer) => farmer.userId?.isActive !== false);
+
     return NextResponse.json({
       farmers,
       pagination: {
         page,
         limit,
-        total,
-        pages: Math.ceil(total / limit),
+        total: includeInactive ? total : farmers.length,
+        pages: includeInactive ? Math.ceil(total / limit) : Math.ceil(farmers.length / limit),
       },
     }, { headers });
   } catch (error) {

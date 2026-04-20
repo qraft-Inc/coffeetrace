@@ -101,6 +101,11 @@ const FarmerSchema = new mongoose.Schema({
     region: String,
     district: String,
   },
+  address: {
+    district: String,
+    region: String,
+    country: String,
+  },
   // Optional: Farm boundary as GeoJSON Polygon
   farmBoundary: {
     type: {

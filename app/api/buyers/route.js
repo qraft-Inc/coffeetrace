@@ -5,6 +5,33 @@ import User from '../../../models/User';
 import Cooperative from '../../../models/Cooperative';
 import { dbConnect } from '../../../lib/dbConnect';
 
+async function resolveSessionCooperativeId(session) {
+  if (session?.user?.cooperativeId) return session.user.cooperativeId;
+
+  let user = null;
+  if (session?.user?.id) {
+    user = await User.findById(session.user.id).select('_id cooperativeId email').lean();
+  }
+
+  if (!user && session?.user?.email) {
+    user = await User.findOne({ email: session.user.email.toLowerCase() })
+      .select('_id cooperativeId email')
+      .lean();
+  }
+
+  if (user?.cooperativeId) {
+    return user.cooperativeId.toString();
+  }
+
+  // Fallback for legacy data: cooperative linked via adminUserId relation.
+  if (user?._id) {
+    const coopByAdmin = await Cooperative.findOne({ adminUserId: user._id }).select('_id').lean();
+    if (coopByAdmin?._id) return coopByAdmin._id.toString();
+  }
+
+  return null;
+}
+
 export async function GET(req) {
   try {
     await dbConnect();
@@ -19,14 +46,15 @@ export async function GET(req) {
     const limit = parseInt(searchParams.get('limit') || '20');
 
     let query = {};
+    const sessionCooperativeId = await resolveSessionCooperativeId(session);
     // Only coopAdmins can fetch their coop's buyers; admins can fetch any
     if (session.user.role === 'coopAdmin' && cooperativeId) {
       query.cooperativeId = cooperativeId;
     } else if (session.user.role === 'admin' && cooperativeId) {
       query.cooperativeId = cooperativeId;
-    } else if (session.user.role === 'coopAdmin') {
+    } else if (session.user.role === 'coopAdmin' && sessionCooperativeId) {
       // Fallback: fetch by logged-in user's cooperative
-      query.cooperativeId = session.user.cooperativeId;
+      query.cooperativeId = sessionCooperativeId;
     }
 
     const skip = (page - 1) * limit;
@@ -68,13 +96,17 @@ export async function POST(req) {
     }
 
     // Validate cooperative access
-    const targetCoopId = cooperativeId || session.user.cooperativeId;
+    const sessionCooperativeId = await resolveSessionCooperativeId(session);
+    const targetCoopId = cooperativeId || sessionCooperativeId;
     if (!targetCoopId) {
-      return new Response(JSON.stringify({ error: 'Cooperative ID required' }), { status: 400 });
+      return new Response(JSON.stringify({
+        error: 'Cooperative ID required',
+        details: 'No cooperative linked to your account. Ask an admin to link your user to a cooperative.',
+      }), { status: 400 });
     }
 
     // For coopAdmins, ensure they're adding to their own cooperative
-    if (session.user.role === 'coopAdmin' && cooperativeId && cooperativeId !== session.user.cooperativeId) {
+    if (session.user.role === 'coopAdmin' && cooperativeId && cooperativeId !== sessionCooperativeId) {
       return new Response(JSON.stringify({ error: 'Cannot add to other cooperatives' }), { status: 403 });
     }
 
@@ -85,11 +117,12 @@ export async function POST(req) {
 
     // Create buyer without userId (or with guest userId if needed)
     const buyer = new Buyer({
+      userId: session.user.id,
       companyName,
       businessType: businessType || 'roaster',
       email,
       phone,
-      website,
+      website: website || undefined,
       cooperativeId: targetCoopId,
       address: address || {},
       verificationStatus: 'pending',

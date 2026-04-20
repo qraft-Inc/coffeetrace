@@ -13,9 +13,19 @@ import { formatWeight, formatCurrency } from '../../../lib/formatters';
 
 export default function CoopDashboard() {
   const { data: session } = useSession();
-  const [farmers, setFarmers] = useState([]);
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    totalFarmers: 0,
+    totalBuyers: 0,
+    totalFinancePartners: 0,
+    totalLots: 0,
+    activeLots: 0,
+    soldLots: 0,
+    exportedLots: 0,
+    deliveredLots: 0,
+    totalHarvest: 0,
+    avgQuality: 0,
+    totalRevenue: 0,
+  });
 
   useEffect(() => {
     if (session?.user?.cooperativeId) {
@@ -25,18 +35,69 @@ export default function CoopDashboard() {
 
   const fetchData = async () => {
     try {
-      // Fetch cooperative farmers and stats
-      // In production, you'd have /api/cooperatives/[id]/farmers endpoint
+      const cooperativeId = session?.user?.cooperativeId;
+      const query = cooperativeId ? `?cooperativeId=${cooperativeId}&limit=1` : '?limit=1';
+
+      const [
+        farmersRes,
+        buyersRes,
+        partnersRes,
+        lotsRes,
+        soldLotsRes,
+        exportedLotsRes,
+        deliveredLotsRes,
+      ] = await Promise.allSettled([
+        fetch(`/api/farmers${query}`),
+        fetch(`/api/buyers${query}`),
+        fetch(`/api/finance-partners${query}`),
+        fetch(`/api/lots${query}`),
+        fetch(`/api/lots${query}&status=sold`),
+        fetch(`/api/lots${query}&status=exported`),
+        fetch(`/api/lots${query}&status=delivered`),
+      ]);
+
+      const readTotal = async (result, path = ['pagination', 'total']) => {
+        if (result.status !== 'fulfilled' || !result.value?.ok) return 0;
+        const data = await result.value.json();
+        return path.reduce((acc, key) => (acc ? acc[key] : undefined), data) || 0;
+      };
+
+      const [
+        totalFarmers,
+        totalBuyers,
+        totalFinancePartners,
+        totalLots,
+        soldLots,
+        exportedLots,
+        deliveredLots,
+      ] = await Promise.all([
+        readTotal(farmersRes),
+        readTotal(buyersRes),
+        readTotal(partnersRes),
+        readTotal(lotsRes),
+        readTotal(soldLotsRes),
+        readTotal(exportedLotsRes),
+        readTotal(deliveredLotsRes),
+      ]);
+
+      const closedLots = soldLots + exportedLots + deliveredLots;
+      const activeLots = Math.max(totalLots - closedLots, 0);
+
       setStats({
-        totalFarmers: 0,
+        totalFarmers,
+        totalBuyers,
+        totalFinancePartners,
+        totalLots,
+        activeLots,
+        soldLots,
+        exportedLots,
+        deliveredLots,
         totalHarvest: 0,
         avgQuality: 0,
         totalRevenue: 0,
       });
     } catch (error) {
       console.error('Failed to fetch data:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -53,34 +114,32 @@ export default function CoopDashboard() {
         </div>
 
         {/* Stats Grid */}
-        {stats && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            <StatCard
-              icon={<Users className="h-6 w-6" />}
-              label="Total Farmers"
-              value={stats.totalFarmers}
-              color="blue"
-            />
-            <StatCard
-              icon={<Package className="h-6 w-6" />}
-              label="Total Harvest"
-              value={formatWeight(stats.totalHarvest)}
-              color="green"
-            />
-            <StatCard
-              icon={<TrendingUp className="h-6 w-6" />}
-              label="Avg Quality Score"
-              value={`${stats.avgQuality}/100`}
-              color="yellow"
-            />
-            <StatCard
-              icon={<DollarSign className="h-6 w-6" />}
-              label="Total Revenue"
-              value={formatCurrency(stats.totalRevenue)}
-              color="green"
-            />
-          </div>
-        )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <StatCard
+            icon={<Users className="h-6 w-6" />}
+            label="Total Farmers"
+            value={stats.totalFarmers}
+            color="blue"
+          />
+          <StatCard
+            icon={<Package className="h-6 w-6" />}
+            label="Total Harvest"
+            value={formatWeight(stats.totalHarvest)}
+            color="green"
+          />
+          <StatCard
+            icon={<TrendingUp className="h-6 w-6" />}
+            label="Avg Quality Score"
+            value={`${stats.avgQuality}/100`}
+            color="yellow"
+          />
+          <StatCard
+            icon={<DollarSign className="h-6 w-6" />}
+            label="Total Revenue"
+            value={formatCurrency(stats.totalRevenue)}
+            color="green"
+          />
+        </div>
 
         {/* Quick Actions */}
         <div className="bg-white rounded-lg shadow-sm p-5 sm:p-6">
@@ -131,39 +190,73 @@ export default function CoopDashboard() {
           </div>
         </div>
 
-        {/* Member Farmers */}
+        {/* Farmers, Buyers, Finance, and Lots Overview */}
         <div className="bg-white rounded-lg shadow-sm p-5 sm:p-6">
-          <h2 className="text-lg sm:text-xl font-bold text-coffee-900 mb-3 sm:mb-4">Member Farmers</h2>
+          <h2 className="text-lg sm:text-xl font-bold text-coffee-900 mb-3 sm:mb-4">Farmers, Buyers, Finance Partners, and Lots</h2>
           
-          {loading ? (
-            <p className="text-sm sm:text-base text-coffee-600">Loading farmers...</p>
-          ) : farmers.length === 0 ? (
-            <div className="text-center py-8">
-              <Users className="h-12 w-12 text-coffee-300 mx-auto mb-3" />
-              <p className="text-coffee-600 mb-4">No registered farmers yet.</p>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-3 sm:gap-4">
+              <div className="border border-coffee-200 rounded-lg p-4">
+                <p className="text-xs uppercase tracking-wide text-coffee-600">Farmers</p>
+                <p className="text-2xl font-bold text-coffee-900 mt-1">{stats.totalFarmers}</p>
+              </div>
+              <div className="border border-orange-200 rounded-lg p-4">
+                <p className="text-xs uppercase tracking-wide text-orange-700">Buyers</p>
+                <p className="text-2xl font-bold text-coffee-900 mt-1">{stats.totalBuyers}</p>
+              </div>
+              <div className="border border-emerald-200 rounded-lg p-4">
+                <p className="text-xs uppercase tracking-wide text-emerald-700">Finance Partners</p>
+                <p className="text-2xl font-bold text-coffee-900 mt-1">{stats.totalFinancePartners}</p>
+              </div>
+              <div className="border border-green-200 rounded-lg p-4">
+                <p className="text-xs uppercase tracking-wide text-green-700">All Lots</p>
+                <p className="text-2xl font-bold text-coffee-900 mt-1">{stats.totalLots}</p>
+              </div>
+              <div className="border border-lime-200 rounded-lg p-4">
+                <p className="text-xs uppercase tracking-wide text-lime-700">Active Lots</p>
+                <p className="text-2xl font-bold text-coffee-900 mt-1">{stats.activeLots}</p>
+              </div>
+              <div className="border border-amber-200 rounded-lg p-4">
+                <p className="text-xs uppercase tracking-wide text-amber-700">Sold</p>
+                <p className="text-2xl font-bold text-coffee-900 mt-1">{stats.soldLots}</p>
+              </div>
+              <div className="border border-sky-200 rounded-lg p-4">
+                <p className="text-xs uppercase tracking-wide text-sky-700">Exported</p>
+                <p className="text-2xl font-bold text-coffee-900 mt-1">{stats.exportedLots}</p>
+              </div>
+              <div className="border border-violet-200 rounded-lg p-4">
+                <p className="text-xs uppercase tracking-wide text-violet-700">Delivered</p>
+                <p className="text-2xl font-bold text-coffee-900 mt-1">{stats.deliveredLots}</p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
               <Link
-                href="/dashboard/coop/farmers/invite"
-                className="inline-block px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+                href="/dashboard/coop/farmers"
+                className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
               >
-                Invite Farmers
+                View Farmers
+              </Link>
+              <Link
+                href="/dashboard/coop/buyers"
+                className="inline-flex items-center px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700"
+              >
+                View Buyers
+              </Link>
+              <Link
+                href="/dashboard/coop/finance"
+                className="inline-flex items-center px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700"
+              >
+                View Finance Partners
+              </Link>
+              <Link
+                href="/dashboard/coop/lots"
+                className="inline-flex items-center px-4 py-2 bg-coffee-800 text-white rounded-lg hover:bg-coffee-900"
+              >
+                View All Lots
               </Link>
             </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-              {farmers.map((farmer) => (
-                <div key={farmer._id} className="border border-coffee-200 rounded-lg p-4">
-                  <h3 className="font-semibold text-coffee-900">{farmer.farmerName}</h3>
-                  <p className="text-sm text-coffee-600">{farmer.location?.district}</p>
-                  <div className="mt-2 flex justify-between text-sm">
-                    <span className="text-coffee-600">Lots: {farmer.totalLots || 0}</span>
-                    <span className="text-coffee-600">
-                      {formatWeight(farmer.totalYield || 0)}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          </div>
         </div>
       </div>
       </DashboardLayout>
