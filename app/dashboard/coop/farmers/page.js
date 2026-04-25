@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '../../../../components/layout/DashboardLayout';
 import RequireAuth from '../../../../components/dashboard/RequireAuth';
-import { Users, Search, UserPlus, Eye, EyeOff, CheckCircle, MapPin, Loader2, X, Pencil, Trash2 } from 'lucide-react';
+import { Users, Search, UserPlus, Eye, EyeOff, CheckCircle, MapPin, Loader2, X, Pencil, Trash2, Link2 } from 'lucide-react';
 
 export default function CoopFarmersPage() {
   const { data: session } = useSession();
@@ -23,6 +23,15 @@ export default function CoopFarmersPage() {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [error, setError] = useState('');
   const [deleteNotice, setDeleteNotice] = useState(null);
+
+  // Link existing farmer state
+  const [showLinkModal, setShowLinkModal] = useState(false);
+  const [linkSearch, setLinkSearch] = useState('');
+  const [linkResults, setLinkResults] = useState([]);
+  const [linkSearchLoading, setLinkSearchLoading] = useState(false);
+  const [linkingId, setLinkingId] = useState(null);
+  const [linkNotice, setLinkNotice] = useState(null);
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -154,6 +163,53 @@ export default function CoopFarmersPage() {
     const acres = (f.farmSizeUnit === 'hectares') ? sizeNumber * 2.47105 : sizeNumber;
     return sum + acres;
   }, 0);
+
+  const searchUnlinkedFarmers = async (query) => {
+    setLinkSearchLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (query) params.set('search', query);
+      const res = await fetch(`/api/farmers/unlinked?${params.toString()}`);
+      if (!res.ok) throw new Error('Search failed');
+      const data = await res.json();
+      setLinkResults(data.farmers || []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLinkSearchLoading(false);
+    }
+  };
+
+  const openLinkModal = () => {
+    setLinkSearch('');
+    setLinkResults([]);
+    setLinkNotice(null);
+    setShowLinkModal(true);
+    // Load initial unlinked farmers list
+    searchUnlinkedFarmers('');
+  };
+
+  const handleLinkFarmer = async (farmerId) => {
+    setLinkingId(farmerId);
+    try {
+      const res = await fetch(`/api/farmers/${farmerId}/assign-cooperative`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Failed to link farmer');
+      }
+      // Remove from results and refresh main list
+      setLinkResults((prev) => prev.filter((f) => f._id !== farmerId));
+      setLinkNotice({ type: 'success', message: 'Farmer linked to your cooperative.' });
+      await fetchFarmers();
+    } catch (err) {
+      setLinkNotice({ type: 'error', message: err.message });
+    } finally {
+      setLinkingId(null);
+    }
+  };
 
   const handleAddFarmer = async (e) => {
     e.preventDefault();
@@ -396,13 +452,22 @@ export default function CoopFarmersPage() {
                   <option value="inactive">Inactive</option>
                 </select>
               </div>
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium flex items-center justify-center gap-2"
-              >
-                <UserPlus className="h-5 w-5" />
-                Add Farmer
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={openLinkModal}
+                  className="px-4 py-2 bg-white border border-green-600 text-green-700 rounded-lg hover:bg-green-50 font-medium flex items-center justify-center gap-2"
+                >
+                  <Link2 className="h-5 w-5" />
+                  Link Existing
+                </button>
+                <button
+                  onClick={() => setShowAddModal(true)}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium flex items-center justify-center gap-2"
+                >
+                  <UserPlus className="h-5 w-5" />
+                  Add Farmer
+                </button>
+              </div>
             </div>
           </div>
 
@@ -543,6 +608,90 @@ export default function CoopFarmersPage() {
             </div>
           </div>
         </div>
+
+        {showLinkModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg w-full max-w-lg shadow-lg flex flex-col max-h-[90vh]">
+              <div className="flex items-center justify-between px-6 py-4 border-b">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Link2 className="h-5 w-5 text-green-600" />
+                  Link Existing Farmer
+                </h3>
+                <button onClick={() => setShowLinkModal(false)} className="text-gray-500 hover:text-gray-700">
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+              <div className="px-6 py-4 border-b">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search by name, email or phone..."
+                    value={linkSearch}
+                    onChange={(e) => {
+                      setLinkSearch(e.target.value);
+                      searchUnlinkedFarmers(e.target.value);
+                    }}
+                    className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm"
+                  />
+                </div>
+              </div>
+              {linkNotice && (
+                <div className={`mx-6 mt-4 rounded-md p-3 text-sm border ${linkNotice.type === 'success' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-red-50 text-red-700 border-red-100'}`}>
+                  {linkNotice.message}
+                </div>
+              )}
+              <div className="flex-1 overflow-y-auto px-6 py-4">
+                {linkSearchLoading ? (
+                  <div className="flex items-center justify-center py-8 text-gray-500">
+                    <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                    Searching...
+                  </div>
+                ) : linkResults.length === 0 ? (
+                  <p className="text-center text-gray-500 py-8 text-sm">
+                    {linkSearch ? 'No matching unlinked farmers found.' : 'No unlinked farmers available.'}
+                  </p>
+                ) : (
+                  <ul className="divide-y divide-gray-100">
+                    {linkResults.map((farmer) => (
+                      <li key={farmer._id} className="flex items-center justify-between py-3 gap-4">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center shrink-0">
+                            <Users className="h-4 w-4 text-green-600" />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="text-sm font-medium text-gray-900 truncate">{farmer.userId?.name || farmer.name || 'Unknown'}</div>
+                            <div className="text-xs text-gray-500 truncate">{farmer.userId?.email || farmer.email || ''}</div>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleLinkFarmer(farmer._id)}
+                          disabled={linkingId === farmer._id}
+                          className="shrink-0 px-3 py-1.5 bg-green-600 text-white text-xs font-medium rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center gap-1"
+                        >
+                          {linkingId === farmer._id ? (
+                            <Loader2 className="h-3 w-3 animate-spin" />
+                          ) : (
+                            <Link2 className="h-3 w-3" />
+                          )}
+                          Add
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              <div className="px-6 py-4 border-t flex justify-end">
+                <button
+                  onClick={() => setShowLinkModal(false)}
+                  className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {showAddModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">

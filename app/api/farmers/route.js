@@ -18,12 +18,12 @@ export async function GET(request) {
 
     const { searchParams } = new URL(request.url);
     
-    // Cache farmers list for 5 minutes
     const headers = {
-      'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+      'Cache-Control': 'no-store',
     };
     const cooperativeId = searchParams.get('cooperativeId');
     const includeInactive = searchParams.get('includeInactive') === 'true';
+    const search = searchParams.get('search');
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '20');
     const skip = (page - 1) * limit;
@@ -32,6 +32,12 @@ export async function GET(request) {
     const query = {};
     if (cooperativeId) {
       query.cooperativeId = cooperativeId;
+    }
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { location: { $regex: search, $options: 'i' } },
+      ];
     }
 
     // Execute query with pagination
@@ -47,9 +53,11 @@ export async function GET(request) {
       Farmer.countDocuments(query),
     ]);
 
+    // Exclude farmers whose user account was deleted (userId is null after populate)
+    // or explicitly deactivated (isActive === false)
     const farmers = includeInactive
       ? rawFarmers
-      : rawFarmers.filter((farmer) => farmer.userId?.isActive !== false);
+      : rawFarmers.filter((farmer) => farmer.userId != null && farmer.userId.isActive !== false);
 
     return NextResponse.json({
       farmers,
