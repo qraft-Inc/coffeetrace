@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Coffee, Sprout, Package, Filter, X } from 'lucide-react';
 
-export default function MarketplaceLayout({ children }) {
+function MarketplaceLayoutContent({ children }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeTab = searchParams.get('tab') || 'coffee';
@@ -251,5 +251,13 @@ export default function MarketplaceLayout({ children }) {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function MarketplaceLayout({ children }) {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-coffee-50">{children}</div>}>
+      <MarketplaceLayoutContent>{children}</MarketplaceLayoutContent>
+    </Suspense>
   );
 }

@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { Coffee, Sprout, Package, Grid3x3, List, MapPin, Filter, X } from 'lucide-react';
 import { formatCurrency, formatWeight } from '@/lib/formatters';
 
-export default function MarketplacePage() {
+function MarketplacePageContent() {
   const searchParams = useSearchParams();
   const tab = searchParams.get('tab') || 'coffee';
   const variety = searchParams.get('variety') || '';
@@ -361,6 +361,14 @@ export default function MarketplacePage() {
             </div>
   );
 }
+
+        export default function MarketplacePage() {
+          return (
+            <Suspense fallback={<div className="px-6 sm:px-8 lg:px-10 pt-6 pb-16 text-coffee-700">Loading marketplace...</div>}>
+              <MarketplacePageContent />
+            </Suspense>
+          );
+        }
 
 function ListingCard({ listing, type, computeGrade }) {
   const lot = listing.lotId || listing;
